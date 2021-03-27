@@ -65,6 +65,7 @@ public class Player extends Sprite {
             // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
         }
+
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.box2DBody.setLinearVelocity(new Vector2(this.speed, this.speed));
         }

@@ -66,6 +66,7 @@ public class GameScreen implements Screen {
 
         location.getWorld().step(1 / 60f, 6, 2);
 
+        //Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         this.player.move(new Vector2(mousePosition.x, mousePosition.y));
 
