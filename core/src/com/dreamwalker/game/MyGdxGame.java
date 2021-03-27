@@ -1,8 +1,8 @@
-package com.mygdx.game;
+package com.dreamwalker.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.Screens.PlayScreen;
+
 
 public class MyGdxGame extends Game {
 
@@ -18,7 +18,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		setScreen(new PlayScreen(this));
+		//setScreen(new PlayScreen(this));
 		// camera = new OrthographicCamera();
 		// tiledMap = new TmxMapLoader().load("Maps/Exit.tmx");
 		// ortMapRender = new OrthogonalTiledMapRenderer(tiledMap);

@@ -1,4 +1,4 @@
-package com.mygdx.game.Screens;
+//package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -21,13 +21,13 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.MyGdxGame;
+//import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.Scenes.Hud;
 
 import org.w3c.dom.css.Rect;
 
 public class PlayScreen implements Screen {
-    private MyGdxGame game;
+    //private MyGdxGame game;
 
     private OrthographicCamera gameCam;
     private Viewport gamePort;
@@ -40,20 +40,20 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    public PlayScreen(MyGdxGame game) {
-        this.game = game;
+    public PlayScreen(/*MyGdxGame game*/) {
+        //this.game = game;
         gameCam = new OrthographicCamera();
         // gamePort = new StretchViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT,
         // gameCam);
         // gamePort = new ScreenViewport(gameCam);
-        gamePort = new FitViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, gameCam);
-        hud = new Hud(game.batch);
+        //gamePort = new FitViewport(MyGdxGame.V_WIDTH, MyGdxGame.V_HEIGHT, gameCam);
+        //hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("Maps/start.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        gameCam.position.set(MyGdxGame.V_WIDTH / 2, MyGdxGame.V_HEIGHT / 2, 0);
+        //gameCam.position.set(MyGdxGame.V_WIDTH / 2, MyGdxGame.V_HEIGHT / 2, 0);
         System.out.println(gameCam.position.x);
         System.out.println(gameCam.position.y);
 
@@ -118,7 +118,7 @@ public class PlayScreen implements Screen {
 
         b2dr.render(world, gameCam.combined);
 
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        //game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
     }
