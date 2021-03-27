@@ -7,8 +7,8 @@ import com.mygdx.game.Screens.PlayScreen;
 public class MyGdxGame extends Game {
 
 	public SpriteBatch batch;
-	public static final int V_WIDTH = 400;
-	public static final int V_HEIGHT = 208;
+	public static final int V_WIDTH = 1024;
+	public static final int V_HEIGHT = 768;
 	// TiledMap tiledMap;
 	// OrthogonalTiledMapRenderer ortMapRender;
 	// OrthographicCamera camera;
@@ -36,18 +36,6 @@ public class MyGdxGame extends Game {
 		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // фикс
 		// мерцания экрана при изменении
 		// // размеров окна
-		// if (Gdx.input.isKeyPressed(Keys.UP)) {
-		// camera.position.y++;
-		// }
-		// if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-		// camera.position.y--;
-		// }
-		// if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-		// camera.position.x--;
-		// }
-		// if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-		// camera.position.x++;
-		// }
 
 		// // SWITCH MAP [start.tmx]
 		// if (Gdx.input.isKeyPressed(Keys.Q)) {
