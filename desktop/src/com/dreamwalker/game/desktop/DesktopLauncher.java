@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.dreamwalker.game.DreamWalker;
 
 public class DesktopLauncher {
+
   public static void main(String[] arg) {
     LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
     new LwjglApplication(new DreamWalker(), config);
@@ -12,3 +13,4 @@ public class DesktopLauncher {
     config.height = 1080;
   }
 }
+

@@ -44,25 +44,25 @@ public class Player extends Sprite {
         this(world, spawnPoint.x, spawnPoint.y);
     }
 
-    public void move() {
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed),
-            // this.box2DBody.getWorldCenter(), true);
+    public void move(Vector2 mousePosition){
+        //Вычитаем позицию игрока из позиции мыши
+        Vector2 playersViewPoint = mousePosition.sub(this.box2DBody.getPosition());
+        this.box2DBody.setTransform(this.box2DBody.getPosition(), playersViewPoint.angleRad());
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W)){
+            //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(0, this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(-this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed),
-            // this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -77,8 +77,10 @@ public class Player extends Sprite {
         if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.box2DBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
         }
+
         boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
-                || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
+                        || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
+
         boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
         boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
         if (!isMoving || conflictX || conflictY) {
