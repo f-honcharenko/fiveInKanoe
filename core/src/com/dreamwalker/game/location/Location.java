@@ -45,7 +45,7 @@ public class Location implements Disposable {
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(spawnPoint);
 
-        //fixtureDef.isSensor = true;
+        fixtureDef.isSensor = true;
         body = this.world.createBody(bodyDef);
 
         shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);

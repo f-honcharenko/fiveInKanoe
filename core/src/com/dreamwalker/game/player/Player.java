@@ -42,7 +42,11 @@ public class Player extends Sprite{
     }
 
 
-    public void move(){
+    public void move(Vector2 mousePosition){
+        //Вычитаем позицию игрока из позиции мыши
+        Vector2 playersViewPoint = mousePosition.sub(this.box2DBody.getPosition());
+        this.box2DBody.setTransform(this.box2DBody.getPosition(), playersViewPoint.angleRad());
+
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(0, this.speed));
@@ -59,6 +63,7 @@ public class Player extends Sprite{
             //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
             this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
         }
+
         if(Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)){
             this.box2DBody.setLinearVelocity(new Vector2(this.speed, this.speed));
         }
@@ -71,6 +76,7 @@ public class Player extends Sprite{
         if(Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)){
             this.box2DBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
         }
+
         boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) ||
                             Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
         boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
