@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         // Координаты мыши в пространстве игрового мира
         Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.move(new Vector2(mousePosition.x, mousePosition.y));
+        this.player.playerControl(new Vector2(mousePosition.x, mousePosition.y));
 
         // Камера должна следовать за игроком
         this.camera.position.x = this.player.getX();
