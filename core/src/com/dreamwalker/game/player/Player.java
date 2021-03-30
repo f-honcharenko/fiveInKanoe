@@ -49,88 +49,105 @@ public class Player extends Sprite {
         Vector2 playersViewPoint = mousePosition.sub(this.box2DBody.getPosition());
         this.box2DBody.setTransform(this.box2DBody.getPosition(), playersViewPoint.angleRad());
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(0, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
-        }
+<<<<<<< HEAD
+                =======
+        public void move(Vector2 mousePosition){
+            //Вычитаем позицию игрока из позиции мыши
+            Vector2 playersViewPoint = mousePosition.sub(this.box2DBody.getPosition());
+            this.box2DBody.setTransform(this.box2DBody.getPosition(), playersViewPoint.angleRad());
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
-        }
+>>>>>>> 2e76cff37a86169b2102290bbe448061b7390fa4
+            if(Gdx.input.isKeyPressed(Input.Keys.W)){
+                //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
+                this.box2DBody.setLinearVelocity(new Vector2(0, this.speed));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
+                this.box2DBody.setLinearVelocity(new Vector2(-this.speed, 0));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
+                this.box2DBody.setLinearVelocity(new Vector2(this.speed, 0));
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
+                this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
+            }
 
-        boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
+<<<<<<< HEAD
+            if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
+=======
+                if(Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)){
+>>>>>>> 2e76cff37a86169b2102290bbe448061b7390fa4
+                    this.box2DBody.setLinearVelocity(new Vector2(this.speed, this.speed));
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    this.box2DBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    this.box2DBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    this.box2DBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
+                }
+
+<<<<<<< HEAD
+                boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
                         || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
 
-        boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
-        boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
-        if (!isMoving || conflictX || conflictY) {
-            this.box2DBody.setLinearVelocity(0, 0);
+=======
+                boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A) ||
+                        Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
+>>>>>>> 2e76cff37a86169b2102290bbe448061b7390fa4
+                boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
+                boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
+                if (!isMoving || conflictX || conflictY) {
+                    this.box2DBody.setLinearVelocity(0, 0);
+                }
+
+            }
+
+            public void setBuff() {
+                throw new NotImplementedException();
+            }
+
+            public void setLevel(World level) {
+                if (level == null) {
+                    throw new IllegalArgumentException();
+                }
+                this.world = level;
+            }
+
+            public World getLevel() {
+                return world;
+            }
+
+            public double getHealth() {
+                return health;
+            }
+
+            public double getDamage() {
+                return damage;
+            }
+
+            public double getArmor() {
+                return armor;
+            }
+
+            public float getSpeed() {
+                return speed;
+            }
+
+            public Body getBox2DBody() {
+                return box2DBody;
+            }
+
+            public float getX() {
+                return this.box2DBody.getPosition().x;
+            }
+
+            public float getY() {
+                return this.box2DBody.getPosition().y;
+            }
+
         }
-
-    }
-
-    public void setBuff() {
-        throw new NotImplementedException();
-    }
-
-    public void setLevel(World level) {
-        if (level == null) {
-            throw new IllegalArgumentException();
-        }
-        this.world = level;
-    }
-
-    public World getLevel() {
-        return world;
-    }
-
-    public double getHealth() {
-        return health;
-    }
-
-    public double getDamage() {
-        return damage;
-    }
-
-    public double getArmor() {
-        return armor;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public Body getBox2DBody() {
-        return box2DBody;
-    }
-
-    public float getX() {
-        return this.box2DBody.getPosition().x;
-    }
-
-    public float getY() {
-        return this.box2DBody.getPosition().y;
-    }
-
-}
