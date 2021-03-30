@@ -62,64 +62,17 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-<<<<<<< HEAD
         update(delta);
 
         location.getWorld().step(1 / 60f, 6, 2);
-=======
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT); // фикс мерцания экрана при изменении
-
-        this.location.getWorld().step(1/60f, 6, 2);
-
-        //Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
-        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.move(new Vector2(mousePosition.x, mousePosition.y));
-
-        this.camera.position.x = this.player.getX();
-        this.camera.position.y = this.player.getY();
-
-        // размеров окна
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            this.camera.position.y++;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            this.camera.position.y--;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            this.camera.position.x--;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            this.camera.position.x++;
-        }
-        // SWITCH MAP [start.tmx]
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            this.location.setMap(this.mapLoader.load("Maps/Start.tmx"));
-            this.ortMapRender = new OrthogonalTiledMapRenderer(this.location.getMap());
-        }
-        // SWITCH MAP [room.tmx]
-        if (Gdx.input.isKeyPressed(Input.Keys.R)) {
-            this.location.setMap(this.mapLoader.load("Maps/room.tmx"));
-            this.ortMapRender = new OrthogonalTiledMapRenderer(this.location.getMap());
-        }
-        // SWITCH MAP [exit.tmx]
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            this.location.setMap(this.mapLoader.load("Maps/Exit.tmx"));
-            this.ortMapRender = new OrthogonalTiledMapRenderer(this.location.getMap());
-        }
-        this.camera.update();
-        this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.ortMapRender.setView((OrthographicCamera) this.viewport.getCamera());
-        this.ortMapRender.render();
-
-        debugRenderer.render(this.location.getWorld(), this.camera.combined);
->>>>>>> 2e76cff37a86169b2102290bbe448061b7390fa4
-
-        //Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
-        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.move(new Vector2(mousePosition.x, mousePosition.y));
 
         Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // фикс мерцания экрана при изменении
+
+        //Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
+        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        this.player.move(new Vector2(mousePosition.x, mousePosition.y));
+
 
         camera.position.x = player.getX();
         camera.position.y = player.getY();
