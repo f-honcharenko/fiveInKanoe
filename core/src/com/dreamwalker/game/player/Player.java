@@ -3,19 +3,18 @@ package com.dreamwalker.game.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Player extends Sprite {
     // Физический мир, в котором находится игрок
     private World world;
     // Физическое "тело" игрока
-    private Body box2DBody;
+    private Body playersBody;
+
+    private Body damageArea;
 
     private double health;
     private double damage;
@@ -38,7 +37,7 @@ public class Player extends Sprite {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" игрока в игровом мире на основе свойств
-        this.box2DBody = this.world.createBody(bodyDef);
+        this.playersBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
 
         // Физические границы игрока
@@ -46,9 +45,30 @@ public class Player extends Sprite {
         shape.setRadius(15);
 
         fixtureDef.shape = shape;
-        this.box2DBody.createFixture(fixtureDef);
+        this.playersBody.createFixture(fixtureDef);
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
+
+        this.damageArea = this.world.createBody(bodyDef);
+        FixtureDef attackFixture = new FixtureDef();
+        PolygonShape dmgSectorShape = new PolygonShape();
+        int scalar = 35;
+        Vector2[] vertices = {
+                new Vector2(0,0),
+                new Vector2(scalar * (float)(Math.cos(5 * Math.PI / 3)), scalar * (float)(Math.sin(5 * Math.PI / 3))),
+                new Vector2(scalar * (float)(Math.cos(7 * Math.PI / 4)), scalar * (float)(Math.sin(7 * Math.PI / 4))),
+                new Vector2(scalar * (float)(Math.cos(11 * Math.PI / 6)), scalar * (float)(Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float)(Math.cos(0)), scalar * (float)(Math.sin(0))), //-----Середина------
+                new Vector2(scalar * (float)(Math.cos(Math.PI / 6)), scalar * (float)(Math.sin(Math.PI / 6))),
+                new Vector2(scalar * (float)(Math.cos(Math.PI / 4)), scalar * (float)(Math.sin(Math.PI / 4))),
+                new Vector2(scalar * (float)(Math.cos(Math.PI / 3)), scalar * (float)(Math.sin(Math.PI / 3)))
+        };
+        dmgSectorShape.set(vertices);
+        attackFixture.shape = dmgSectorShape;
+        attackFixture.isSensor = true;
+        this.damageArea.createFixture(attackFixture);
+        dmgSectorShape.dispose();
+
     }
 
     /**
@@ -63,8 +83,9 @@ public class Player extends Sprite {
     /**
      * Общий метод, отвечающий за упрваление персонажем
      */
-    public void playerControl(){
-        throw new NotImplementedException();
+    public void playerControl(Vector2 mousePosition){
+        this.move(mousePosition);
+        this.meleeAttack();
     }
 
     /**
@@ -73,40 +94,45 @@ public class Player extends Sprite {
      */
     public void move(Vector2 mousePosition) {
         // Вычитаем позицию игрока из позиции мыши
-        Vector2 playersViewPoint = mousePosition.sub(this.box2DBody.getPosition());
+        Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
+        float angle = playersViewPoint.angleRad();
         // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
-        this.box2DBody.setTransform(this.box2DBody.getPosition(), playersViewPoint.angleRad());
+        this.playersBody.setTransform(this.playersBody.getPosition(), angle);
+        this.damageArea.setTransform(this.playersBody.getPosition(), angle);
+
+
+
 
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(0, this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(0, this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, 0));
+            this.playersBody.setLinearVelocity(new Vector2(-this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, 0));
+            this.playersBody.setLinearVelocity(new Vector2(this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
-            this.box2DBody.setLinearVelocity(new Vector2(0, -this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(0, -this.speed));
         }
 
         // Обработка сочитаний WD WA SD SA
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(this.speed, this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.box2DBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.box2DBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
+            this.playersBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
         }
 
         // Проверка, нажата ли одна из клавиш WASD
@@ -119,15 +145,22 @@ public class Player extends Sprite {
 
         // Остановить персонажа, если ни одна из клавиш не нажата, или нажаты конфликтующие сочетания
         if (!isMoving || conflictX || conflictY) {
-            this.box2DBody.setLinearVelocity(0, 0);
+            this.playersBody.setLinearVelocity(0, 0);
         }
     }
 
     /**
      * Метод, отвечающий за ближнюю атаку игрока
      */
-    public void meleeAttack(){
-        throw new NotImplementedException();
+    public void meleeAttack() {
+        /*
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+            if () {
+                this.playersBody.getFixtureList().get(0).testPoint();
+            }
+        }
+
+         */
     }
 
     /**
@@ -164,8 +197,8 @@ public class Player extends Sprite {
         return this.speed;
     }
 
-    public Body getBox2DBody() {
-        return this.box2DBody;
+    public Body getPlayersBody() {
+        return this.playersBody;
     }
 
     /**
@@ -173,7 +206,7 @@ public class Player extends Sprite {
      * @return - позиция игрока по х
      */
     public float getX() {
-        return this.box2DBody.getPosition().x;
+        return this.playersBody.getPosition().x;
     }
 
     /**
@@ -181,7 +214,7 @@ public class Player extends Sprite {
      * @return - позиция игрока по у
      */
     public float getY() {
-        return this.box2DBody.getPosition().y;
+        return this.playersBody.getPosition().y;
     }
 
 }
