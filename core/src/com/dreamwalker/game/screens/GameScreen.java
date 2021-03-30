@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
         this.location.initColission();
 
         this.debugRenderer = new Box2DDebugRenderer();
-        this.hud = new Hud(game.getBatch());
+        this.hud = new Hud(this.game.getBatch());
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
 

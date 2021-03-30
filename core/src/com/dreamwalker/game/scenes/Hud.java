@@ -35,7 +35,7 @@ public class Hud {
 
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
-        this.stage = new Stage(viewport, sb);
+        this.stage = new Stage(this.viewport, sb);
 
         Table table = new Table();
         // Установить таблицу сверху

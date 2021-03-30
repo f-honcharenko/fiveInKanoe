@@ -66,10 +66,9 @@ public class Location implements Disposable {
             shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
             fdef.shape = shape;
             body.createFixture(fdef);
-
-            // Удаляем фигуру, которая была создана для коллизии
-            shape.dispose();
         }
+        // Удаляем фигуру, которая была создана для коллизии
+        shape.dispose();
     }
 
     /**
