@@ -12,37 +12,58 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Hud {
-    public Stage stage;
+    // 2д сцена, на которой распологаются элементы интерфейса
+    private Stage stage;
     private Viewport viewport;
 
     private Integer score;
     private Integer healthPoints;
     private Integer manaPoints;
 
-    Label healthPointsLable;
-    Label manaPointsLable;
-    Label scoreLable;
+    private Label healthPointsLabel;
+    private Label manaPointsLabel;
+    private Label scoreLabel;
 
+    /**
+     * Конструктор
+     * @param sb - пакет спрайтов (инициализировано в основном классе)
+     */
     public Hud(SpriteBatch sb) {
-        healthPoints = 101;
-        manaPoints = 102;
-        score = 0;
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
-        stage = new Stage(viewport, sb);
+        this.healthPoints = 101;
+        this.manaPoints = 102;
+        this.score = 0;
+
+        // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
+        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+        this.stage = new Stage(this.viewport, sb);
 
         Table table = new Table();
+        // Установить таблицу сверху
         table.top();
+        // Включить масштабирование под таблицу
         table.setFillParent(true);
 
-        healthPointsLable = new Label(String.format("%03d", healthPoints),
-                new Label.LabelStyle(new BitmapFont(), Color.CYAN));
-        manaPointsLable = new Label(String.format("%03d", manaPoints),
-                new Label.LabelStyle(new BitmapFont(), Color.CYAN));
-        scoreLable = new Label(String.format("%01d", score), new Label.LabelStyle(new BitmapFont(), Color.CYAN));
-        table.add(healthPointsLable).expandX().padTop(30);
-        table.add(scoreLable).expandX().padTop(10);
-        table.add(manaPointsLable).expandX().padTop(10);
+        // Свойства надписей
+        this.healthPointsLabel = new Label(String.format("%03d", this.healthPoints),
+                                    new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+
+        this.manaPointsLabel = new Label(String.format("%03d", this.manaPoints),
+                                new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+
+        this.scoreLabel = new Label(String.format("%01d", this.score),
+                            new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+
+        // Добавляем надписи в таблицу
+        table.add(this.healthPointsLabel).expandX().padTop(30);
+        table.add(this.scoreLabel).expandX().padTop(10);
+        table.add(this.manaPointsLabel).expandX().padTop(10);
+        // Перейти на новую строку
         table.row();
-        stage.addActor(table);
+        // Добавить таблцу на "сцену"
+        this.stage.addActor(table);
+    }
+
+    public Stage getStage() {
+        return this.stage;
     }
 }
