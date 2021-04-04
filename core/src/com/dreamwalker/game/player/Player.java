@@ -2,8 +2,7 @@ package com.dreamwalker.game.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -13,8 +12,7 @@ public class Player extends Sprite {
     private World world;
     // Физическое "тело" игрока
     private Body playersBody;
-
-    private Body damageArea;
+    private Body attackArea;
 
     private double health;
     private double damage;
@@ -28,7 +26,7 @@ public class Player extends Sprite {
      * @param y - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
-        this.speed = 70.5f;
+        this.speed = 80.5f;
 
         this.world = world;
         // Задача физических свойств для "тела" игрока
@@ -46,13 +44,15 @@ public class Player extends Sprite {
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
+
+        float scalar = shape.getRadius() * 3;
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
-        this.damageArea = this.world.createBody(bodyDef);
+        this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();
-        int scalar = 35;
+
         Vector2[] vertices = {
                 new Vector2(0,0),
                 new Vector2(scalar * (float)(Math.cos(5 * Math.PI / 3)), scalar * (float)(Math.sin(5 * Math.PI / 3))),
@@ -63,10 +63,11 @@ public class Player extends Sprite {
                 new Vector2(scalar * (float)(Math.cos(Math.PI / 4)), scalar * (float)(Math.sin(Math.PI / 4))),
                 new Vector2(scalar * (float)(Math.cos(Math.PI / 3)), scalar * (float)(Math.sin(Math.PI / 3)))
         };
+
         dmgSectorShape.set(vertices);
         attackFixture.shape = dmgSectorShape;
         attackFixture.isSensor = true;
-        this.damageArea.createFixture(attackFixture);
+        this.attackArea.createFixture(attackFixture);
         dmgSectorShape.dispose();
 
     }
@@ -98,9 +99,7 @@ public class Player extends Sprite {
         float angle = playersViewPoint.angleRad();
         // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
         this.playersBody.setTransform(this.playersBody.getPosition(), angle);
-        this.damageArea.setTransform(this.playersBody.getPosition(), angle);
-
-
+        this.attackArea.setTransform(this.playersBody.getPosition(), angle);
 
 
         // Обработка нажатий клавиш WASD
@@ -153,14 +152,11 @@ public class Player extends Sprite {
      * Метод, отвечающий за ближнюю атаку игрока
      */
     public void meleeAttack() {
-        /*
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            if () {
-                this.playersBody.getFixtureList().get(0).testPoint();
-            }
+
         }
 
-         */
     }
 
     /**

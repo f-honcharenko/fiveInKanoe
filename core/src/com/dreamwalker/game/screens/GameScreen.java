@@ -9,7 +9,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
@@ -26,7 +26,7 @@ public class GameScreen implements Screen {
     // Игровая камера
     private OrthographicCamera camera;
     // Вьюпорт (область просмотра игрока)
-    private FitViewport viewport;
+    private ScreenViewport viewport;
 
     // Интерфейс
     private Hud hud;
@@ -41,6 +41,7 @@ public class GameScreen implements Screen {
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
+
         this.game = game;
         this.mapLoader = new TmxMapLoader();
 
@@ -61,7 +62,7 @@ public class GameScreen implements Screen {
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
-        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), this.camera);
+        this.viewport = new ScreenViewport(this.camera);
     }
 
     @Override
@@ -79,6 +80,7 @@ public class GameScreen implements Screen {
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        System.out.println(this.camera.position.x + "       " + this.camera.position.y);
     }
 
     @Override
