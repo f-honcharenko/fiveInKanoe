@@ -38,6 +38,7 @@ public class GameScreen implements Screen {
 
     /**
      * Конструктор экрана игры
+     * 
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
@@ -55,7 +56,8 @@ public class GameScreen implements Screen {
 
         this.camera = new OrthographicCamera();
         // Прогрузка карты
-        this.ortMapRender = new OrthogonalTiledMapRenderer(location.getMap());
+        float unitScale = 1f;
+        this.ortMapRender = new OrthogonalTiledMapRenderer(location.getMap(), unitScale);
         // Установка Ортоганальная проекция камеры, центрированная по вьюпорту
         // (первый параметр отвечает за направление оси у)
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -70,9 +72,9 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Метод, отвечающий за обновление позиций камеры,
-     * установки для "прогрузчика" гранц рендера,
-     * обновление вьюпорта
+     * Метод, отвечающий за обновление позиций камеры, установки для "прогрузчика"
+     * гранц рендера, обновление вьюпорта
+     * 
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
