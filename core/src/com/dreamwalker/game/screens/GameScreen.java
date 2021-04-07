@@ -106,6 +106,12 @@ public class GameScreen implements Screen {
         // Рендер карты
         this.ortMapRender.render();
 
+        // рендер игрока
+
+        game.getBatch().begin();
+        player.draw((new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)), game.getBatch());
+        game.getBatch().end();
+
         // Рендер элементов отладки
         this.debugRenderer.render(this.location.getWorld(), this.camera.combined);
 
