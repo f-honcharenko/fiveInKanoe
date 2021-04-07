@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -46,7 +47,7 @@ public class GameScreen implements Screen {
         this.mapLoader = new TmxMapLoader();
 
         // Загрузка карты и создание коллизий
-        this.location = new Location(this.mapLoader.load("Maps/Start.tmx"));
+        this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
         this.location.initColission();
 
         this.debugRenderer = new Box2DDebugRenderer();
@@ -107,10 +108,15 @@ public class GameScreen implements Screen {
         this.ortMapRender.render();
 
         // рендер игрока
-
         game.getBatch().begin();
         player.draw((new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)), game.getBatch());
         game.getBatch().end();
+
+        // Рендер верхнего слоя
+        // MapLayer foregroundLayer = location.getMap().getLayers().size();
+        // пусть foreground -- всгда нулевой слой
+        int[] foregroundLayer2 = { location.getMap().getLayers().size() - 1 };
+        this.ortMapRender.render(foregroundLayer2);
 
         // Рендер элементов отладки
         this.debugRenderer.render(this.location.getWorld(), this.camera.combined);

@@ -23,6 +23,7 @@ public class Location implements Disposable {
 
     /**
      * Конструктор
+     * 
      * @param map - тайловая карта
      */
     public Location(TiledMap map) {
@@ -73,6 +74,7 @@ public class Location implements Disposable {
 
     /**
      * Метод, отвечающий за инициализацию точки спавна
+     * 
      * @return - координаты точки спавна
      */
     public Vector2 getSpawnPoint() {
@@ -85,15 +87,15 @@ public class Location implements Disposable {
         Body body;
 
         // Получение данных с самой карты
-        MapObject object = this.map.getLayers().get(8).getObjects().get(0);
+        MapObject object = this.map.getLayers().get("spawnPoint").getObjects().get(0);
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
         // Координаты точки спавна
         Vector2 spawnPoint = new Vector2(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
 
         // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
-        //                      |
-        //                      V
+        // |
+        // V
 
         // Размещение точки спавна на карте
         bodyDef.type = BodyDef.BodyType.StaticBody;
