@@ -47,7 +47,7 @@ public class Location implements Disposable {
     /**
      * Метод, отвичающий за создание коллизий
      */
-    public void initColission() {
+    public void initCollisions() {
         // физические свойства для "областей" коллизий
         BodyDef bdef = new BodyDef();
         // Границы коллизий

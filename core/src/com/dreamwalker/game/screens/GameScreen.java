@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -49,7 +48,7 @@ public class GameScreen implements Screen {
 
         // Загрузка карты и создание коллизий
         this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
-        this.location.initColission();
+        this.location.initCollisions();
 
         this.debugRenderer = new Box2DDebugRenderer();
         this.hud = new Hud(this.game.getBatch());
