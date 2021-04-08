@@ -3,12 +3,14 @@ package com.dreamwalker.game.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -35,9 +37,11 @@ public class Player extends Sprite {
      */
     public Player(World world, float x, float y) {
         this.speed = 80.5f;
+
         // Текстура игрока для отрисовки
         // !В будущем заменить на атлас
         this.texture = new Texture("badlogic.jpg");
+
         this.world = world;
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
@@ -96,6 +100,7 @@ public class Player extends Sprite {
      * Общий метод, отвечающий за упрваление персонажем
      */
 
+
     public void playerControl(Vector2 mousePosition){
         this.move(mousePosition);
         this.meleeAttack();
@@ -109,6 +114,7 @@ public class Player extends Sprite {
      */
     public void draw(Vector3 coords, SpriteBatch spriteBatch) {
         spriteBatch.draw(this.texture, coords.x - 15f, coords.y - 15f, 30f, 30f);
+
 
     }
 
@@ -178,7 +184,6 @@ public class Player extends Sprite {
     public void meleeAttack() {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-
 
         }
 
