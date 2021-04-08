@@ -51,9 +51,11 @@ public class GameScreen implements Screen {
         this.location.initCollisions();
 
         this.debugRenderer = new Box2DDebugRenderer();
-        this.hud = new Hud(this.game.getBatch());
+
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
+        this.hud = new Hud(this.game.getBatch(), this.player);
+
 
         this.camera = new OrthographicCamera();
         // Прогрузка карты
@@ -79,18 +81,18 @@ public class GameScreen implements Screen {
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
+        // Реализация "времени" в игровом мире
+        this.location.getWorld().step(1 / 60f, 6, 2);
+        this.player.update(deltaTime);
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        System.out.println(this.camera.position.x + "       " + this.camera.position.y);
+        this.hud.update(deltaTime);
     }
 
     @Override
     public void render(float delta) {
         update(delta);
-
-        // Реализация "времени" в игровом мире
-        this.location.getWorld().step(1 / 60f, 6, 2);
 
         // Цвет окна и фикс мерцания экрана при изменении
         Gdx.gl.glClearColor(0, 0, 1, 1);
@@ -109,8 +111,9 @@ public class GameScreen implements Screen {
         this.ortMapRender.render();
 
         // рендер игрока
+        game.getBatch().setProjectionMatrix(this.camera.combined);
         game.getBatch().begin();
-        player.draw((new Vector3(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)), game.getBatch());
+        player.draw(this.game.getBatch());
         game.getBatch().end();
 
         // Рендер верхнего слоя

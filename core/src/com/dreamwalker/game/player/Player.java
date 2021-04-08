@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -22,11 +23,12 @@ public class Player extends Sprite {
     private Body attackArea;
 
     private double health;
+    private double mana;
     private double damage;
     private double armor;
     private float speed;
 
-    private Texture texture;
+    private TextureRegion playerTextReg;
 
     /**
      * Конструктор
@@ -36,12 +38,17 @@ public class Player extends Sprite {
      * @param y     - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
+        // !В будущем заменить на атлас
+        super(new Texture("badlogic.jpg"));
+        this.playerTextReg = new TextureRegion(this.getTexture(),0,0,
+                                               this.getTexture().getWidth(), this.getTexture().getHeight());
+
+        this.setBounds(0, 0, 50, 50);
+        this.setRegion(this.playerTextReg);
+
         this.speed = 80.5f;
 
         // Текстура игрока для отрисовки
-        // !В будущем заменить на атлас
-        this.texture = new Texture("badlogic.jpg");
-
         this.world = world;
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
@@ -84,6 +91,9 @@ public class Player extends Sprite {
         this.attackArea.createFixture(attackFixture);
         dmgSectorShape.dispose();
 
+        this.health = 100;
+        this.mana = 0;
+
     }
 
     /**
@@ -99,23 +109,15 @@ public class Player extends Sprite {
     /**
      * Общий метод, отвечающий за упрваление персонажем
      */
-
-
     public void playerControl(Vector2 mousePosition){
         this.move(mousePosition);
         this.meleeAttack();
     }
 
-    /**
-     * Mетод, отвечающий за отрисовку
-     * 
-     * @param coords      - глоабальные координаты
-     * @param spriteBatch - кисть мира
-     */
-    public void draw(Vector3 coords, SpriteBatch spriteBatch) {
-        spriteBatch.draw(this.texture, coords.x - 15f, coords.y - 15f, 30f, 30f);
 
-
+    public void update(float deltaTime){
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
+        this.mana += 0.01;
     }
 
     /**
@@ -221,6 +223,10 @@ public class Player extends Sprite {
 
     public float getSpeed() {
         return this.speed;
+    }
+
+    public double getMana() {
+        return mana;
     }
 
     public Body getPlayersBody() {

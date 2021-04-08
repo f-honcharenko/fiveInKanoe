@@ -10,15 +10,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.dreamwalker.game.player.Player;
 
 public class Hud {
     // 2д сцена, на которой распологаются элементы интерфейса
     private Stage stage;
     private Viewport viewport;
-
-    private Integer score;
-    private Integer healthPoints;
-    private Integer manaPoints;
+    private Player player;
 
     private Label healthPointsLabel;
     private Label manaPointsLabel;
@@ -27,11 +25,10 @@ public class Hud {
     /**
      * Конструктор
      * @param sb - пакет спрайтов (инициализировано в основном классе)
+     * @param player
      */
-    public Hud(SpriteBatch sb) {
-        this.healthPoints = 101;
-        this.manaPoints = 102;
-        this.score = 0;
+    public Hud(SpriteBatch sb, Player player) {
+        this.player = player;
 
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
@@ -44,13 +41,13 @@ public class Hud {
         table.setFillParent(true);
 
         // Свойства надписей
-        this.healthPointsLabel = new Label(String.format("%03d", this.healthPoints),
+        this.healthPointsLabel = new Label(String.format("%03f", 0.0),
                                     new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
-        this.manaPointsLabel = new Label(String.format("%03d", this.manaPoints),
+        this.manaPointsLabel = new Label(String.format("%03f", 0.0),
                                 new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
-        this.scoreLabel = new Label(String.format("%01d", this.score),
+        this.scoreLabel = new Label(String.format("%01f", 0.0),
                             new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
         // Добавляем надписи в таблицу
@@ -61,6 +58,11 @@ public class Hud {
         table.row();
         // Добавить таблцу на "сцену"
         this.stage.addActor(table);
+    }
+
+    public void update(float deltaTime){
+        this.healthPointsLabel.setText(String.format("%.3f", this.player.getHealth()));
+        this.manaPointsLabel.setText(String.format("%.3f", this.player.getMana()));
     }
 
     public Stage getStage() {
