@@ -41,13 +41,13 @@ public class Hud {
         table.setFillParent(true);
 
         // Свойства надписей
-        this.healthPointsLabel = new Label(String.format("%03f", 0.0),
+        this.healthPointsLabel = new Label(String.format("%.3f", 0.0),
                                     new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
-        this.manaPointsLabel = new Label(String.format("%03f", 0.0),
+        this.manaPointsLabel = new Label(String.format("%.3f", 0.0),
                                 new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
-        this.scoreLabel = new Label(String.format("%01f", 0.0),
+        this.scoreLabel = new Label(String.format("%.1f", 0.0),
                             new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
         // Добавляем надписи в таблицу
