@@ -124,10 +124,10 @@
  <objectgroup id="10" name="exit">
   <object id="1" name="Exit" x="608" y="352" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="11" name="spawnPoint" visible="0">
+ <objectgroup id="11" name="spawnPoint">
   <object id="2" name="spawnPoint" x="160" y="320" width="32" height="32"/>
  </objectgroup>
- <objectgroup id="12" name="colissions">
+ <objectgroup id="12" name="collisions">
   <object id="10" name="col23" x="512" y="128" width="32" height="32"/>
   <object id="11" name="col22" x="416" y="224" width="64" height="32"/>
   <object id="12" name="col21" x="288" y="192" width="32" height="32"/>

@@ -55,7 +55,7 @@ public class Location implements Disposable {
         FixtureDef fdef = new FixtureDef();
         // Тело коллизий
         Body body;
-        for (MapObject object : map.getLayers().get("colissions").getObjects().getByType(RectangleMapObject.class)) {
+        for (MapObject object : map.getLayers().get("collisions").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;

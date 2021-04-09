@@ -11,15 +11,20 @@
   <terrain name="Dark road" tile="307"/>
   <terrain name="Lava lake" tile="304"/>
   <terrain name="Stone road" tile="881"/>
+  <terrain name="void" tile="124"/>
  </terraintypes>
  <tile id="16" terrain="0,0,0,"/>
  <tile id="17" terrain="0,0,,0"/>
  <tile id="19" terrain="1,1,1,"/>
  <tile id="20" terrain="1,1,,1"/>
+ <tile id="28" terrain="6,6,6,"/>
+ <tile id="29" terrain="6,6,,6"/>
  <tile id="48" terrain="0,,0,0"/>
  <tile id="49" terrain=",0,0,0"/>
  <tile id="51" terrain="1,,1,1"/>
  <tile id="52" terrain=",1,1,1"/>
+ <tile id="60" terrain="6,,6,6"/>
+ <tile id="61" terrain=",6,6,6"/>
  <tile id="79" terrain=",,,0">
   <properties>
    <property name="Mud road" value=""/>
@@ -30,18 +35,27 @@
  <tile id="82" terrain=",,,1"/>
  <tile id="83" terrain=",,1,1"/>
  <tile id="84" terrain=",,1,"/>
+ <tile id="91" terrain=",,,6"/>
+ <tile id="92" terrain=",,6,6"/>
+ <tile id="93" terrain=",,6,"/>
  <tile id="111" terrain=",0,,0"/>
  <tile id="112" terrain="0,0,0,0"/>
  <tile id="113" terrain="0,,0,"/>
  <tile id="114" terrain=",1,,1"/>
  <tile id="115" terrain="1,1,1,1"/>
  <tile id="116" terrain="1,,1,"/>
+ <tile id="123" terrain=",6,,6"/>
+ <tile id="124" terrain="6,6,6,6"/>
+ <tile id="125" terrain="6,,6,"/>
  <tile id="143" terrain=",0,,"/>
  <tile id="144" terrain="0,0,,"/>
  <tile id="145" terrain="0,,,"/>
  <tile id="146" terrain=",1,,"/>
  <tile id="147" terrain="1,1,,"/>
  <tile id="148" terrain="1,,,"/>
+ <tile id="155" terrain=",6,,"/>
+ <tile id="156" terrain="6,6,,"/>
+ <tile id="157" terrain="6,,,"/>
  <tile id="208" terrain="4,4,4,"/>
  <tile id="209" terrain="4,4,,4"/>
  <tile id="211" terrain="3,3,3,"/>
