@@ -52,10 +52,8 @@ public class GameScreen implements Screen {
 
         this.debugRenderer = new Box2DDebugRenderer();
 
-
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
         this.hud = new Hud(this.game.getBatch(), this.player);
-
 
         this.camera = new OrthographicCamera();
         // Прогрузка карты

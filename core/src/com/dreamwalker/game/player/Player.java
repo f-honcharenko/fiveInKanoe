@@ -3,15 +3,11 @@ package com.dreamwalker.game.player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -22,7 +18,7 @@ public class Player extends Sprite {
     private Body playersBody;
     private Body attackArea;
 
-    private double health;
+    private double health = 100;
     private double mana;
     private double damage;
     private double armor;
@@ -40,8 +36,8 @@ public class Player extends Sprite {
     public Player(World world, float x, float y) {
         // !В будущем заменить на атлас
         super(new Texture("badlogic.jpg"));
-        this.playerTextReg = new TextureRegion(this.getTexture(),0,0,
-                                               this.getTexture().getWidth(), this.getTexture().getHeight());
+        this.playerTextReg = new TextureRegion(this.getTexture(), 0, 0, this.getTexture().getWidth(),
+                this.getTexture().getHeight());
 
         this.setBounds(0, 0, 50, 50);
         this.setRegion(this.playerTextReg);
@@ -74,16 +70,15 @@ public class Player extends Sprite {
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();
 
-        Vector2[] vertices = {
-                new Vector2(0,0),
-                new Vector2(scalar * (float)(Math.cos(5 * Math.PI / 3)), scalar * (float)(Math.sin(5 * Math.PI / 3))),
-                new Vector2(scalar * (float)(Math.cos(7 * Math.PI / 4)), scalar * (float)(Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float)(Math.cos(11 * Math.PI / 6)), scalar * (float)(Math.sin(11 * Math.PI / 6))),
-                new Vector2(scalar * (float)(Math.cos(0)), scalar * (float)(Math.sin(0))), //-----Середина------
-                new Vector2(scalar * (float)(Math.cos(Math.PI / 6)), scalar * (float)(Math.sin(Math.PI / 6))),
-                new Vector2(scalar * (float)(Math.cos(Math.PI / 4)), scalar * (float)(Math.sin(Math.PI / 4))),
-                new Vector2(scalar * (float)(Math.cos(Math.PI / 3)), scalar * (float)(Math.sin(Math.PI / 3)))
-        };
+        Vector2[] vertices = { new Vector2(0, 0),
+                new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
+                new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3))) };
 
         dmgSectorShape.set(vertices);
         attackFixture.shape = dmgSectorShape;
@@ -109,13 +104,12 @@ public class Player extends Sprite {
     /**
      * Общий метод, отвечающий за упрваление персонажем
      */
-    public void playerControl(Vector2 mousePosition){
+    public void playerControl(Vector2 mousePosition) {
         this.move(mousePosition);
         this.meleeAttack();
     }
 
-
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
         this.mana += 0.01;
     }
@@ -129,25 +123,30 @@ public class Player extends Sprite {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
-        // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
+        // Позиция игрока остается прежней, в то время, как поворот меняется в
+        // зависимости от положения мыши
         this.playersBody.setTransform(this.playersBody.getPosition(), angle);
         this.attackArea.setTransform(this.playersBody.getPosition(), angle);
 
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed),
+            // this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(new Vector2(0, this.speed));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0),
+            // this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(new Vector2(-this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0),
+            // this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(new Vector2(this.speed, 0));
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed),
+            // this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(new Vector2(0, -this.speed));
         }
 
@@ -185,7 +184,7 @@ public class Player extends Sprite {
      */
     public void meleeAttack() {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 
         }
 
