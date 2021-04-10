@@ -63,8 +63,14 @@ public class Hud {
         }
 
         public void update(float deltaTime) {
-                this.healthPointsLabel.setText(String.format("%.3f", this.player.getHealth()));
-                this.manaPointsLabel.setText(String.format("%.3f", this.player.getMana()));
+
+                String HPtext = String.format("%.3f", this.player.getCurrentHealth()) + "/"
+                                + String.format("%.3f", this.player.getMaxHealth());
+                String MPtext = String.format("%.3f", this.player.getCurrentMana()) + "/"
+                                + String.format("%.3f", this.player.getMaxMana());
+                this.healthPointsLabel.setText(HPtext);
+                this.manaPointsLabel.setText(MPtext);
+
         }
 
         public Stage getStage() {

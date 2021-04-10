@@ -119,6 +119,9 @@ public class Player extends Sprite {
         this.regeneration();
     }
 
+    /**
+     * метод, отвечающий регенерацию показателей персонажа
+     */
     public void regeneration() {
         if (this.mana < this.manaMax) {
             this.mana += 0.01;
@@ -222,8 +225,20 @@ public class Player extends Sprite {
         return this.world;
     }
 
-    public double getHealth() {
+    public double getCurrentHealth() {
         return this.health;
+    }
+
+    public double getMaxHealth() {
+        return this.healthMax;
+    }
+
+    public double getCurrentMana() {
+        return this.mana;
+    }
+
+    public double getMaxMana() {
+        return this.manaMax;
     }
 
     public double getDamage() {
@@ -236,10 +251,6 @@ public class Player extends Sprite {
 
     public float getSpeed() {
         return this.speed;
-    }
-
-    public double getMana() {
-        return mana;
     }
 
     public Body getPlayersBody() {
