@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.dreamwalker.game.player.Player;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -25,7 +26,7 @@ public abstract class Enemy extends Sprite {
     private double armor;
     private float speed;
 
-    protected int test;
+    private Player player;
 
     private Texture texture;
 
@@ -36,12 +37,12 @@ public abstract class Enemy extends Sprite {
      * @param x     - стартовая позиция врага по х
      * @param y     - стартовая позиция врага по у
      */
-    public Enemy(World world, float x, float y) {
+    public Enemy(Player player, float x, float y) {
         // Текстура врага для отрисовки
         // !В будущем заменить на атлас
         this.texture = new Texture("badlogic.jpg");
-
-        this.world = world;
+        this.player = player;
+        this.world = player.getWorld();
         // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -67,8 +68,8 @@ public abstract class Enemy extends Sprite {
      * @param world           - физический мир, в котором будет находится враг
      * @param enemySpawnPoint - стартовая позиция игрока
      */
-    public Enemy(World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Enemy(Player player, Vector2 enemySpawnPoint) {
+        this(player, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     /**
@@ -136,7 +137,10 @@ public abstract class Enemy extends Sprite {
 
     /**
      *
-     * @return - позиция врага по у
- 
+     * @return - позиция врага по х
+     */
+    public float getY() {
+        return this.box2DBody.getPosition().y;
+    }
 
 }

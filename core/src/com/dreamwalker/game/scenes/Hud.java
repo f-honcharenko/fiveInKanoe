@@ -63,7 +63,7 @@ public class Hud {
         }
 
         public void update(float deltaTime) {
-
+                // Форматирование
                 String HPtext = String.format("%.3f", this.player.getCurrentHealth()) + "/"
                                 + String.format("%.3f", this.player.getMaxHealth());
                 String MPtext = String.format("%.3f", this.player.getCurrentMana()) + "/"

@@ -24,6 +24,7 @@ public class Goblin extends Enemy {
     private float spawnX;
     private float spawnY;
     private float idleRadius;
+    private float speed;
 
     private Boolean attackFlag = true;
     private Boolean idleFlag = true;
@@ -39,13 +40,16 @@ public class Goblin extends Enemy {
      * @param y      - стартовая позиция врага по у
      * @param radius - радус свободной ходьбы
      */
-    public Goblin(World world, Player player, float x, float y) {
-        super(world, x, y);
+    public Goblin(Player player, float x, float y) {
+        super(player, x, y);
+
         this.player = player;
+
         this.spawnX = x;
         this.spawnY = y;
 
         this.idleRadius = 5;
+        this.speed = 0.6f;
         // this.getHe
         random = new Random();
 
@@ -64,8 +68,8 @@ public class Goblin extends Enemy {
      * @param enemySpawnPoint - позиция врага
      * @param radius          - радус свободной ходьбы
      */
-    public Goblin(World world, Player player, Vector2 enemySpawnPoint) {
-        this(world, player, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Goblin(Player player, Vector2 enemySpawnPoint) {
+        this(player, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override
@@ -74,8 +78,8 @@ public class Goblin extends Enemy {
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
             Vector2 zombieViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
             super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), zombieViewPoint.angleRad());
-            super.getBox2DBody().setLinearVelocity(
-                    new Vector2((player.getX() - super.getX()) * 2f, (player.getY() - super.getY()) * 2f));
+            super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
+                    (player.getY() - super.getY()) * this.speed));
             idleFlag = false;
             // super.getBox2DBody().setLinearVelocity(player.getX(), player.getY());
             // прикольный єффект, враг бежит от плеера
@@ -118,8 +122,6 @@ public class Goblin extends Enemy {
 
     @Override
     public void idle() {
-        System.out.println("X: " + super.getX() + "/" + this.tempX);
-        System.out.println("Y: " + super.getY() + "/" + this.tempY);
         if (this.idleFlag) {
 
             if ((this.tempX == super.getX()) || (this.tempY == super.getY())) {
@@ -131,7 +133,6 @@ public class Goblin extends Enemy {
 
                 if (this.idleMax > this.idleCounter) {
                     this.idleCounter++;
-                    System.out.println(this.idleCounter + "/" + this.idleMax);
                 } else {
 
                     System.out.println("idle go");

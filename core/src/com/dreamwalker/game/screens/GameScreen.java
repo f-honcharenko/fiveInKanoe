@@ -14,6 +14,7 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
+import com.dreamwalker.game.enemy.Goblin;
 
 public class GameScreen implements Screen {
 
@@ -36,6 +37,9 @@ public class GameScreen implements Screen {
     // Временный "прогрузчик" для отладки
     private Box2DDebugRenderer debugRenderer;
 
+    // Тестовый голбин
+    private Goblin testGoblin;
+
     /**
      * Конструктор экрана игры
      * 
@@ -53,6 +57,7 @@ public class GameScreen implements Screen {
         this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
+        this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 60, location.getSpawnPoint().y + 60);
         this.hud = new Hud(this.game.getBatch(), this.player);
 
         this.camera = new OrthographicCamera();
@@ -86,6 +91,10 @@ public class GameScreen implements Screen {
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.hud.update(deltaTime);
+
+        this.testGoblin.idle();
+        this.testGoblin.move();
+        this.testGoblin.meleeAttack();
     }
 
     @Override
