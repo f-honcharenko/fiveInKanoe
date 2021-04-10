@@ -54,10 +54,10 @@ public class Hud {
 
                 // Добавляем надписи в таблицу
                 table.add(this.healthPointsLabel).expandX().padTop(30);
-                table.add(this.scoreLabel).expandX().padTop(10);
-                table.add(this.manaPointsLabel).expandX().padTop(10);
                 // Перейти на новую строку
                 table.row();
+                // table.add(this.scoreLabel).expandX().padTop(10);
+                table.add(this.manaPointsLabel).expandX().padTop(10);
                 // Добавить таблцу на "сцену"
                 this.stage.addActor(table);
         }
