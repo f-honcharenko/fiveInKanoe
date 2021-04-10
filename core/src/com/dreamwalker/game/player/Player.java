@@ -18,8 +18,10 @@ public class Player extends Sprite {
     private Body playersBody;
     private Body attackArea;
 
-    private double health = 100;
+    private double health;
+    private double healthMax;
     private double mana;
+    private double manaMax;
     private double damage;
     private double armor;
     private float speed;
@@ -89,6 +91,9 @@ public class Player extends Sprite {
         this.health = 100;
         this.mana = 0;
 
+        this.healthMax = 100;
+        this.manaMax = 100;
+
     }
 
     /**
@@ -111,7 +116,16 @@ public class Player extends Sprite {
 
     public void update(float deltaTime) {
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
-        this.mana += 0.01;
+        this.regeneration();
+    }
+
+    public void regeneration() {
+        if (this.mana < this.manaMax) {
+            this.mana += 0.01;
+        }
+        if (this.health < this.healthMax) {
+            this.health += 0.1;
+        }
     }
 
     /**
