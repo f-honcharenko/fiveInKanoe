@@ -10,8 +10,6 @@ public class Goblin extends Enemy {
 
     private Player player;
 
-    private double attack = 15;
-
     private int idleMax = 100; // такты?
     private int idleCounter = 0; // такты?
 
@@ -24,7 +22,6 @@ public class Goblin extends Enemy {
     private float spawnX;
     private float spawnY;
     private float idleRadius;
-    private float speed;
 
     private Boolean attackFlag = true;
     private Boolean idleFlag = true;
@@ -50,6 +47,8 @@ public class Goblin extends Enemy {
 
         this.idleRadius = 5;
         this.speed = 0.6f;
+        this.damage = 20;
+
         // this.getHe
         random = new Random();
 
@@ -109,7 +108,8 @@ public class Goblin extends Enemy {
                 attackSpeedCounter++;
             } else {
                 attackSpeedCounter = 0;
-                System.out.println("DAMAGED!");
+
+                System.out.println("DAMAGED!" + player.damaged((float) this.getDamage(), 1));
             }
         }
     }

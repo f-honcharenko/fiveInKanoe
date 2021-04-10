@@ -21,10 +21,10 @@ public abstract class Enemy extends Sprite {
     // Физическое "тело" врага
     private Body box2DBody;
 
-    private double health;
-    private double damage;
-    private double armor;
-    private float speed;
+    protected double health;
+    protected double damage;
+    protected double armor;
+    protected float speed;
 
     private Player player;
 

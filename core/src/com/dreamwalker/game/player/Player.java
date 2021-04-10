@@ -90,6 +90,7 @@ public class Player extends Sprite {
 
         this.health = 100;
         this.mana = 0;
+        this.armor = 4;
 
         this.healthMax = 100;
         this.manaMax = 100;
@@ -245,6 +246,10 @@ public class Player extends Sprite {
         return this.damage;
     }
 
+    public double getMagArmor() {
+        return this.damage;
+    }
+
     public double getArmor() {
         return this.armor;
     }
@@ -255,6 +260,38 @@ public class Player extends Sprite {
 
     public Body getPlayersBody() {
         return this.playersBody;
+    }
+
+    /**
+     * Нанести урон игроку
+     * 
+     * @param damage     - Урон
+     * @param damageType - Тип урона (0 - чистый, 1 - физ, 2 - маг)
+     * @return Нанесенный урон
+     */
+    public float damaged(float damage, int damageType) {
+        damage = Math.abs(damage);
+        switch (damageType) {
+        case 1:
+            // Будем считать что 1 брона = 1хп.
+            if (this.getArmor() < damage) {
+                this.health = this.getCurrentHealth() - (damage - this.getArmor());
+                return (float) (damage - this.getArmor());
+            } else {
+                return 0;
+            }
+        case 2:
+            // Будем считать что 1 брона = 1хп.
+            if (this.getArmor() < damage) {
+                this.health = this.getCurrentHealth() - (damage - this.getMagArmor());
+                return (float) (damage - this.getMagArmor());
+            } else {
+                return 0;
+            }
+        default:
+            this.health = this.getCurrentHealth() - (damage);
+            return (float) (damage);
+        }
     }
 
     /**
