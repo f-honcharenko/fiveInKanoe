@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
         this.mapLoader = new TmxMapLoader();
 
         // Загрузка карты и создание коллизий
-        this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
+        this.location = new Location(this.mapLoader.load("Maps/CollisionTest.tmx"));
         this.location.initCollisions();
 
         this.debugRenderer = new Box2DDebugRenderer();
