@@ -46,12 +46,11 @@ public class Goblin extends Enemy {
         this.spawnY = y;
 
         this.idleRadius = 5;
-        this.speed = 0.6f;
-        this.damage = 20;
+        this.speed = 0.2f;
+        this.damage = 40;
 
         // this.getHe
         random = new Random();
-
         this.tempX = random.nextInt(Math.round(this.spawnX + this.idleRadius))
                 - Math.round(this.spawnX - this.idleRadius);
         this.tempY = random.nextInt(Math.round(this.spawnY + this.idleRadius))
@@ -77,6 +76,7 @@ public class Goblin extends Enemy {
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
             Vector2 zombieViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
             super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), zombieViewPoint.angleRad());
+            super.getAttackArea().setTransform(super.getBox2DBody().getPosition(), zombieViewPoint.angleRad());
             super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
                     (player.getY() - super.getY()) * this.speed));
             idleFlag = false;
@@ -85,11 +85,7 @@ public class Goblin extends Enemy {
         } else {
             // плеер вне зоны зрения врага
             idleFlag = true;
-            this.tempX = random.nextInt(Math.round(this.spawnX + this.idleRadius))
-                    - Math.round(this.spawnX - this.idleRadius);
-            this.tempY = random.nextInt(Math.round(this.spawnY + this.idleRadius))
-                    - Math.round(this.spawnY - this.idleRadius);
-            super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
+            // super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
             // написать скрипт для возврата на свой спавнпоинт
         }
     }
@@ -115,15 +111,9 @@ public class Goblin extends Enemy {
     }
 
     @Override
-    public void setBuff() {
-        // TODO Auto-generated method stub
-        super.setBuff();
-    }
-
-    @Override
     public void idle() {
         if (this.idleFlag) {
-
+            System.out.println("X: " + this.tempX + " |Y: " + this.tempY);
             if ((this.tempX == super.getX()) || (this.tempY == super.getY())) {
                 System.out.println("generate new integers");
                 this.tempX = random.nextInt(Math.round(this.spawnX + this.idleRadius))
@@ -135,7 +125,7 @@ public class Goblin extends Enemy {
                     this.idleCounter++;
                 } else {
 
-                    System.out.println("idle go");
+                    System.out.println("idem");
                     this.idleMax = random.nextInt(500);// количество тиков спокойствия перед движением.
                     this.idleCounter = 0;
                     this.idleFlag = false;
@@ -144,10 +134,12 @@ public class Goblin extends Enemy {
             } else {
                 // пускаем зомби на случайную координату в радиусе
                 Vector2 newPointPosition = new Vector2(this.tempX, this.tempY);
+                System.out.println("idle go");
 
                 super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), newPointPosition.angleRad());
 
-                super.getBox2DBody().setLinearVelocity(new Vector2(tempX, tempY));
+                // super.getBox2DBody().setLinearVelocity(new Vector2(tempX * this.speed, tempY
+                // * this.speed));
             }
 
         }

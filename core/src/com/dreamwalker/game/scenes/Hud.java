@@ -20,7 +20,8 @@ public class Hud {
 
         private Label healthPointsLabel;
         private Label manaPointsLabel;
-        private Label scoreLabel;
+        private Label posX;
+        private Label posY;
 
         /**
          * Конструктор
@@ -49,8 +50,8 @@ public class Hud {
                 this.manaPointsLabel = new Label(String.format("%.3f", 0.0),
                                 new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
-                this.scoreLabel = new Label(String.format("%.1f", 0.0),
-                                new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+                this.posX = new Label(String.format("%.1f", 0.0), new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+                this.posY = new Label(String.format("%.1f", 0.0), new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
                 // Добавляем надписи в таблицу
                 table.add(this.healthPointsLabel).expandX().padTop(30);
@@ -58,6 +59,12 @@ public class Hud {
                 table.row();
                 // table.add(this.scoreLabel).expandX().padTop(10);
                 table.add(this.manaPointsLabel).expandX().padTop(10);
+                table.row();
+                table.row();
+                table.add(this.posX).expandX().padTop(10);
+                table.row();
+                table.add(this.posY).expandX().padTop(10);
+
                 // Добавить таблцу на "сцену"
                 this.stage.addActor(table);
         }
@@ -68,8 +75,12 @@ public class Hud {
                                 + String.format("%.3f", this.player.getMaxHealth());
                 String MPtext = String.format("%.3f", this.player.getCurrentMana()) + "/"
                                 + String.format("%.3f", this.player.getMaxMana());
+                String xText = String.format("%.0f", ((double) this.player.getX()));
+                String yText = String.format("%.0f", ((double) this.player.getY()));
                 this.healthPointsLabel.setText(HPtext);
                 this.manaPointsLabel.setText(MPtext);
+                this.posX.setText(xText);
+                this.posY.setText(yText);
 
         }
 

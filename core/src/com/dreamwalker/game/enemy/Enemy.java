@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.player.Player;
 
@@ -20,6 +21,7 @@ public abstract class Enemy extends Sprite {
     private World world;
     // Физическое "тело" врага
     private Body box2DBody;
+    private Body attackArea;
 
     protected double health;
     protected double damage;
@@ -60,6 +62,27 @@ public abstract class Enemy extends Sprite {
         this.box2DBody.createFixture(fixtureDef);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
+
+        float scalar = shape.getRadius() * 3;
+        this.attackArea = this.world.createBody(bodyDef);
+        FixtureDef attackFixture = new FixtureDef();
+        PolygonShape dmgSectorShape = new PolygonShape();
+
+        Vector2[] vertices = { new Vector2(0, 0),
+                new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
+                new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3))) };
+
+        dmgSectorShape.set(vertices);
+        attackFixture.shape = dmgSectorShape;
+        attackFixture.isSensor = true;
+        this.attackArea.createFixture(attackFixture);
+        dmgSectorShape.dispose();
     }
 
     /**
@@ -113,6 +136,10 @@ public abstract class Enemy extends Sprite {
 
     public double getDamage() {
         return this.damage;
+    }
+
+    public Body getAttackArea() {
+        return this.attackArea;
     }
 
     public double getArmor() {

@@ -25,6 +25,7 @@ public class Player extends Sprite {
     private double damage;
     private double armor;
     private float speed;
+    private boolean isAlive = true;
 
     private TextureRegion playerTextReg;
 
@@ -117,6 +118,10 @@ public class Player extends Sprite {
 
     public void update(float deltaTime) {
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
+        if (this.getCurrentHealth() <= 0) {
+            this.health = 0;
+            this.isAlive = false;
+        }
         this.regeneration();
     }
 
@@ -124,11 +129,13 @@ public class Player extends Sprite {
      * метод, отвечающий регенерацию показателей персонажа
      */
     public void regeneration() {
-        if (this.mana < this.manaMax) {
-            this.mana += 0.01;
-        }
-        if (this.health < this.healthMax) {
-            this.health += 0.1;
+        if (isAlive) {
+            if (this.mana < this.manaMax) {
+                this.mana += 0.01;
+            }
+            if (this.health < this.healthMax) {
+                this.health += 0.1;
+            }
         }
     }
 
