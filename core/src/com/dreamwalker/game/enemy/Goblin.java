@@ -69,6 +69,11 @@ public class Goblin extends Enemy {
     }
 
     @Override
+    public void move() {
+
+    }
+
+    @Override
     public void meleeAttack() {
         if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.attackRadius) {
             attackFlag = true;
