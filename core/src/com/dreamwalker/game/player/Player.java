@@ -1,21 +1,36 @@
 package com.dreamwalker.game.player;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-
-
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 
-
+import com.badlogic.gdx.utils.Array;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
 public class Player extends Sprite {
+    private TextureAtlas atlas;
+
+    private enum State {STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
+                        RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
+                        MELEE_ATTACKING};
+
+    private State currentState;
+    private State prevState;
+    private State prevDirection;
+
+    private TextureRegion playerStandSouth;
+    private TextureRegion playerStandWest;
+    private TextureRegion playerStandNorth;
+    private TextureRegion playerStandEast;
+    private Animation playerRunSouth;
+    private Animation playerRunWest;
+    private Animation playerRunNorth;
+    private Animation playerRunEast;
+
+    private float stateTimer;
+
     // Физический мир, в котором находится игрок
     private World world;
     // Физическое "тело" игрока
@@ -28,7 +43,6 @@ public class Player extends Sprite {
     private double armor;
     private float speed;
 
-    private TextureRegion playerTextReg;
 
     /**
      * Конструктор
@@ -38,18 +52,37 @@ public class Player extends Sprite {
      * @param y     - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
-        // !В будущем заменить на атлас
-        super(new Texture("badlogic.jpg"));
-        this.playerTextReg = new TextureRegion(this.getTexture(),0,0,
-                                               this.getTexture().getWidth(), this.getTexture().getHeight());
-
-        this.setBounds(0, 0, 50, 50);
-        this.setRegion(this.playerTextReg);
-
-        this.speed = 80.5f;
-
-        // Текстура игрока для отрисовки
         this.world = world;
+        // Текстура игрока для отрисовки
+        this.atlas = new TextureAtlas("player.atlas");
+        this.setRegion(this.atlas.findRegion("player"));
+
+        this.playerStandEast = new TextureRegion(this.getTexture(), 0, 11 * 64, 64, 64);
+        this.playerStandSouth = new TextureRegion(this.getTexture(), 0, 10 * 64, 64, 64);
+        this.playerStandWest = new TextureRegion(this.getTexture(), 0, 9 * 64, 64, 64);
+        this.playerStandNorth = new TextureRegion(this.getTexture(), 0, 8 * 64, 64, 64);
+
+        this.currentState = State.STANDING_SOUTH;
+        this.prevState = State.STANDING_SOUTH;
+        this.prevDirection = State.STANDING_SOUTH;
+        this.stateTimer = 0;
+
+        this.playerRunNorth = initAnimation(9);
+        this.playerRunWest = initAnimation(10);
+        this.playerRunSouth = initAnimation(11);
+        this.playerRunEast = initAnimation(12);
+
+
+        this.definePlayer(x, y);
+        this.speed = 80.5f;
+        this.health = 100;
+        this.mana = 0;
+
+        this.setBounds(0, 10 * 64, 54, 54);
+        this.setRegion(this.playerStandSouth);
+    }
+
+    private void definePlayer(float x, float y){
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -66,10 +99,10 @@ public class Player extends Sprite {
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
 
-        float scalar = shape.getRadius() * 3;
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
+        float scalar = shape.getRadius() * 3;
         this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();
@@ -90,10 +123,16 @@ public class Player extends Sprite {
         attackFixture.isSensor = true;
         this.attackArea.createFixture(attackFixture);
         dmgSectorShape.dispose();
+    }
 
-        this.health = 100;
-        this.mana = 0;
-
+    private Animation initAnimation(int rowOfAtlas){
+        Array<TextureRegion> frames = new Array<>();
+        for(int i = 1; i < 8; i++){
+            frames.add(new TextureRegion(this.getTexture(), i * 64, (rowOfAtlas - 1) * 64, 64, 64));
+        }
+        Animation newAnim = new Animation(0.1f, frames);
+        frames.clear();
+        return newAnim;
     }
 
     /**
@@ -118,6 +157,77 @@ public class Player extends Sprite {
     public void update(float deltaTime){
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
         this.mana += 0.01;
+        this.setRegion(this.getFrame(deltaTime));
+    }
+
+    private TextureRegion getFrame(float deltaTime){
+        this.currentState = getState();
+        TextureRegion region;
+        switch (this.currentState){
+            case RUNNING_NORTH:
+                region = (TextureRegion)this.playerRunNorth.getKeyFrame(this.stateTimer, true);
+                break;
+            case RUNNING_EAST:
+                region = (TextureRegion)this.playerRunEast.getKeyFrame(this.stateTimer, true);
+                break;
+            case RUNNING_SOUTH:
+                region = (TextureRegion)this.playerRunSouth.getKeyFrame(this.stateTimer, true);
+                break;
+            case RUNNING_WEST:
+                region = (TextureRegion)this.playerRunWest.getKeyFrame(this.stateTimer, true);
+                break;
+            case STANDING_NORTH:
+                region = this.playerStandNorth;
+                break;
+            case STANDING_EAST:
+                region = this.playerStandEast;
+                break;
+            case STANDING_WEST:
+                region = this.playerStandWest;
+                break;
+            case STANDING_SOUTH:
+            default:
+                region = this.playerStandSouth;
+                break;
+        }
+        this.stateTimer = (this.currentState == this.prevState) ? this.stateTimer + deltaTime : 0;
+        this.prevState = this.currentState;
+        return region;
+    }
+
+    private State getState(){
+        State currentState;
+        if(this.playersBody.getLinearVelocity().x > 0){
+            currentState = State.RUNNING_EAST;
+            this.prevDirection = State.STANDING_EAST;
+        }
+        else if(this.playersBody.getLinearVelocity().x < 0){
+            currentState = State.RUNNING_WEST;
+            this.prevDirection = State.STANDING_WEST;
+        }
+        else if(this.playersBody.getLinearVelocity().y > 0){
+            currentState = State.RUNNING_NORTH;
+            this.prevDirection = State.STANDING_NORTH;
+        }
+        else if(this.playersBody.getLinearVelocity().y < 0){
+            currentState = State.RUNNING_SOUTH;
+            this.prevDirection = State.STANDING_SOUTH;
+        }
+        else{
+            if(this.prevDirection == State.STANDING_NORTH){
+                currentState = State.STANDING_NORTH;
+            }
+            else if(this.prevDirection == State.STANDING_EAST){
+                currentState = State.STANDING_EAST;
+            }
+            else if(this.prevDirection == State.STANDING_SOUTH){
+                currentState = State.STANDING_SOUTH;
+            }
+            else{
+                currentState = State.STANDING_WEST;
+            }
+        }
+        return currentState;
     }
 
     /**
