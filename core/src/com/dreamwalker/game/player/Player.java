@@ -6,11 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import com.badlogic.gdx.utils.Array;
+import com.sun.javafx.scene.traversal.Direction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 public class Player extends Sprite {
     private TextureAtlas atlas;
+    private int lastPressedKey;
+
 
     private enum State {STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
                         RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
@@ -57,20 +60,20 @@ public class Player extends Sprite {
         this.atlas = new TextureAtlas("player.atlas");
         this.setRegion(this.atlas.findRegion("player"));
 
-        this.playerStandEast = new TextureRegion(this.getTexture(), 0, 11 * 64, 64, 64);
-        this.playerStandSouth = new TextureRegion(this.getTexture(), 0, 10 * 64, 64, 64);
-        this.playerStandWest = new TextureRegion(this.getTexture(), 0, 9 * 64, 64, 64);
-        this.playerStandNorth = new TextureRegion(this.getTexture(), 0, 8 * 64, 64, 64);
+        this.playerStandEast = new TextureRegion(this.getTexture(), 0, 23 * 64, 64, 64);
+        this.playerStandSouth = new TextureRegion(this.getTexture(), 0, 21 * 64, 64, 64);
+        this.playerStandWest = new TextureRegion(this.getTexture(), 0, 19 * 64, 64, 64);
+        this.playerStandNorth = new TextureRegion(this.getTexture(), 0, 17 * 64, 64, 64);
 
         this.currentState = State.STANDING_SOUTH;
         this.prevState = State.STANDING_SOUTH;
         this.prevDirection = State.STANDING_SOUTH;
         this.stateTimer = 0;
 
-        this.playerRunNorth = initAnimation(9);
-        this.playerRunWest = initAnimation(10);
-        this.playerRunSouth = initAnimation(11);
-        this.playerRunEast = initAnimation(12);
+        this.playerRunNorth = initAnimation(18);
+        this.playerRunWest = initAnimation(20);
+        this.playerRunSouth = initAnimation(22);
+        this.playerRunEast = initAnimation(24);
 
 
         this.definePlayer(x, y);
@@ -197,30 +200,32 @@ public class Player extends Sprite {
 
     private State getState(){
         State currentState;
-        if(this.playersBody.getLinearVelocity().x > 0){
+        float velocityX = this.playersBody.getLinearVelocity().x;
+        float velocityY = this.playersBody.getLinearVelocity().y;
+        if(velocityX > 0 && this.lastPressedKey == Input.Keys.D){
             currentState = State.RUNNING_EAST;
-            this.prevDirection = State.STANDING_EAST;
+            this.prevDirection = currentState;
         }
-        else if(this.playersBody.getLinearVelocity().x < 0){
+        else if(velocityX < 0 && this.lastPressedKey == Input.Keys.A){
             currentState = State.RUNNING_WEST;
-            this.prevDirection = State.STANDING_WEST;
+            this.prevDirection = currentState;
         }
-        else if(this.playersBody.getLinearVelocity().y > 0){
+        else if(velocityY > 0 && this.lastPressedKey == Input.Keys.W){
             currentState = State.RUNNING_NORTH;
-            this.prevDirection = State.STANDING_NORTH;
+            this.prevDirection = currentState;
         }
-        else if(this.playersBody.getLinearVelocity().y < 0){
+        else if(velocityY < 0 && this.lastPressedKey == Input.Keys.S){
             currentState = State.RUNNING_SOUTH;
-            this.prevDirection = State.STANDING_SOUTH;
+            this.prevDirection = currentState;
         }
         else{
-            if(this.prevDirection == State.STANDING_NORTH){
+            if(this.prevDirection == State.RUNNING_NORTH){
                 currentState = State.STANDING_NORTH;
             }
-            else if(this.prevDirection == State.STANDING_EAST){
+            else if(this.prevDirection == State.RUNNING_EAST){
                 currentState = State.STANDING_EAST;
             }
-            else if(this.prevDirection == State.STANDING_SOUTH){
+            else if(this.prevDirection == State.RUNNING_SOUTH){
                 currentState = State.STANDING_SOUTH;
             }
             else{
@@ -239,6 +244,7 @@ public class Player extends Sprite {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
+
         // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
         this.playersBody.setTransform(this.playersBody.getPosition(), angle);
         this.attackArea.setTransform(this.playersBody.getPosition(), angle);
@@ -246,34 +252,41 @@ public class Player extends Sprite {
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(0, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, 0));
+            this.playersBody.setLinearVelocity(0, this.speed);
+            this.lastPressedKey = Input.Keys.W;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(0, -this.speed));
+            this.playersBody.setLinearVelocity(0, -this.speed);
+            this.lastPressedKey = Input.Keys.S;
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            this.playersBody.setLinearVelocity(-this.speed, 0);
+            this.lastPressedKey = Input.Keys.A;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            this.playersBody.setLinearVelocity(this.speed, 0);
+            this.lastPressedKey = Input.Keys.D;
+        }
+
+
 
         // Обработка сочитаний WD WA SD SA
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, this.speed));
+            this.playersBody.setLinearVelocity(this.speed, this.speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
+            this.playersBody.setLinearVelocity(-this.speed, this.speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
+            this.playersBody.setLinearVelocity(this.speed, -this.speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
+            this.playersBody.setLinearVelocity(-this.speed, -this.speed);
         }
+
 
         // Проверка, нажата ли одна из клавиш WASD
         boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
@@ -288,6 +301,7 @@ public class Player extends Sprite {
         if (!isMoving || conflictX || conflictY) {
             this.playersBody.setLinearVelocity(0, 0);
         }
+
     }
 
     /**
