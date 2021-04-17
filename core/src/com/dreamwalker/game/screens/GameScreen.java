@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
         this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
-        this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 60, location.getSpawnPoint().y + 60);
+        this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200, location.getSpawnPoint().y + 200);
         this.hud = new Hud(this.game.getBatch(), this.player);
 
         this.camera = new OrthographicCamera();
@@ -93,7 +93,6 @@ public class GameScreen implements Screen {
         this.hud.update(deltaTime);
 
         this.testGoblin.idle();
-        this.testGoblin.move();
         this.testGoblin.meleeAttack();
     }
 

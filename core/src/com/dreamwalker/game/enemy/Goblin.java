@@ -18,24 +18,30 @@ public class Goblin extends Enemy {
 
     private float tempX;
     private float tempY;
+    private int idleTimer = 0;
+
+    private int idleTimerMax = 300;
+    private int waitingTimerMax = 150;
+    private int agroTimerMax = 150;
 
     private float spawnX;
     private float spawnY;
-    private float idleRadius;
+    private float idleRadius = 200;
+    private int agroRadius = 100;
+    private int attackRadius = 50;
 
     private Boolean attackFlag = true;
-    private Boolean idleFlag = true;
+    // private Boolean idleFlag = true;
+    private String status = "waiting";
 
     private Random random;
 
     /**
      * Конструктор
      * 
-     * @param world  - физический мир, в котором будет находится враг
      * @param player - обьект игрока
      * @param x      - стартовая позиция врага по х
      * @param y      - стартовая позиция врага по у
-     * @param radius - радус свободной ходьбы
      */
     public Goblin(Player player, float x, float y) {
         super(player, x, y);
@@ -45,54 +51,26 @@ public class Goblin extends Enemy {
         this.spawnX = x;
         this.spawnY = y;
 
-        this.idleRadius = 5;
         this.speed = 0.2f;
         this.damage = 40;
 
         // this.getHe
         random = new Random();
-        this.tempX = random.nextInt(Math.round(this.spawnX + this.idleRadius))
-                - Math.round(this.spawnX - this.idleRadius);
-        this.tempY = random.nextInt(Math.round(this.spawnY + this.idleRadius))
-                - Math.round(this.spawnY - this.idleRadius);
-        this.idleMax = random.nextInt(500);// количество тиков спокойствия перед движением.
     }
 
     /**
      * Конструктор
      * 
-     * @param world           - физический мир, в котором будет находится враг
      * @param player          - обьект игрока
      * @param enemySpawnPoint - позиция врага
-     * @param radius          - радус свободной ходьбы
      */
     public Goblin(Player player, Vector2 enemySpawnPoint) {
         this(player, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override
-    public void move() {
-        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < 100) {
-            Vector2 playerPosition = new Vector2(player.getX(), player.getY());
-            Vector2 zombieViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
-            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), zombieViewPoint.angleRad());
-            super.getAttackArea().setTransform(super.getBox2DBody().getPosition(), zombieViewPoint.angleRad());
-            super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
-                    (player.getY() - super.getY()) * this.speed));
-            idleFlag = false;
-            // super.getBox2DBody().setLinearVelocity(player.getX(), player.getY());
-            // прикольный єффект, враг бежит от плеера
-        } else {
-            // плеер вне зоны зрения врага
-            idleFlag = true;
-            // super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
-            // написать скрипт для возврата на свой спавнпоинт
-        }
-    }
-
-    @Override
     public void meleeAttack() {
-        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < 50) {
+        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.attackRadius) {
             attackFlag = true;
         } else {
             attackFlag = false;
@@ -112,36 +90,47 @@ public class Goblin extends Enemy {
 
     @Override
     public void idle() {
-        if (this.idleFlag) {
-            System.out.println("X: " + this.tempX + " |Y: " + this.tempY);
-            if ((this.tempX == super.getX()) || (this.tempY == super.getY())) {
-                System.out.println("generate new integers");
-                this.tempX = random.nextInt(Math.round(this.spawnX + this.idleRadius))
-                        - Math.round(this.spawnX - this.idleRadius);
-                this.tempY = random.nextInt(Math.round(this.spawnY + this.idleRadius))
-                        - Math.round(this.spawnY - this.idleRadius);
+        this.idleTimer++;
+        // System.out.println(this.idleTimer);
+        // Создать временные точки для перемещения
+        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
+            this.status = "agro";
+            Vector2 playerPosition = new Vector2(player.getX(), player.getY());
+            Vector2 goblinViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
+            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
+            super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
+                    (player.getY() - super.getY()) * this.speed));
+        }
+        if ((this.status == "agro") && (this.idleTimer == this.agroTimerMax)) {
+            this.status = "waiting";
+            super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
+        }
+        if ((this.idleTimer == this.idleTimerMax) || ((this.tempX == super.getX()) && (this.tempY == super.getY()))) {
+            // Если таймер(время ожидания) истек, или непись уже на месте.
+            // Меняем статус и обнулялем таймер
+            super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
+            this.status = "waiting";
+            this.idleTimer = 0;
+            System.out.println("status: " + this.status);
 
-                if (this.idleMax > this.idleCounter) {
-                    this.idleCounter++;
-                } else {
-
-                    System.out.println("idem");
-                    this.idleMax = random.nextInt(500);// количество тиков спокойствия перед движением.
-                    this.idleCounter = 0;
-                    this.idleFlag = false;
-
-                }
-            } else {
-                // пускаем зомби на случайную координату в радиусе
-                Vector2 newPointPosition = new Vector2(this.tempX, this.tempY);
-                System.out.println("idle go");
-
-                super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), newPointPosition.angleRad());
-
-                // super.getBox2DBody().setLinearVelocity(new Vector2(tempX * this.speed, tempY
-                // * this.speed));
-            }
-
+        }
+        if ((this.status == "waiting") && (this.idleTimer == this.waitingTimerMax)) {
+            // Если непись постоял на месте н-ое еол-во секунд,
+            // запускаем его на случаную коордианту и меняем статус
+            this.tempX = rnd(Math.round(this.spawnX - this.idleRadius), Math.round(this.spawnX + this.idleRadius));
+            this.tempY = rnd(Math.round(this.spawnY - this.idleRadius), Math.round(this.spawnY + this.idleRadius));
+            this.idleTimer = 0;
+            this.status = "idleGo";
+            System.out.println("status: " + this.status);
+        }
+        if (this.status == "idleGo") {
+            // Повернуть непися
+            Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.getBox2DBody().getPosition());
+            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
+            // Задать ему скорость
+            super.getBox2DBody().setLinearVelocity(
+                    new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
+            System.out.println("status: " + this.status);
         }
     }
 
