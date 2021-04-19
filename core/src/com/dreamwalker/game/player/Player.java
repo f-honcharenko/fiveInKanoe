@@ -4,14 +4,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.Array;
+import com.dreamwalker.game.enemy.Enemy;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class Player extends Sprite {
     private TextureAtlas atlas;
     private int lastPressedKey;
-
 
     private enum State {STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
                         RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
@@ -47,6 +51,9 @@ public class Player extends Sprite {
     private float speed;
     private boolean isAlive = true;
 
+    private ArrayList<Enemy> enemiesInRange;
+    private boolean enemyInArea;
+
 
     /**
      * Конструктор
@@ -56,6 +63,9 @@ public class Player extends Sprite {
      * @param y     - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
+        this.enemiesInRange = new ArrayList<>();
+        this.enemyInArea = false;
+
         this.world = world;
         // Текстура игрока для отрисовки
         this.atlas = new TextureAtlas("player.atlas");
@@ -78,6 +88,7 @@ public class Player extends Sprite {
 
 
         this.definePlayer(x, y);
+        this.damage = 15;
         this.speed = 80.5f;
         this.health = 100;
         this.mana = 0;
@@ -85,7 +96,7 @@ public class Player extends Sprite {
         this.healthMax = 100;
         this.manaMax = 100;
 
-        this.setBounds(0, 10 * 64, 54, 54);
+        this.setBounds(0, 0, 54, 54);
         this.setRegion(this.playerStandSouth);
     }
 
@@ -105,6 +116,7 @@ public class Player extends Sprite {
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
+        this.playersBody.getFixtureList().get(0).setUserData("Player");
 
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
@@ -128,6 +140,7 @@ public class Player extends Sprite {
         attackFixture.shape = dmgSectorShape;
         attackFixture.isSensor = true;
         this.attackArea.createFixture(attackFixture);
+        this.attackArea.getFixtureList().get(0).setUserData(this);
         dmgSectorShape.dispose();
     }
 
@@ -261,7 +274,7 @@ public class Player extends Sprite {
      * 
      * @param mousePosition - координаты мыши в пространстве игрового мира
      */
-    public void move(Vector2 mousePosition) {
+    private void move(Vector2 mousePosition) {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
@@ -328,12 +341,15 @@ public class Player extends Sprite {
     /**
      * Метод, отвечающий за ближнюю атаку игрока
      */
-    public void meleeAttack() {
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-
+    private void meleeAttack() {
+        if(this.enemyInArea){
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                for(Enemy enemy : this.enemiesInRange){
+                    System.out.println(enemy.getHealth());
+                    enemy.receiveDamage(this.damage);
+                }
+            }
         }
-
     }
 
     /**
@@ -348,6 +364,10 @@ public class Player extends Sprite {
             throw new IllegalArgumentException();
         }
         this.world = world;
+    }
+
+    public void setEnemyInArea(boolean enemyInArea) {
+        this.enemyInArea = enemyInArea;
     }
 
     public World getWorld() {
@@ -388,6 +408,10 @@ public class Player extends Sprite {
 
     public Body getPlayersBody() {
         return this.playersBody;
+    }
+
+    public ArrayList<Enemy> getEnemiesInRange() {
+        return this.enemiesInRange;
     }
 
     /**

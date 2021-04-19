@@ -9,8 +9,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.listeners.AttackListener;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
@@ -58,6 +60,8 @@ public class GameScreen implements Screen {
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
         this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200, location.getSpawnPoint().y + 200);
+        this.location.getWorld().setContactListener(new AttackListener());
+
         this.hud = new Hud(this.game.getBatch(), this.player);
 
         this.camera = new OrthographicCamera();
@@ -94,6 +98,8 @@ public class GameScreen implements Screen {
 
         this.testGoblin.idle();
         this.testGoblin.meleeAttack();
+
+
     }
 
     @Override
@@ -117,10 +123,11 @@ public class GameScreen implements Screen {
         this.ortMapRender.render();
 
         // рендер игрока
-        game.getBatch().setProjectionMatrix(this.camera.combined);
-        game.getBatch().begin();
-        player.draw(this.game.getBatch());
-        game.getBatch().end();
+        this.game.getBatch().setProjectionMatrix(this.camera.combined);
+        this.game.getBatch().begin();
+        this.player.draw(this.game.getBatch());
+        this.testGoblin.draw(this.game.getBatch());
+        this.game.getBatch().end();
 
         // Рендер верхнего слоя
         // MapLayer foregroundLayer = location.getMap().getLayers().size();

@@ -30,19 +30,18 @@ public abstract class Enemy extends Sprite {
 
     private Player player;
 
-    private Texture texture;
 
     /**
      * Конструктор
-     * 
-     * @param world - физический мир, в котором будет находится враг
+     *
+     *
      * @param x     - стартовая позиция врага по х
      * @param y     - стартовая позиция врага по у
      */
     public Enemy(Player player, float x, float y) {
         // Текстура врага для отрисовки
         // !В будущем заменить на атлас
-        this.texture = new Texture("badlogic.jpg");
+        super(new Texture("badlogic.jpg"));
         this.player = player;
         this.world = player.getWorld();
         // Задача физических свойств для "тела" врага
@@ -60,29 +59,21 @@ public abstract class Enemy extends Sprite {
 
         fixtureDef.shape = shape;
         this.box2DBody.createFixture(fixtureDef);
+        this.box2DBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
+
+        this.setBounds(0, 0, 30, 30);
     }
 
     /**
      * Конструктор
      * 
-     * @param world           - физический мир, в котором будет находится враг
+     *
      * @param enemySpawnPoint - стартовая позиция игрока
      */
     public Enemy(Player player, Vector2 enemySpawnPoint) {
         this(player, enemySpawnPoint.x, enemySpawnPoint.y);
-    }
-
-    /**
-     * Mетод, отвечающий за отрисовку
-     * 
-     * @param coords      - глоабальные координаты
-     * @param spriteBatch - кисть мира
-     */
-    public void draw(Vector3 coords, SpriteBatch spriteBatch) {
-        // System.out.println("Enemy posotion:" + this.getX() + "|" + this.getY());
-        spriteBatch.draw(this.texture, coords.x - 15f, coords.y - 15f, 30f, 30f);
     }
 
     abstract public void move();
@@ -96,6 +87,10 @@ public abstract class Enemy extends Sprite {
      */
     public void setBuff() {
         throw new NotImplementedException();
+    }
+
+    public void receiveDamage(double damage){
+        this.health -= damage;
     }
 
     public void setWorld(World world) {

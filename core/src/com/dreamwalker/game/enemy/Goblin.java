@@ -53,6 +53,7 @@ public class Goblin extends Enemy {
 
         this.speed = 0.2f;
         this.damage = 40;
+        this.health = 100;
 
         // this.getHe
         random = new Random();
@@ -137,6 +138,7 @@ public class Goblin extends Enemy {
                     new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
             System.out.println("status: " + this.status);
         }
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
     }
 
     public static int rnd(int min, int max) {
