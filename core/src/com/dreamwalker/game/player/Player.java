@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.sun.javafx.scene.traversal.Direction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
@@ -266,14 +265,15 @@ public class Player extends Sprite {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
+
         // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
         this.playersBody.setTransform(this.playersBody.getPosition(), angle);
         this.attackArea.setTransform(this.playersBody.getPosition(), angle);
 
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(0, this.speed));
+            //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
+            this.playersBody.setLinearVelocity(0, this.speed);
             this.lastPressedKey = Input.Keys.W;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
@@ -291,6 +291,8 @@ public class Player extends Sprite {
             this.playersBody.setLinearVelocity(this.speed, 0);
             this.lastPressedKey = Input.Keys.D;
         }
+
+
 
         // Обработка сочитаний WD WA SD SA
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
