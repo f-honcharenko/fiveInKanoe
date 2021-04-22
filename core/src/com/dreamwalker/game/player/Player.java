@@ -4,35 +4,38 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.utils.Array;
 import com.dreamwalker.game.enemy.Enemy;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 
 public class Player extends Sprite {
     private TextureAtlas atlas;
-    private int lastPressedKey;
 
-    private enum State {STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
-                        RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
-                        MELEE_ATTACKING};
+    private enum State {
+        STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
+        RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
+        MELEE_ATTACKING_NORTH, MELEE_ATTACKING_EAST, MELEE_ATTACKING_SOUTH,
+        MELEE_ATTACKING_WEST
+    };
 
     private State currentState;
     private State prevState;
-    private State prevDirection;
 
-    private TextureRegion playerStandSouth;
-    private TextureRegion playerStandWest;
-    private TextureRegion playerStandNorth;
-    private TextureRegion playerStandEast;
-    private Animation playerRunSouth;
-    private Animation playerRunWest;
-    private Animation playerRunNorth;
-    private Animation playerRunEast;
+    private final TextureRegion playerStandSouth;
+    private final TextureRegion playerStandWest;
+    private final TextureRegion playerStandNorth;
+    private final TextureRegion playerStandEast;
+    private final Animation playerRunSouth;
+    private final Animation playerRunWest;
+    private final Animation playerRunNorth;
+    private final Animation playerRunEast;
+
+    private final Animation playerMeleeSouth;
+    private final Animation playerMeleeWest;
+    private final Animation playerMeleeNorth;
+    private final Animation playerMeleeEast;
 
     private float stateTimer;
 
@@ -49,6 +52,10 @@ public class Player extends Sprite {
     private double damage;
     private double armor;
     private float speed;
+    private float attackSpeedCoefficient;
+
+    private double viewAngle;
+
     private boolean isAlive = true;
 
     private ArrayList<Enemy> enemiesInRange;
@@ -78,13 +85,17 @@ public class Player extends Sprite {
 
         this.currentState = State.STANDING_SOUTH;
         this.prevState = State.STANDING_SOUTH;
-        this.prevDirection = State.STANDING_SOUTH;
         this.stateTimer = 0;
 
-        this.playerRunNorth = initAnimation(18);
-        this.playerRunWest = initAnimation(20);
-        this.playerRunSouth = initAnimation(22);
-        this.playerRunEast = initAnimation(24);
+        this.playerRunNorth = initAnimation(18, 8);
+        this.playerRunWest = initAnimation(20, 8);
+        this.playerRunSouth = initAnimation(22, 8);
+        this.playerRunEast = initAnimation(24, 8);
+
+        this.playerMeleeNorth = initAnimation(26, 6);
+        this.playerMeleeWest = initAnimation(28, 6);
+        this.playerMeleeSouth = initAnimation(30, 6);
+        this.playerMeleeEast = initAnimation(32, 6);
 
 
         this.definePlayer(x, y);
@@ -95,6 +106,7 @@ public class Player extends Sprite {
         this.armor = 4;
         this.healthMax = 100;
         this.manaMax = 100;
+        this.attackSpeedCoefficient = 2.5f;
 
         this.setBounds(0, 0, 54, 54);
         this.setRegion(this.playerStandSouth);
@@ -129,8 +141,7 @@ public class Player extends Sprite {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -144,9 +155,9 @@ public class Player extends Sprite {
         dmgSectorShape.dispose();
     }
 
-    private Animation initAnimation(int rowOfAtlas){
+    private Animation initAnimation(int rowOfAtlas, int spritesCount){
         Array<TextureRegion> frames = new Array<>();
-        for(int i = 1; i < 8; i++){
+        for(int i = 1; i < spritesCount; i++){
             frames.add(new TextureRegion(this.getTexture(), i * 64, (rowOfAtlas - 1) * 64, 64, 64));
         }
         Animation newAnim = new Animation(0.1f, frames);
@@ -197,6 +208,20 @@ public class Player extends Sprite {
         this.mana += 0.01;
     }
 
+    /**
+     * Метод, отвечающий за ближнюю атаку игрока
+     */
+    private void meleeAttack() {
+        if(this.enemyInArea){
+            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+                for(Enemy enemy : this.enemiesInRange){
+                    System.out.println(enemy.getHealth());
+                    enemy.receiveDamage(this.damage);
+                }
+            }
+        }
+    }
+
     private TextureRegion getFrame(float deltaTime){
         this.currentState = getState();
         TextureRegion region;
@@ -212,6 +237,30 @@ public class Player extends Sprite {
                 break;
             case RUNNING_WEST:
                 region = (TextureRegion)this.playerRunWest.getKeyFrame(this.stateTimer, true);
+                break;
+            case MELEE_ATTACKING_NORTH:
+                region = (TextureRegion)this.playerMeleeNorth.getKeyFrame(
+                        this.attackSpeedCoefficient * this.stateTimer,
+                        false
+                );
+                break;
+            case MELEE_ATTACKING_EAST:
+                region = (TextureRegion)this.playerMeleeEast.getKeyFrame(
+                        this.attackSpeedCoefficient * this.stateTimer,
+                        false
+                );
+                break;
+            case MELEE_ATTACKING_SOUTH:
+                region = (TextureRegion)this.playerMeleeSouth.getKeyFrame(
+                        this.attackSpeedCoefficient * this.stateTimer,
+                        false
+                );
+                break;
+            case MELEE_ATTACKING_WEST:
+                region = (TextureRegion)this.playerMeleeWest.getKeyFrame(
+                        this.attackSpeedCoefficient * this.stateTimer,
+                        false
+                );
                 break;
             case STANDING_NORTH:
                 region = this.playerStandNorth;
@@ -233,37 +282,77 @@ public class Player extends Sprite {
     }
 
     private State getState(){
-        State currentState;
+        State currentState = null;
         float velocityX = this.playersBody.getLinearVelocity().x;
         float velocityY = this.playersBody.getLinearVelocity().y;
-        if(velocityX > 0 && this.lastPressedKey == Input.Keys.D){
-            currentState = State.RUNNING_EAST;
-            this.prevDirection = currentState;
-        }
-        else if(velocityX < 0 && this.lastPressedKey == Input.Keys.A){
-            currentState = State.RUNNING_WEST;
-            this.prevDirection = currentState;
-        }
-        else if(velocityY > 0 && this.lastPressedKey == Input.Keys.W){
-            currentState = State.RUNNING_NORTH;
-            this.prevDirection = currentState;
-        }
-        else if(velocityY < 0 && this.lastPressedKey == Input.Keys.S){
-            currentState = State.RUNNING_SOUTH;
-            this.prevDirection = currentState;
+        boolean isMoving = velocityX != 0 || velocityY != 0;
+        if(isMoving){
+            if((this.viewAngle >= 315 && this.viewAngle <= 360) || (this.viewAngle >= 0 && this.viewAngle <= 45)){
+                currentState = State.RUNNING_EAST;
+                if(velocityX > 0){
+                    this.playerRunEast.setPlayMode(Animation.PlayMode.NORMAL);
+                }
+                else{
+                    this.playerRunEast.setPlayMode(Animation.PlayMode.REVERSED);
+                }
+
+            }
+            else if(this.viewAngle > 135 && this.viewAngle < 225){
+                currentState = State.RUNNING_WEST;
+                if(velocityX > 0){
+                    this.playerRunWest.setPlayMode(Animation.PlayMode.REVERSED);
+                }
+                else{
+                    this.playerRunWest.setPlayMode(Animation.PlayMode.NORMAL);
+                }
+            }
+            else if(this.viewAngle > 45 && this.viewAngle < 135){
+                currentState = State.RUNNING_NORTH;
+                if(velocityY > 0){
+                    this.playerRunNorth.setPlayMode(Animation.PlayMode.NORMAL);
+                }
+                else{
+                    this.playerRunNorth.setPlayMode(Animation.PlayMode.REVERSED);
+                }
+            }
+            else if(this.viewAngle >= 225 && this.viewAngle <= 315){
+                currentState = State.RUNNING_SOUTH;
+                if(velocityX > 0){
+                    this.playerRunSouth.setPlayMode(Animation.PlayMode.REVERSED);
+                }
+                else{
+                    this.playerRunSouth.setPlayMode(Animation.PlayMode.NORMAL);
+                }
+            }
         }
         else{
-            if(this.prevDirection == State.RUNNING_NORTH){
-                currentState = State.STANDING_NORTH;
-            }
-            else if(this.prevDirection == State.RUNNING_EAST){
-                currentState = State.STANDING_EAST;
-            }
-            else if(this.prevDirection == State.RUNNING_SOUTH){
-                currentState = State.STANDING_SOUTH;
+            if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+                if(this.viewAngle > 45 && this.viewAngle < 135){
+                    currentState = State.MELEE_ATTACKING_NORTH;
+                }
+                else if(this.viewAngle > 135 && this.viewAngle < 225){
+                    currentState = State.MELEE_ATTACKING_WEST;
+                }
+                else if(this.viewAngle >= 225 && this.viewAngle <= 315){
+                    currentState = State.MELEE_ATTACKING_SOUTH;
+                }
+                else{
+                    currentState = State.MELEE_ATTACKING_EAST;
+                }
             }
             else{
-                currentState = State.STANDING_WEST;
+                if(this.viewAngle > 45 && this.viewAngle < 135){
+                    currentState = State.STANDING_NORTH;
+                }
+                else if(this.viewAngle > 135 && this.viewAngle < 225){
+                    currentState = State.STANDING_WEST;
+                }
+                else if(this.viewAngle >= 225 && this.viewAngle <= 315){
+                    currentState = State.STANDING_SOUTH;
+                }
+                else{
+                    currentState = State.STANDING_EAST;
+                }
             }
         }
         return currentState;
@@ -278,7 +367,10 @@ public class Player extends Sprite {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
-
+        this.viewAngle = angle * 180 / Math.PI;
+        if(this.viewAngle < 0){
+            this.viewAngle = 180 + Math.abs(this.viewAngle + 180);
+        }
         // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
         this.playersBody.setTransform(this.playersBody.getPosition(), angle);
         this.attackArea.setTransform(this.playersBody.getPosition(), angle);
@@ -287,25 +379,19 @@ public class Player extends Sprite {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(0, this.speed);
-            this.lastPressedKey = Input.Keys.W;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(0, -this.speed);
-            this.lastPressedKey = Input.Keys.S;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(-this.speed, 0);
-            this.lastPressedKey = Input.Keys.A;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
             this.playersBody.setLinearVelocity(this.speed, 0);
-            this.lastPressedKey = Input.Keys.D;
         }
-
-
 
         // Обработка сочитаний WD WA SD SA
         if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -338,19 +424,7 @@ public class Player extends Sprite {
 
     }
 
-    /**
-     * Метод, отвечающий за ближнюю атаку игрока
-     */
-    private void meleeAttack() {
-        if(this.enemyInArea){
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-                for(Enemy enemy : this.enemiesInRange){
-                    System.out.println(enemy.getHealth());
-                    enemy.receiveDamage(this.damage);
-                }
-            }
-        }
-    }
+
 
     /**
      * Метод, отвечающий за наложение эффектов на игрока
