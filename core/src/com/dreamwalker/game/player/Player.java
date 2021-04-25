@@ -60,7 +60,7 @@ public class Player extends Sprite {
 
     private ArrayList<Enemy> enemiesInRange;
     private boolean enemyInArea;
-
+    private boolean isAttacking;
 
     /**
      * Конструктор
@@ -72,6 +72,7 @@ public class Player extends Sprite {
     public Player(World world, float x, float y) {
         this.enemiesInRange = new ArrayList<>();
         this.enemyInArea = false;
+        this.isAttacking = false;
 
         this.world = world;
         // Текстура игрока для отрисовки
@@ -106,9 +107,9 @@ public class Player extends Sprite {
         this.armor = 4;
         this.healthMax = 100;
         this.manaMax = 100;
-        this.attackSpeedCoefficient = 2.5f;
+        this.attackSpeedCoefficient = 1.5f;
 
-        this.setBounds(0, 0, 54, 54);
+        this.setBounds(0, 0, 140, 140); //54
         this.setRegion(this.playerStandSouth);
     }
 
@@ -179,8 +180,8 @@ public class Player extends Sprite {
      * Общий метод, отвечающий за упрваление персонажем
      */
     public void playerControl(Vector2 mousePosition) {
-        this.move(mousePosition);
         this.meleeAttack();
+        this.move(mousePosition);
     }
 
     public void update(float deltaTime) {
@@ -212,8 +213,9 @@ public class Player extends Sprite {
      * Метод, отвечающий за ближнюю атаку игрока
      */
     private void meleeAttack() {
-        if(this.enemyInArea){
-            if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            this.isAttacking = true;
+            if(this.enemyInArea){
                 for(Enemy enemy : this.enemiesInRange){
                     System.out.println(enemy.getHealth());
                     enemy.receiveDamage(this.damage);
@@ -227,40 +229,52 @@ public class Player extends Sprite {
         TextureRegion region;
         switch (this.currentState){
             case RUNNING_NORTH:
-                region = (TextureRegion)this.playerRunNorth.getKeyFrame(this.stateTimer, true);
+                region = (TextureRegion)this.playerRunNorth.getKeyFrame(this.speed + this.stateTimer, true);
                 break;
             case RUNNING_EAST:
-                region = (TextureRegion)this.playerRunEast.getKeyFrame(this.stateTimer, true);
+                region = (TextureRegion)this.playerRunEast.getKeyFrame(this.speed + this.stateTimer, true);
                 break;
             case RUNNING_SOUTH:
-                region = (TextureRegion)this.playerRunSouth.getKeyFrame(this.stateTimer, true);
+                region = (TextureRegion)this.playerRunSouth.getKeyFrame(this.speed + this.stateTimer, true);
                 break;
             case RUNNING_WEST:
-                region = (TextureRegion)this.playerRunWest.getKeyFrame(this.stateTimer, true);
+                region = (TextureRegion)this.playerRunWest.getKeyFrame(this.speed + this.stateTimer, true);
                 break;
             case MELEE_ATTACKING_NORTH:
                 region = (TextureRegion)this.playerMeleeNorth.getKeyFrame(
                         this.attackSpeedCoefficient * this.stateTimer,
-                        false
+                        true
                 );
+                if(this.playerMeleeNorth.isAnimationFinished(this.attackSpeedCoefficient * this.stateTimer)){
+                    this.isAttacking = false;
+                }
                 break;
             case MELEE_ATTACKING_EAST:
                 region = (TextureRegion)this.playerMeleeEast.getKeyFrame(
                         this.attackSpeedCoefficient * this.stateTimer,
-                        false
+                        true
                 );
+                if(this.playerMeleeEast.isAnimationFinished(this.attackSpeedCoefficient * this.stateTimer)){
+                    this.isAttacking = false;
+                }
                 break;
             case MELEE_ATTACKING_SOUTH:
                 region = (TextureRegion)this.playerMeleeSouth.getKeyFrame(
                         this.attackSpeedCoefficient * this.stateTimer,
-                        false
+                        true
                 );
+                if(this.playerMeleeSouth.isAnimationFinished(this.attackSpeedCoefficient * this.stateTimer)){
+                    this.isAttacking = false;
+                }
                 break;
             case MELEE_ATTACKING_WEST:
                 region = (TextureRegion)this.playerMeleeWest.getKeyFrame(
                         this.attackSpeedCoefficient * this.stateTimer,
-                        false
+                        true
                 );
+                if(this.playerMeleeWest.isAnimationFinished(this.attackSpeedCoefficient * this.stateTimer)){
+                    this.isAttacking = false;
+                }
                 break;
             case STANDING_NORTH:
                 region = this.playerStandNorth;
@@ -286,7 +300,7 @@ public class Player extends Sprite {
         float velocityX = this.playersBody.getLinearVelocity().x;
         float velocityY = this.playersBody.getLinearVelocity().y;
         boolean isMoving = velocityX != 0 || velocityY != 0;
-        if(isMoving){
+        if(isMoving && !this.isAttacking){
             if((this.viewAngle >= 315 && this.viewAngle <= 360) || (this.viewAngle >= 0 && this.viewAngle <= 45)){
                 currentState = State.RUNNING_EAST;
                 if(velocityX > 0){
@@ -326,18 +340,20 @@ public class Player extends Sprite {
             }
         }
         else{
-            if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+            if(this.isAttacking){
                 if(this.viewAngle > 45 && this.viewAngle < 135){
                     currentState = State.MELEE_ATTACKING_NORTH;
                 }
                 else if(this.viewAngle > 135 && this.viewAngle < 225){
                     currentState = State.MELEE_ATTACKING_WEST;
+                    this.playerMeleeWest.setPlayMode(Animation.PlayMode.REVERSED);
                 }
                 else if(this.viewAngle >= 225 && this.viewAngle <= 315){
                     currentState = State.MELEE_ATTACKING_SOUTH;
                 }
                 else{
                     currentState = State.MELEE_ATTACKING_EAST;
+                    this.playerMeleeEast.setPlayMode(Animation.PlayMode.REVERSED);
                 }
             }
             else{
@@ -418,13 +434,12 @@ public class Player extends Sprite {
 
         // Остановить персонажа, если ни одна из клавиш не нажата, или нажаты
         // конфликтующие сочетания
-        if (!isMoving || conflictX || conflictY) {
+        if (!isMoving || conflictX || conflictY || this.isAttacking) {
             this.playersBody.setLinearVelocity(0, 0);
         }
+        System.out.println(this.isAttacking);
 
     }
-
-
 
     /**
      * Метод, отвечающий за наложение эффектов на игрока

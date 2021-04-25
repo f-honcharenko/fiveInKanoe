@@ -10,6 +10,25 @@ import com.dreamwalker.game.player.Player;
 public class AttackListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
+        this.enterPlayersMelee(contact);
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        this.quitPlayersMelee(contact);
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+
+    }
+
+    private void enterPlayersMelee(Contact contact){
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
@@ -28,8 +47,7 @@ public class AttackListener implements ContactListener {
         }
     }
 
-    @Override
-    public void endContact(Contact contact) {
+    private void quitPlayersMelee(Contact contact){
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
@@ -38,7 +56,9 @@ public class AttackListener implements ContactListener {
             if(variant1){
                 Player player = (Player) fixtureA.getUserData();
                 player.getEnemiesInRange().remove((Enemy) fixtureB.getUserData());
-                player.setEnemyInArea(true);
+                if(player.getEnemiesInRange().size() == 0){
+                    player.setEnemyInArea(false);
+                }
             }
             /*if(variant2){
                 Player player = (Player) fixtureB.getUserData();
@@ -46,15 +66,5 @@ public class AttackListener implements ContactListener {
                 player.setEnemyInArea(true);
             }*/
         }
-    }
-
-    @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
-
-    }
-
-    @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-
     }
 }
