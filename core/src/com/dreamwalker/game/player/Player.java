@@ -131,7 +131,7 @@ public class Player extends Sprite {
     public void regeneration() {
         if (isAlive) {
             if (this.mana < this.manaMax) {
-                this.mana += 0.01;
+                this.mana += 1.00;
             }
             if (this.health < this.healthMax) {
                 this.health += 0.1;
