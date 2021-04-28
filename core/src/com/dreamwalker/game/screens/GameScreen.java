@@ -44,7 +44,7 @@ public class GameScreen implements Screen {
 
     /**
      * Конструктор экрана игры
-     * 
+     *
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
@@ -84,13 +84,14 @@ public class GameScreen implements Screen {
     /**
      * Метод, отвечающий за обновление позиций камеры, установки для "прогрузчика"
      * гранц рендера, обновление вьюпорта
-     * 
+     *
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
-        this.player.update(deltaTime);
+        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -112,8 +113,7 @@ public class GameScreen implements Screen {
 
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         // Координаты мыши в пространстве игрового мира
-        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.playerControl(new Vector2(mousePosition.x, mousePosition.y));
+
 
         // Камера должна следовать за игроком
         this.camera.position.x = this.player.getX();

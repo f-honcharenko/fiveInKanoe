@@ -16,6 +16,7 @@ import com.dreamwalker.game.player.Player;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
 public abstract class Enemy extends Sprite {
     // Физический мир, в котором находится враг
     private World world;
@@ -64,6 +65,7 @@ public abstract class Enemy extends Sprite {
         shape.dispose();
 
         this.setBounds(0, 0, 30, 30);
+
     }
 
     /**
@@ -91,6 +93,7 @@ public abstract class Enemy extends Sprite {
 
     public void receiveDamage(double damage){
         this.health -= damage;
+
     }
 
     public void setWorld(World world) {

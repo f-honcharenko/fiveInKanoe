@@ -11,11 +11,13 @@ public class AttackListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         this.enterPlayersMelee(contact);
+        this.enterEnemiesMelee(contact);
     }
 
     @Override
     public void endContact(Contact contact) {
         this.quitPlayersMelee(contact);
+        this.quitEnemiesMelee(contact);
     }
 
     @Override
@@ -46,7 +48,6 @@ public class AttackListener implements ContactListener {
             }*/
         }
     }
-
     private void quitPlayersMelee(Contact contact){
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
@@ -66,5 +67,12 @@ public class AttackListener implements ContactListener {
                 player.setEnemyInArea(true);
             }*/
         }
+    }
+
+    private void enterEnemiesMelee(Contact contact){
+
+    }
+    private  void quitEnemiesMelee(Contact contact){
+
     }
 }
