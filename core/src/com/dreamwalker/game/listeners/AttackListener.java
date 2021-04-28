@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.enemy.Enemy;
 import com.dreamwalker.game.player.Player;
+import com.dreamwalker.game.skills.Sword;
 
 
 public class AttackListener implements ContactListener {
@@ -12,6 +13,7 @@ public class AttackListener implements ContactListener {
     public void beginContact(Contact contact) {
         this.enterPlayersMelee(contact);
         this.enterEnemiesMelee(contact);
+        this.enterFlyingSword(contact);
     }
 
     @Override
@@ -35,17 +37,17 @@ public class AttackListener implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
         if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
-            //boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if(variant1){
-                Player player = (Player) fixtureA.getUserData();
-                player.getEnemiesInRange().add((Enemy) fixtureB.getUserData());
+                Player player = (Player)fixtureA.getUserData();
+                player.getEnemiesInRange().add((Enemy)fixtureB.getUserData());
                 player.setEnemyInArea(true);
             }
-            /*if(variant2){
+            boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
+            if(variant2){
                 Player player = (Player) fixtureB.getUserData();
                 player.getEnemiesInRange().add((Enemy) fixtureA.getUserData());
                 player.setEnemyInArea(true);
-            }*/
+            }
         }
     }
     private void quitPlayersMelee(Contact contact){
@@ -53,19 +55,19 @@ public class AttackListener implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
         if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
-            //boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if(variant1){
-                Player player = (Player) fixtureA.getUserData();
-                player.getEnemiesInRange().remove((Enemy) fixtureB.getUserData());
+                Player player = (Player)fixtureA.getUserData();
+                player.getEnemiesInRange().remove((Enemy)fixtureB.getUserData());
                 if(player.getEnemiesInRange().size() == 0){
                     player.setEnemyInArea(false);
                 }
             }
-            /*if(variant2){
+            boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
+            if(variant2){
                 Player player = (Player) fixtureB.getUserData();
                 player.getEnemiesInRange().remove((Enemy) fixtureA.getUserData());
                 player.setEnemyInArea(true);
-            }*/
+            }
         }
     }
 
@@ -74,5 +76,26 @@ public class AttackListener implements ContactListener {
     }
     private  void quitEnemiesMelee(Contact contact){
 
+    }
+
+    private void enterFlyingSword(Contact contact){
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
+            boolean variant1 = fixtureA.getUserData() instanceof Sword && fixtureB.getUserData() instanceof Enemy;
+            if(variant1){
+                Sword sword = (Sword)fixtureA.getUserData();
+                Enemy enemy = (Enemy)fixtureB.getUserData();
+                enemy.receiveDamage(sword.getDamage());
+                System.out.println(enemy.getHealth());
+            }
+            boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Sword;
+            if(variant2){
+                Enemy enemy = (Enemy)fixtureA.getUserData();
+                Sword sword = (Sword)fixtureB.getUserData();
+                enemy.receiveDamage(sword.getDamage());
+                System.out.println(enemy.getHealth());
+            }
+        }
     }
 }

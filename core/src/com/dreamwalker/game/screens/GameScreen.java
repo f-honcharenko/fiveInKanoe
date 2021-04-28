@@ -17,6 +17,10 @@ import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.enemy.Goblin;
+import com.dreamwalker.game.skills.FlyingSword;
+import com.dreamwalker.game.skills.Sword;
+
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
 
@@ -127,6 +131,10 @@ public class GameScreen implements Screen {
         this.game.getBatch().begin();
         this.player.draw(this.game.getBatch());
         this.testGoblin.draw(this.game.getBatch());
+        ArrayList<Sword> skillSwords = ((FlyingSword)this.player.getSkillPanel().get(0)).getSwordsOnScreen();
+        for(int i = 0; i < skillSwords.size(); i++){
+            skillSwords.get(i).draw(this.game.getBatch());
+        }
         this.game.getBatch().end();
 
         // Рендер верхнего слоя
@@ -170,7 +178,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         this.location.dispose();
-        // this.player.dispose();
+        this.player.dispose();
         this.ortMapRender.dispose();
         this.debugRenderer.dispose();
     }

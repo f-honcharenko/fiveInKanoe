@@ -2,6 +2,7 @@ package com.dreamwalker.game.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.dreamwalker.game.enemy.Enemy;
@@ -19,6 +20,7 @@ public class Control {
     void handle(Vector2 mousePosition){
         this.meleeAttack();
         this.move(mousePosition);
+        this.useSkills(mousePosition);
     }
 
     /**
@@ -49,7 +51,7 @@ public class Control {
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
-        this.player.setViewAngle(angle * 180 / Math.PI);
+        this.player.setViewAngle(Math.toDegrees(angle));
         if(this.player.getViewAngle() < 0){
             this.player.setViewAngle(180 + Math.abs(this.player.getViewAngle() + 180));
         }
@@ -103,6 +105,10 @@ public class Control {
         if (!isMoving || conflictX || conflictY || player.isAttacking()) {
             playersBody.setLinearVelocity(0, 0);
         }
+    }
 
+    private void useSkills(Vector2 mousePosition){
+        this.player.getSkillPanel().get(0).setMousePosition(mousePosition);
+        this.player.getSkillPanel().get(0).usage();
     }
 }

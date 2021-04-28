@@ -1,14 +1,22 @@
 package com.dreamwalker.game.player;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.skills.ActiveSkill;
+import com.dreamwalker.game.skills.FlyingSword;
+import com.dreamwalker.game.skills.PassiveSkill;
+import com.dreamwalker.game.skills.Skill;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
-public class Player extends Sprite {
+public class Player extends Sprite implements Disposable {
     // Физический мир, в котором находится игрок
     private World world;
     // Физическое "тело" игрока
@@ -37,6 +45,8 @@ public class Player extends Sprite {
     private boolean isAttacking;
     private boolean isDamageDealt;
 
+    private ArrayList<PassiveSkill> passiveSkills;
+    private ArrayList<ActiveSkill> skillPanel;
 
     /**
      * Конструктор
@@ -46,17 +56,19 @@ public class Player extends Sprite {
      * @param y     - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
+        this.world = world;
         this.playersAnimations = new Animations(this, "player.atlas");
         this.playerControl = new Control(this);
+        this.definePlayer(x, y);
+
+        this.passiveSkills = new ArrayList<>();
+        this.skillPanel = new ArrayList<>();
+        this.skillPanel.add(new FlyingSword(Input.Keys.E, this, this.world));
 
         this.enemiesInRange = new ArrayList<>();
         this.enemyInArea = false;
         this.isAttacking = false;
         this.isDamageDealt = false;
-
-        this.world = world;
-
-        this.definePlayer(x, y);
 
         this.isAlive = true;
         this.damage = 15;
@@ -87,7 +99,6 @@ public class Player extends Sprite {
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
-        this.playersBody.getFixtureList().get(0).setUserData("Player");
 
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
@@ -240,7 +251,15 @@ public class Player extends Sprite {
         this.enemyInArea = enemyInArea;
     }
 
-    Body getPlayersBody() {
+    public boolean isDamageDealt() {
+        return this.isDamageDealt;
+    }
+
+    public void setDamageDealt(boolean damageDealt) {
+        this.isDamageDealt = damageDealt;
+    }
+
+    public Body getPlayersBody() {
         return this.playersBody;
     }
 
@@ -272,12 +291,8 @@ public class Player extends Sprite {
         return this.enemyInArea;
     }
 
-    public boolean isDamageDealt() {
-        return this.isDamageDealt;
-    }
-
-    public void setDamageDealt(boolean damageDealt) {
-        this.isDamageDealt = damageDealt;
+    public ArrayList<ActiveSkill> getSkillPanel() {
+        return this.skillPanel;
     }
 
     /**
@@ -296,4 +311,8 @@ public class Player extends Sprite {
         return this.playersBody.getPosition().y;
     }
 
+    @Override
+    public void dispose() {
+        this.getTexture().dispose();
+    }
 }
