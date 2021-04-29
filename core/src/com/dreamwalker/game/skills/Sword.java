@@ -24,7 +24,7 @@ public class Sword extends Sprite implements Disposable {
         this.damage = damage;
         this.lifeTime = lifeTime;
         this.direction = this.player.getPlayersBody().getPosition();
-        this.speed = 3320.5f;
+        this.speed = 100.5f;
 
         BodyDef swordBodyDef = new BodyDef();
         swordBodyDef.angle = this.player.getPlayersBody().getAngle();
@@ -42,7 +42,7 @@ public class Sword extends Sprite implements Disposable {
         shape.dispose();
 
 
-        this.setBounds(0, 0, 50, 50);
+        this.setBounds(0, 0, 75, 75);
     }
 
     public void move(){

@@ -43,8 +43,8 @@ public class FlyingSword extends ActiveSkill{
         for(int i = 0; i < this.swordsOnScreen.size(); i++){
             Sword currentSword = this.swordsOnScreen.get(i);
             if(currentSword.getLifeTime() <= 0){
-                //sword.dispose();
                 this.swordsOnScreen.remove(i);
+                currentSword.dispose();
             }
             else {
                 currentSword.move();
