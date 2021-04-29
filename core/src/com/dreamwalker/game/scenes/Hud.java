@@ -2,15 +2,21 @@ package com.dreamwalker.game.scenes;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dreamwalker.game.player.Player;
+
+import org.w3c.dom.css.Rect;
 
 public class Hud {
         // 2д сцена, на которой распологаются элементы интерфейса
@@ -22,6 +28,12 @@ public class Hud {
         private Label manaPointsLabel;
         private Label posX;
         private Label posY;
+
+        private Image BarHP;
+        private Image BarMP;
+
+        private Table table;
+        private Pixmap pixmap;
 
         /**
          * Конструктор
@@ -37,11 +49,17 @@ public class Hud {
                                 new OrthographicCamera());
                 this.stage = new Stage(this.viewport, sb);
 
-                Table table = new Table();
+                this.pixmap = new Pixmap(100, 10, Pixmap.Format.RGBA8888);
+                this.pixmap.setColor(Color.BLUE);
+                this.pixmap.fillRectangle(0, 0, 1, 10);
+                this.BarMP = new Image(new Texture(this.pixmap));
+                // this.pixmap.dispose();
+
+                this.table = new Table();
                 // Установить таблицу сверху
-                table.top();
+                this.table.top();
                 // Включить масштабирование под таблицу
-                table.setFillParent(true);
+                this.table.setFillParent(true);
 
                 // Свойства надписей
                 this.healthPointsLabel = new Label(String.format("%.3f", 0.0),
@@ -54,16 +72,17 @@ public class Hud {
                 this.posY = new Label(String.format("%.1f", 0.0), new Label.LabelStyle(new BitmapFont(), Color.CYAN));
 
                 // Добавляем надписи в таблицу
-                table.add(this.healthPointsLabel).expandX().padTop(30);
+                this.table.add(this.BarMP).expandX().padTop(30);
                 // Перейти на новую строку
-                table.row();
+                this.table.row();
                 // table.add(this.scoreLabel).expandX().padTop(10);
-                table.add(this.manaPointsLabel).expandX().padTop(10);
-                table.row();
-                table.row();
-                table.add(this.posX).expandX().padTop(10);
-                table.row();
-                table.add(this.posY).expandX().padTop(10);
+                this.table.add(this.manaPointsLabel).expandX().padTop(10);
+                this.table.add(this.healthPointsLabel).expandX().padTop(10);
+                this.table.row();
+                this.table.row();
+                this.table.add(this.posX).expandX().padTop(10);
+                this.table.row();
+                this.table.add(this.posY).expandX().padTop(10);
 
                 // Добавить таблцу на "сцену"
                 this.stage.addActor(table);
@@ -81,6 +100,38 @@ public class Hud {
                 this.manaPointsLabel.setText(MPtext);
                 this.posX.setText(xText);
                 this.posY.setText(yText);
+
+                int percentMP = (int) ((int) this.player.getCurrentMana() / this.player.getMaxMana()) * 100;
+                System.out.println(percentMP);
+                Pixmap pixmap = new Pixmap(percentMP, 10, Pixmap.Format.RGBA8888);
+                pixmap.setColor(Color.BLUE);
+                pixmap.fillRectangle(0, 0, percentMP, 10);
+                this.BarMP = new Image(new Texture(pixmap));
+                createTable();
+                pixmap.dispose();
+
+        }
+
+        public void createTable() {
+                this.table = new Table();
+                this.table.setFillParent(true);
+                this.table.top();
+                // Добавляем надписи в таблицу
+                this.table.add(this.BarMP).expandX().padTop(30);
+                this.table.add(this.BarHP).expandX().padTop(30);
+                // Перейти на новую строку
+                this.table.row();
+                // table.add(this.scoreLabel).expandX().padTop(10);
+                this.table.add(this.manaPointsLabel).expandX().padTop(10);
+                this.table.add(this.healthPointsLabel).expandX().padTop(10);
+                this.table.row();
+                this.table.row();
+                this.table.add(this.posX).expandX().padTop(10);
+                this.table.row();
+                this.table.add(this.posY).expandX().padTop(10);
+
+                // Добавить таблцу на "сцену"
+                this.stage.addActor(table);
 
         }
 

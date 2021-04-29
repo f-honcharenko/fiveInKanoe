@@ -99,6 +99,7 @@ public class GameScreen implements Screen {
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         this.hud.update(deltaTime);
 
         this.testGoblin.idle();

@@ -6,114 +6,167 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.screens.GameScreen;
 
 public class MainMenuScreen implements Screen {
+    private DreamWalker game;
+    private Image startButton;
+    private Image exitButton;
+    // 2д сцена, на которой распологаются элементы интерфейса
+    private Stage stage;
+    private Viewport viewport;
+    private Table table;
 
-    private static final int EXIT_BUTTON_WIDTH = 250;
-    private static final int EXIT_BUTTON_HEIGHT = 120;
-    private static final int PLAY_BUTTON_WIDTH = 300;
-    private static final int PLAY_BUTTON_HEIGHT = 120;
-    private static final int EXIT_BUTTON_X_PADDING = 50;
-    private static final int EXIT_BUTTON_Y = 100;
-    private static final int PLAY_BUTTON_Y = 230;
+    private EventListener StartEvent;
+    private EventListener ExitEvent;
 
-    DreamWalker game;
-    OrthographicCamera camera;
-    ScreenViewport viewport;
+    public DreamWalker getGame() {
+        return this.game;
+    }
 
-    Texture playButtonActive;
-    Texture playButtonInactive;
-    Texture exitButtonActive;
-    Texture exitButtonInactive;
+    public void toggleStartButton(Image newImage) {
+        this.startButton = newImage;
+    }
 
-    Sprite playButtonActiveSprite;
-    Sprite playButtonInactiveSprite;
-    Sprite exitButtonInactiveSprite;
-    Sprite exitButtonActiveSprite;
+    public void toggleExitButton(Image newImage) {
+        this.exitButton = newImage;
+    }
 
-    int globalWidth;
+    public void updateTable() {
+        // Установка взаимодействий
+        this.startButton.addListener(this.StartEvent);
+        this.exitButton.addListener(this.ExitEvent);
+
+        // Установка таблицы
+        this.table = new Table();
+
+        // Включить масштабирование под таблицу
+        this.table.setFillParent(true);
+
+        this.table.bottom();
+        this.table.left();
+        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
+        this.table.row();
+        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
+
+        // Отладка таблицы
+        this.table.debugAll();
+
+        // Добавить таблцу на "сцену"
+        this.stage.addActor(this.table);
+    }
 
     public MainMenuScreen(DreamWalker game) {
         this.game = game;
+        // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
+        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+        this.stage = new Stage(this.viewport, game.getBatch());
+
+        // Штука для отслеживания нажатий
+        Gdx.input.setInputProcessor(stage);
+
         // Текстуры
-        playButtonActive = new Texture("play_button_active.png");
-        playButtonInactive = new Texture("play_button_inactive.png");
-        exitButtonInactive = new Texture("exit_button_inactive.png");
-        exitButtonActive = new Texture("exit_button_active.png");
+        this.startButton = new Image(new Sprite(new Texture("play_button_inactive.png")));
+        this.exitButton = new Image(new Sprite(new Texture("exit_button_inactive.png")));
 
-        // Спрайты
-        playButtonActiveSprite = new Sprite(playButtonActive);
-        playButtonInactiveSprite = new Sprite(playButtonInactive);
-        exitButtonInactiveSprite = new Sprite(exitButtonInactive);
-        exitButtonActiveSprite = new Sprite(exitButtonActive);
-        // Ширина єкрана
-        globalWidth = Gdx.graphics.getWidth();
+        // Действия для кнопок
+        this.StartEvent = new ClickListener() {
+            DreamWalker game = getGame();
 
-        // Camera
-        this.camera = new OrthographicCamera();
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.game.getBatch().setProjectionMatrix(camera.combined);
-        this.viewport = new FitViewport(800, 480, camera);
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                this.game.setScreen(new GameScreen(this.game));
+            };
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleStartButton(new Image(new Texture("play_button_active.png")));
+                updateTable();
+            };
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleStartButton(new Image(new Texture("play_button_inactive.png")));
+                updateTable();
+            };
+        };
+        this.ExitEvent = new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            };
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleExitButton(new Image(new Texture("exit_button_active.png")));
+                updateTable();
+            };
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleExitButton(new Image(new Texture("exit_button_inactive.png")));
+                updateTable();
+            };
+        };
+
+        // Установка взаимодействий
+        this.startButton.addListener(StartEvent);
+        this.exitButton.addListener(ExitEvent);
+
+        // Установка таблицы
+        this.table = new Table();
+
+        // Включить масштабирование под таблицу
+        this.table.setFillParent(true);
+
+        this.table.bottom();
+        this.table.left();
+        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
+        this.table.row();
+        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
+
+        // Отладка таблицы
+        this.table.debugAll();
+
+        // Добавить таблцу на "сцену"
+        this.stage.addActor(this.table);
+
+    }
+
+    public void update(float deltaTime) {
+        // this.hud.update(deltaTime);
     }
 
     @Override
     public void show() {
-
     }
 
     @Override
     public void render(float delta) {
         update(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+
+        // Цвет окна и фикс мерцания экрана при изменении
+        Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.getBatch().begin();
-        int x = globalWidth / 2 - (EXIT_BUTTON_WIDTH / 2);
-
-        if (Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x
-                && Gdx.graphics.getHeight() - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT
-                && Gdx.graphics.getHeight() - Gdx.input.getY() > EXIT_BUTTON_Y) {
-            game.getBatch().draw(exitButtonActiveSprite, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-            if (Gdx.input.isTouched()) {
-                System.out.println("EXIT");
-                Gdx.app.exit();
-            }
-        } else {
-            game.getBatch().draw(exitButtonInactiveSprite, x, EXIT_BUTTON_Y, EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-        }
-
-        x = globalWidth / 2 - (PLAY_BUTTON_WIDTH / 2);
-        System.out.println(Gdx.input.getX());
-        if ((Gdx.input.getX() < x + PLAY_BUTTON_WIDTH) && (Gdx.input.getX() > x)
-                && (Gdx.graphics.getHeight() - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT)
-                && (Gdx.graphics.getHeight() - Gdx.input.getY() > PLAY_BUTTON_Y)) {
-            // game.getBatch().draw(playButtonActive, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH,
-            // PLAY_BUTTON_HEIGHT);
-            game.getBatch().draw(playButtonActiveSprite, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-            if (Gdx.input.isTouched()) {
-                System.out.println("Play");
-                this.game.setScreen(new GameScreen(game));
-                // Gdx.app.exit();
-            }
-        } else {
-            game.getBatch().draw(playButtonInactiveSprite, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-            // game.getBatch().draw(playButtonInactive, x, PLAY_BUTTON_Y, PLAY_BUTTON_WIDTH,
-            // PLAY_BUTTON_HEIGHT);
-        }
-
-        game.getBatch().end();
-    }
-
-    public void update(float deltaTime) {
-        this.camera.update();
-        this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Отрисовка UI
+        this.stage.draw();
+        this.stage.act();
     }
 
     @Override
     public void resize(int width, int height) {
-        // globalWidth = width;
+        // Обновление вьюпорта при изменении размеров окна
+        this.viewport.update(width, height);
     }
 
     @Override
@@ -122,7 +175,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resume() {
-
     }
 
     @Override
@@ -131,7 +183,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        Gdx.input.setInputProcessor(null);
     }
 
 }
