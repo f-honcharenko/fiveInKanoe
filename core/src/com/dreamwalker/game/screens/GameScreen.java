@@ -9,12 +9,18 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.listeners.AttackListener;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.enemy.Goblin;
+import com.dreamwalker.game.skills.FlyingSword;
+import com.dreamwalker.game.skills.Sword;
+
+import java.util.ArrayList;
 
 public class GameScreen implements Screen {
 
@@ -42,7 +48,7 @@ public class GameScreen implements Screen {
 
     /**
      * Конструктор экрана игры
-     * 
+     *
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
@@ -51,13 +57,15 @@ public class GameScreen implements Screen {
         this.mapLoader = new TmxMapLoader();
 
         // Загрузка карты и создание коллизий
-        this.location = new Location(this.mapLoader.load("Maps/CollisionTest.tmx"));
+        this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
         this.location.initCollisions();
 
         this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
         this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200, location.getSpawnPoint().y + 200);
+        this.location.getWorld().setContactListener(new AttackListener());
+
         this.hud = new Hud(this.game.getBatch(), this.player);
 
         this.camera = new OrthographicCamera();
@@ -80,13 +88,14 @@ public class GameScreen implements Screen {
     /**
      * Метод, отвечающий за обновление позиций камеры, установки для "прогрузчика"
      * гранц рендера, обновление вьюпорта
-     * 
+     *
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
-        this.player.update(deltaTime);
+        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -94,6 +103,8 @@ public class GameScreen implements Screen {
 
         this.testGoblin.idle();
         this.testGoblin.meleeAttack();
+
+
     }
 
     @Override
@@ -106,8 +117,7 @@ public class GameScreen implements Screen {
 
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         // Координаты мыши в пространстве игрового мира
-        Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.playerControl(new Vector2(mousePosition.x, mousePosition.y));
+
 
         // Камера должна следовать за игроком
         this.camera.position.x = this.player.getX();
@@ -117,10 +127,15 @@ public class GameScreen implements Screen {
         this.ortMapRender.render();
 
         // рендер игрока
-        game.getBatch().setProjectionMatrix(this.camera.combined);
-        game.getBatch().begin();
-        player.draw(this.game.getBatch());
-        game.getBatch().end();
+        this.game.getBatch().setProjectionMatrix(this.camera.combined);
+        this.game.getBatch().begin();
+        this.player.draw(this.game.getBatch());
+        this.testGoblin.draw(this.game.getBatch());
+        ArrayList<Sword> skillSwords = ((FlyingSword)this.player.getSkillPanel().get(0)).getSwordsOnScreen();
+        for(int i = 0; i < skillSwords.size(); i++){
+            skillSwords.get(i).draw(this.game.getBatch());
+        }
+        this.game.getBatch().end();
 
         // Рендер верхнего слоя
         // MapLayer foregroundLayer = location.getMap().getLayers().size();
@@ -163,7 +178,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         this.location.dispose();
-        // this.player.dispose();
+        this.player.dispose();
         this.ortMapRender.dispose();
         this.debugRenderer.dispose();
     }

@@ -1,22 +1,30 @@
 package com.dreamwalker.game.player;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-
+import com.badlogic.gdx.utils.Disposable;
+import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.skills.ActiveSkill;
+import com.dreamwalker.game.skills.FlyingSword;
+import com.dreamwalker.game.skills.PassiveSkill;
+import com.dreamwalker.game.skills.Skill;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public class Player extends Sprite {
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
+public class Player extends Sprite implements Disposable {
     // Физический мир, в котором находится игрок
     private World world;
     // Физическое "тело" игрока
     private Body playersBody;
     private Body attackArea;
+
+    private Animations playersAnimations;
+    private Control playerControl;
 
     private double health;
     private double healthMax;
@@ -24,31 +32,58 @@ public class Player extends Sprite {
     private double manaMax;
     private double damage;
     private double armor;
-    private float speed;
-    private boolean isAlive = true;
 
-    private TextureRegion playerTextReg;
+    private float speed;
+    private float attackSpeedCoefficient;
+
+    private double viewAngle;
+
+    private boolean isAlive;
+
+    private ArrayList<Enemy> enemiesInRange;
+    private boolean enemyInArea;
+    private boolean isAttacking;
+    private boolean isDamageDealt;
+
+    private ArrayList<PassiveSkill> passiveSkills;
+    private ArrayList<ActiveSkill> skillPanel;
 
     /**
      * Конструктор
-     * 
+     *
      * @param world - физический мир, в котором будет находится игрок
      * @param x     - стартовая позиция игрока по х
      * @param y     - стартовая позиция игрока по у
      */
     public Player(World world, float x, float y) {
-        // !В будущем заменить на атлас
-        super(new Texture("badlogic.jpg"));
-        this.playerTextReg = new TextureRegion(this.getTexture(), 0, 0, this.getTexture().getWidth(),
-                this.getTexture().getHeight());
-
-        this.setBounds(0, 0, 50, 50);
-        this.setRegion(this.playerTextReg);
-
-        this.speed = 80.5f;
-
-        // Текстура игрока для отрисовки
         this.world = world;
+        this.playersAnimations = new Animations(this, "player.atlas");
+        this.playerControl = new Control(this);
+        this.definePlayer(x, y);
+
+        this.passiveSkills = new ArrayList<>();
+        this.skillPanel = new ArrayList<>();
+        this.skillPanel.add(new FlyingSword(Input.Keys.E, this, this.world));
+
+        this.enemiesInRange = new ArrayList<>();
+        this.enemyInArea = false;
+        this.isAttacking = false;
+        this.isDamageDealt = false;
+
+        this.isAlive = true;
+        this.damage = 15;
+        this.speed = 80.5f;
+        this.health = 100;
+        this.mana = 0;
+        this.armor = 4;
+        this.healthMax = 100;
+        this.manaMax = 100;
+        this.attackSpeedCoefficient = 1.5f;
+
+        this.setBounds(0, 0, 140, 140); //54
+    }
+
+    private void definePlayer(float x, float y){
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -65,10 +100,10 @@ public class Player extends Sprite {
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
 
-        float scalar = shape.getRadius() * 3;
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
+        float scalar = shape.getRadius() * 3;
         this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();
@@ -76,31 +111,25 @@ public class Player extends Sprite {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3))) };
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3)))
+        };
 
         dmgSectorShape.set(vertices);
         attackFixture.shape = dmgSectorShape;
         attackFixture.isSensor = true;
         this.attackArea.createFixture(attackFixture);
+        this.attackArea.getFixtureList().get(0).setUserData(this);
         dmgSectorShape.dispose();
-
-        this.health = 100;
-        this.mana = 0;
-        this.armor = 4;
-
-        this.healthMax = 100;
-        this.manaMax = 100;
-
     }
+
 
     /**
      * Конструктор
-     * 
+     *
      * @param world      - физический мир, в котором будет находится игрок
      * @param spawnPoint - стартовая позиция игрока
      */
@@ -108,21 +137,16 @@ public class Player extends Sprite {
         this(world, spawnPoint.x, spawnPoint.y);
     }
 
-    /**
-     * Общий метод, отвечающий за упрваление персонажем
-     */
-    public void playerControl(Vector2 mousePosition) {
-        this.move(mousePosition);
-        this.meleeAttack();
-    }
 
-    public void update(float deltaTime) {
+    public void update(float deltaTime, Vector2 mousePosition) {
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             this.health = 0;
             this.isAlive = false;
         }
         this.regeneration();
+        this.setRegion(this.playersAnimations.getFrame(deltaTime));
+        this.playerControl.handle(mousePosition);
     }
 
     /**
@@ -137,82 +161,39 @@ public class Player extends Sprite {
                 this.health += 0.1;
             }
         }
+        this.mana += 0.01;
     }
 
     /**
-     * Метод, отвечающий за передвижение персонажа
-     * 
-     * @param mousePosition - координаты мыши в пространстве игрового мира
+     * Нанести урон игроку
+     *
+     * @param damage     - Урон
+     * @param damageType - Тип урона (0 - чистый, 1 - физ, 2 - маг)
+     * @return Нанесенный урон
      */
-    public void move(Vector2 mousePosition) {
-        // Вычитаем позицию игрока из позиции мыши
-        Vector2 playersViewPoint = mousePosition.sub(this.playersBody.getPosition());
-        float angle = playersViewPoint.angleRad();
-        // Позиция игрока остается прежней, в то время, как поворот меняется в
-        // зависимости от положения мыши
-        this.playersBody.setTransform(this.playersBody.getPosition(), angle);
-        this.attackArea.setTransform(this.playersBody.getPosition(), angle);
-
-        // Обработка нажатий клавиш WASD
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed),
-            // this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(0, this.speed));
+    public float damaged(float damage, int damageType) {
+        damage = Math.abs(damage);
+        switch (damageType) {
+            case 1:
+                // Будем считать что 1 брона = 1хп.
+                if (this.getArmor() < damage) {
+                    this.health = this.getCurrentHealth() - (damage - this.getArmor());
+                    return (float) (damage - this.getArmor());
+                } else {
+                    return 0;
+                }
+            case 2:
+                // Будем считать что 1 брона = 1хп.
+                if (this.getArmor() < damage) {
+                    this.health = this.getCurrentHealth() - (damage - this.getMagArmor());
+                    return (float) (damage - this.getMagArmor());
+                } else {
+                    return 0;
+                }
+            default:
+                this.health = this.getCurrentHealth() - (damage);
+                return (float) (damage);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, 0));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed),
-            // this.box2DBody.getWorldCenter(), true);
-            this.playersBody.setLinearVelocity(new Vector2(0, -this.speed));
-        }
-
-        // Обработка сочитаний WD WA SD SA
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.playersBody.setLinearVelocity(new Vector2(this.speed, -this.speed));
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.playersBody.setLinearVelocity(new Vector2(-this.speed, -this.speed));
-        }
-
-        // Проверка, нажата ли одна из клавиш WASD
-        boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
-                || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
-
-        // Проверка конфликтующих сочитаний WS AD
-        boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
-        boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
-
-        // Остановить персонажа, если ни одна из клавиш не нажата, или нажаты
-        // конфликтующие сочетания
-        if (!isMoving || conflictX || conflictY) {
-            this.playersBody.setLinearVelocity(0, 0);
-        }
-    }
-
-    /**
-     * Метод, отвечающий за ближнюю атаку игрока
-     */
-    public void meleeAttack() {
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-
-        }
-
     }
 
     /**
@@ -223,9 +204,6 @@ public class Player extends Sprite {
     }
 
     public void setWorld(World world) {
-        if (world == null) {
-            throw new IllegalArgumentException();
-        }
         this.world = world;
     }
 
@@ -265,40 +243,56 @@ public class Player extends Sprite {
         return this.speed;
     }
 
+    public ArrayList<Enemy> getEnemiesInRange() {
+        return this.enemiesInRange;
+    }
+
+    public void setEnemyInArea(boolean enemyInArea) {
+        this.enemyInArea = enemyInArea;
+    }
+
+    public boolean isDamageDealt() {
+        return this.isDamageDealt;
+    }
+
+    public void setDamageDealt(boolean damageDealt) {
+        this.isDamageDealt = damageDealt;
+    }
+
     public Body getPlayersBody() {
         return this.playersBody;
     }
 
-    /**
-     * Нанести урон игроку
-     * 
-     * @param damage     - Урон
-     * @param damageType - Тип урона (0 - чистый, 1 - физ, 2 - маг)
-     * @return Нанесенный урон
-     */
-    public float damaged(float damage, int damageType) {
-        damage = Math.abs(damage);
-        switch (damageType) {
-        case 1:
-            // Будем считать что 1 брона = 1хп.
-            if (this.getArmor() < damage) {
-                this.health = this.getCurrentHealth() - (damage - this.getArmor());
-                return (float) (damage - this.getArmor());
-            } else {
-                return 0;
-            }
-        case 2:
-            // Будем считать что 1 брона = 1хп.
-            if (this.getArmor() < damage) {
-                this.health = this.getCurrentHealth() - (damage - this.getMagArmor());
-                return (float) (damage - this.getMagArmor());
-            } else {
-                return 0;
-            }
-        default:
-            this.health = this.getCurrentHealth() - (damage);
-            return (float) (damage);
-        }
+    boolean isAttacking() {
+        return this.isAttacking;
+    }
+
+    void setIsAttacking(boolean isAttacking) {
+        this.isAttacking = isAttacking;
+    }
+
+    float getAttackSpeedCoefficient() {
+        return this.attackSpeedCoefficient;
+    }
+
+    double getViewAngle() {
+        return this.viewAngle;
+    }
+
+    void setViewAngle(double viewAngle) {
+        this.viewAngle = viewAngle;
+    }
+
+    Body getAttackArea() {
+        return this.attackArea;
+    }
+
+    boolean isEnemyInArea() {
+        return this.enemyInArea;
+    }
+
+    public ArrayList<ActiveSkill> getSkillPanel() {
+        return this.skillPanel;
     }
 
     /**
@@ -317,4 +311,8 @@ public class Player extends Sprite {
         return this.playersBody.getPosition().y;
     }
 
+    @Override
+    public void dispose() {
+        this.getTexture().dispose();
+    }
 }
