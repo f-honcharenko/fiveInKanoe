@@ -1,0 +1,13 @@
+
+template.png
+size: 832, 2688
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+template
+  rotate: false
+  xy: 2, 2
+  size: 832, 2688
+  orig: 832, 2688
+  offset: 0, 0
+  index: -1

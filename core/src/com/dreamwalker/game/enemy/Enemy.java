@@ -16,7 +16,6 @@ import com.dreamwalker.game.player.Player;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-
 public abstract class Enemy extends Sprite {
     // Физический мир, в котором находится враг
     private World world;
@@ -28,21 +27,29 @@ public abstract class Enemy extends Sprite {
     protected double damage;
     protected double armor;
     protected float speed;
+    private float attackSpeedCoefficient;
 
+    private boolean isAttacking;
+    private boolean isDamageDealt;
     private Player player;
 
+    private double viewAngle;
+    private Body enemysBody;
+
+    protected Animations enemysAnimations;
 
     /**
      * Конструктор
      *
      *
-     * @param x     - стартовая позиция врага по х
-     * @param y     - стартовая позиция врага по у
+     * @param x - стартовая позиция врага по х
+     * @param y - стартовая позиция врага по у
      */
     public Enemy(Player player, float x, float y) {
         // Текстура врага для отрисовки
         // !В будущем заменить на атлас
-        super(new Texture("badlogic.jpg"));
+        // super(new Texture("badlogic.jpg"));
+
         this.player = player;
         this.world = player.getWorld();
         // Задача физических свойств для "тела" врага
@@ -66,6 +73,11 @@ public abstract class Enemy extends Sprite {
 
         this.setBounds(0, 0, 30, 30);
 
+        // Для анимаций
+        this.speed = 80.5f;
+
+        this.isAttacking = false;
+        this.isDamageDealt = false;
     }
 
     /**
@@ -78,8 +90,6 @@ public abstract class Enemy extends Sprite {
         this(player, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
-    abstract public void move();
-
     abstract public void meleeAttack();
 
     abstract public void idle();
@@ -91,7 +101,7 @@ public abstract class Enemy extends Sprite {
         throw new NotImplementedException();
     }
 
-    public void receiveDamage(double damage){
+    public void receiveDamage(double damage) {
         this.health -= damage;
 
     }
@@ -147,4 +157,41 @@ public abstract class Enemy extends Sprite {
         return this.box2DBody.getPosition().y;
     }
 
+    // ANIMATIOM
+    public float getAttackSpeedCoefficient() {
+        return this.attackSpeedCoefficient;
+    }
+
+    public void setDamageDealt(boolean damageDealt) {
+        this.isDamageDealt = damageDealt;
+    }
+
+    public double getViewAngle() {
+        return this.viewAngle;
+    }
+
+    public void setViewAngle(double viewAngle) {
+        this.viewAngle = viewAngle;
+        // this.getBox2DBody().setTransform(this.getBox2DBody().getPosition(), (float)
+        // viewAngle);
+
+    }
+
+    public boolean isAttacking() {
+        return this.isAttacking;
+    }
+
+    public void setIsAttacking(boolean isAttacking) {
+        this.isAttacking = isAttacking;
+    }
+
+    public void update(float deltaTime) {
+        this.idle();
+        this.meleeAttack();
+        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+    }
+    // @Override
+    // public void dispose() {
+    // this.getTexture().dispose();
+    // }
 }

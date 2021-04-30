@@ -45,6 +45,8 @@ public class GameScreen implements Screen {
 
     // Тестовый голбин
     private Goblin testGoblin;
+    private Goblin testGoblin2;
+    private Goblin testGoblin3;
 
     /**
      * Конструктор экрана игры
@@ -64,6 +66,8 @@ public class GameScreen implements Screen {
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
         this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200, location.getSpawnPoint().y + 200);
+        this.testGoblin2 = new Goblin(this.player, location.getSpawnPoint().x - 200, location.getSpawnPoint().y + 200);
+        this.testGoblin3 = new Goblin(this.player, location.getSpawnPoint().x + 200, location.getSpawnPoint().y - 200);
         this.location.getWorld().setContactListener(new AttackListener());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
@@ -102,9 +106,9 @@ public class GameScreen implements Screen {
 
         this.hud.update(deltaTime);
 
-        this.testGoblin.idle();
-        this.testGoblin.meleeAttack();
-
+        this.testGoblin.update(deltaTime);
+        this.testGoblin2.update(deltaTime);
+        this.testGoblin3.update(deltaTime);
 
     }
 
@@ -119,7 +123,6 @@ public class GameScreen implements Screen {
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         // Координаты мыши в пространстве игрового мира
 
-
         // Камера должна следовать за игроком
         this.camera.position.x = this.player.getX();
         this.camera.position.y = this.player.getY();
@@ -131,9 +134,14 @@ public class GameScreen implements Screen {
         this.game.getBatch().setProjectionMatrix(this.camera.combined);
         this.game.getBatch().begin();
         this.player.draw(this.game.getBatch());
+
+        // рендер npc
         this.testGoblin.draw(this.game.getBatch());
-        ArrayList<Sword> skillSwords = ((FlyingSword)this.player.getSkillPanel().get(0)).getSwordsOnScreen();
-        for(int i = 0; i < skillSwords.size(); i++){
+        this.testGoblin2.draw(this.game.getBatch());
+        this.testGoblin3.draw(this.game.getBatch());
+
+        ArrayList<Sword> skillSwords = ((FlyingSword) this.player.getSkillPanel().get(0)).getSwordsOnScreen();
+        for (int i = 0; i < skillSwords.size(); i++) {
             skillSwords.get(i).draw(this.game.getBatch());
         }
         this.game.getBatch().end();

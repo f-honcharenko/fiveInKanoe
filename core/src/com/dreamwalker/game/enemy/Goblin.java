@@ -10,31 +10,26 @@ public class Goblin extends Enemy {
 
     private Player player;
 
-    private int idleMax = 100; // такты?
-    private int idleCounter = 0; // такты?
-
-    private int attackSpeedMax = 100;
-    private int attackSpeedCounter = 0;
+    private int attackSpeedMax;
+    private int attackSpeedCounter;
 
     private float tempX;
     private float tempY;
-    private int idleTimer = 0;
+    private int idleTimer;
 
-    private int idleTimerMax = 300;
-    private int waitingTimerMax = 150;
-    private int agroTimerMax = 150;
+    private int idleTimerMax;
+    private int waitingTimerMax;
+    private int agroTimerMax;
 
     private float spawnX;
     private float spawnY;
-    private float idleRadius = 200;
-    private int agroRadius = 100;
-    private int attackRadius = 50;
+    private float idleRadius;
+    private int agroRadius;
+    private int attackRadius;
 
     private Boolean attackFlag = true;
     // private Boolean idleFlag = true;
     private String status = "waiting";
-
-    private Random random;
 
     /**
      * Конструктор
@@ -45,8 +40,10 @@ public class Goblin extends Enemy {
      */
     public Goblin(Player player, float x, float y) {
         super(player, x, y);
-
         this.player = player;
+
+        this.enemysAnimations = new Animations(this, "template.atlas", "template");
+        this.setBounds(0, 0, 140, 140); // 54
 
         this.spawnX = x;
         this.spawnY = y;
@@ -55,8 +52,15 @@ public class Goblin extends Enemy {
         this.damage = 40;
         this.health = 100;
 
-        // this.getHe
-        random = new Random();
+        this.attackSpeedMax = 100;
+        this.attackSpeedCounter = 0;
+        this.idleTimer = 0;
+        this.idleTimerMax = rnd(50, 200);
+        this.waitingTimerMax = rnd(50, 200);
+        this.agroTimerMax = 150;
+        this.idleRadius = 150;
+        this.agroRadius = 100;
+        this.attackRadius = 50;
     }
 
     /**
@@ -67,11 +71,6 @@ public class Goblin extends Enemy {
      */
     public Goblin(Player player, Vector2 enemySpawnPoint) {
         this(player, enemySpawnPoint.x, enemySpawnPoint.y);
-    }
-
-    @Override
-    public void move() {
-
     }
 
     @Override
@@ -103,7 +102,9 @@ public class Goblin extends Enemy {
             this.status = "agro";
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
             Vector2 goblinViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
-            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
+            this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
+            // super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(),
+            // goblinViewPoint.angleRad());
             super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
                     (player.getY() - super.getY()) * this.speed));
         }
@@ -117,7 +118,6 @@ public class Goblin extends Enemy {
             super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
             this.status = "waiting";
             this.idleTimer = 0;
-            System.out.println("status: " + this.status);
 
         }
         if ((this.status == "waiting") && (this.idleTimer == this.waitingTimerMax)) {
@@ -127,16 +127,16 @@ public class Goblin extends Enemy {
             this.tempY = rnd(Math.round(this.spawnY - this.idleRadius), Math.round(this.spawnY + this.idleRadius));
             this.idleTimer = 0;
             this.status = "idleGo";
-            System.out.println("status: " + this.status);
         }
         if (this.status == "idleGo") {
             // Повернуть непися
             Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.getBox2DBody().getPosition());
-            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
+            this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
+            // super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(),
+            // goblinViewPoint.angleRad());
             // Задать ему скорость
             super.getBox2DBody().setLinearVelocity(
                     new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
-            System.out.println("status: " + this.status);
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
     }
