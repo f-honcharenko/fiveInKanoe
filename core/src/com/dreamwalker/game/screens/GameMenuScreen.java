@@ -1,6 +1,7 @@
 package com.dreamwalker.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,35 +21,44 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
-public class MainMenuScreen implements Screen, Disposable {
+public class GameMenuScreen implements Screen, Disposable {
     private DreamWalker game;
-    private Image startButton;
+    private Image resumeButton;
     private Image exitButton;
+    private Image startButton;
     // 2д сцена, на которой распологаются элементы интерфейса
     private Stage stage;
     private Viewport viewport;
     private Table table;
 
-    private EventListener StartEvent;
+    private EventListener resumeEvent;
     private EventListener ExitEvent;
+    private EventListener startEvent;
+
+    public ScreenSwitcher screenSwitcher;
 
     public DreamWalker getGame() {
 
         return this.game;
     }
 
-    public void toggleStartButton(Image newImage) {
-        this.startButton = newImage;
+    public void toggleresumeButton(Image newImage) {
+        this.resumeButton = newImage;
     }
 
     public void toggleExitButton(Image newImage) {
         this.exitButton = newImage;
     }
 
+    public void toggleStartButton(Image newImage) {
+        this.startButton = newImage;
+    }
+
     public void updateTable() {
         // Установка взаимодействий
-        this.startButton.addListener(this.StartEvent);
+        this.resumeButton.addListener(this.resumeEvent);
         this.exitButton.addListener(this.ExitEvent);
+        this.startButton.addListener(this.startEvent);
 
         // Установка таблицы
         this.table = new Table();
@@ -58,20 +68,22 @@ public class MainMenuScreen implements Screen, Disposable {
 
         this.table.bottom();
         this.table.left();
-        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
+        this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
         this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
+        this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
+        this.table.row();
+        this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
 
         // Отладка таблицы
-        this.table.debugAll();
+        // this.table.debugAll();
 
         // Добавить таблцу на "сцену"
         this.stage.addActor(this.table);
     }
 
-    public MainMenuScreen(DreamWalker game) {
+    public GameMenuScreen(DreamWalker game) {
         this.game = game;
-
+        this.screenSwitcher = new ScreenSwitcher(this.game);
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -80,11 +92,12 @@ public class MainMenuScreen implements Screen, Disposable {
         Gdx.input.setInputProcessor(stage);
 
         // Текстуры
-        this.startButton = new Image(new Sprite(new Texture("play_button_inactive.png")));
-        this.exitButton = new Image(new Sprite(new Texture("exit_button_inactive.png")));
+        this.resumeButton = new Image(new Sprite(new Texture("buttons/button_resume_unactive.png")));
+        this.startButton = new Image(new Sprite(new Texture("buttons/button_play_unactive.png")));
+        this.exitButton = new Image(new Sprite(new Texture("buttons/button_exit_unactive.png")));
 
         // Действия для кнопок
-        this.StartEvent = new ClickListener() {
+        this.resumeEvent = new ClickListener() {
             DreamWalker game = getGame();
             private ScreenSwitcher screenSwitcher;
 
@@ -93,20 +106,20 @@ public class MainMenuScreen implements Screen, Disposable {
                 // this.game.getScreen().dispose();
                 this.screenSwitcher = new ScreenSwitcher(this.game);
                 this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeMainMenu();
+                this.screenSwitcher.DisposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleStartButton(new Image(new Texture("play_button_active.png")));
+                toggleresumeButton(new Image(new Texture("buttons/button_resume_active.png")));
                 updateTable();
             };
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleStartButton(new Image(new Texture("play_button_inactive.png")));
+                toggleresumeButton(new Image(new Texture("buttons/button_resume_unactive.png")));
                 updateTable();
             };
         };
@@ -118,43 +131,54 @@ public class MainMenuScreen implements Screen, Disposable {
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleExitButton(new Image(new Texture("exit_button_active.png")));
+                toggleExitButton(new Image(new Texture("buttons/button_exit_active.png")));
                 updateTable();
             };
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleExitButton(new Image(new Texture("exit_button_inactive.png")));
+                toggleExitButton(new Image(new Texture("buttons/button_exit_unactive.png")));
                 updateTable();
             };
         };
+        this.startEvent = new ClickListener() {
 
+            DreamWalker game = getGame();
+            private ScreenSwitcher screenSwitcher;
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+                this.screenSwitcher = new ScreenSwitcher(this.game);
+                this.screenSwitcher.DisposeGame();
+                this.screenSwitcher.ToGame();
+                this.screenSwitcher.DisposeGameMenu();
+            };
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleStartButton(new Image(new Texture("buttons/button_play_active.png")));
+                updateTable();
+            };
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleStartButton(new Image(new Texture("buttons/button_play_unactive.png")));
+                updateTable();
+            };
+        };
         // Установка взаимодействий
-        this.startButton.addListener(StartEvent);
-        this.exitButton.addListener(ExitEvent);
-
-        // Установка таблицы
-        this.table = new Table();
-
-        // Включить масштабирование под таблицу
-        this.table.setFillParent(true);
-
-        this.table.bottom();
-        this.table.left();
-        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
-        this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
-
-        // Отладка таблицы
-        this.table.debugAll();
-
-        // Добавить таблцу на "сцену"
-        this.stage.addActor(this.table);
+        this.updateTable();
 
     }
 
     public void update(float deltaTime) {
         // this.hud.update(deltaTime);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            // if (Gdx.input.idKey(Input.Keys.ESCAPE)) {
+            this.screenSwitcher.ToGame();
+
+        }
     }
 
     @Override
@@ -166,7 +190,7 @@ public class MainMenuScreen implements Screen, Disposable {
         update(delta);
 
         // Цвет окна и фикс мерцания экрана при изменении
-        Gdx.gl.glClearColor(0, 0, 1, 1);
+        Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Отрисовка UI
         this.stage.draw();
@@ -193,8 +217,9 @@ public class MainMenuScreen implements Screen, Disposable {
 
     @Override
     public void dispose() {
-        this.StartEvent = null;
+        this.resumeEvent = null;
         this.ExitEvent = null;
+        this.startEvent = null;
         this.stage.dispose();
     }
 

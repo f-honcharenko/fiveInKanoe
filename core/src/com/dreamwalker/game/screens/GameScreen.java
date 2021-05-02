@@ -1,6 +1,7 @@
 package com.dreamwalker.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +22,7 @@ import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.skills.FlyingSword;
 import com.dreamwalker.game.skills.Sword;
 import com.dreamwalker.game.tools.Destroyer;
+import com.dreamwalker.game.tools.ScreenSwitcher;
 
 import java.util.ArrayList;
 
@@ -51,6 +53,7 @@ public class GameScreen implements Screen {
     private Goblin testGoblin3;
 
     public Destroyer dstr;
+    private ScreenSwitcher screenSwitcher;
 
     /**
      * Конструктор экрана игры
@@ -62,6 +65,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.mapLoader = new TmxMapLoader();
 
+        this.screenSwitcher = new ScreenSwitcher(this.game);
         // Загрузка карты и создание коллизий
         this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
         this.location.initCollisions();
@@ -88,7 +92,7 @@ public class GameScreen implements Screen {
         this.viewport = new ScreenViewport(this.camera);
         this.camera.zoom = 0.6f;
 
-        this.dstr = new Destroyer(this.location.getWorld());
+        // this.dstr = new Destroyer(this.location.getWorld());
 
     }
 
@@ -116,8 +120,15 @@ public class GameScreen implements Screen {
         this.testGoblin.update(deltaTime);
         this.testGoblin2.update(deltaTime);
         this.testGoblin3.update(deltaTime);
-        dstr.destroyBody2D();
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            this.pause();
+
+            this.screenSwitcher.ToGameMenu();
+
+        }
+
+        // dstr.destroyBody2D();
     }
 
     @Override
@@ -185,7 +196,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-
+        System.out.println("pause");
+        // this.game.setScreen(new Sc);
     }
 
     @Override

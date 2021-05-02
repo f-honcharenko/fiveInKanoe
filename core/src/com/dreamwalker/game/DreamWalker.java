@@ -2,19 +2,18 @@ package com.dreamwalker.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dreamwalker.game.screens.MainMenuScreen;
+import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class DreamWalker extends Game {
 	// Пакет спрайтов
 	private SpriteBatch batch;
+	private ScreenSwitcher screenSwitcher;
 
 	@Override
 	public void create() {
 		this.batch = new SpriteBatch();
-		// GameScreen - Игровое поле
-		// this.setScreen(new GameScreen(this));
-		// MainMenuScreen - Главн меню
-		this.setScreen(new MainMenuScreen(this));
+		this.screenSwitcher = new ScreenSwitcher(this);
+		this.screenSwitcher.ToMainMenu();
 	}
 
 	@Override
