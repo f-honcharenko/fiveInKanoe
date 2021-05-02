@@ -186,6 +186,9 @@ public class MainMenuScreen implements Screen, Disposable {
 
     @Override
     public void dispose() {
+        this.StartEvent = null;
+        this.ExitEvent = null;
+        this.stage.dispose();
     }
 
 }
