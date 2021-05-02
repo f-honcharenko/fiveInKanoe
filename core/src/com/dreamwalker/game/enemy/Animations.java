@@ -39,7 +39,7 @@ public class Animations {
      * Добавляет анимации объекту
      * 
      * @param enemy      - обьект
-     * @param atlasName  - название атласа
+     * @param atlasName  -название атласа
      * @param regionName - название региона
      */
     Animations(Enemy enemy, String atlasName, String regionName) {
@@ -86,7 +86,6 @@ public class Animations {
         float speed = this.enemy.getSpeed() + this.stateTimer;
         float attackSpeed = this.enemy.getAttackSpeedCoefficient() * this.stateTimer;
         boolean attack;
-        System.out.println("DEBUG1 : " + this.currentState);
         switch (this.currentState) {
             case RUNNING_NORTH:
                 region = (TextureRegion) this.enemyRunNorth.getKeyFrame(speed, true);

@@ -17,14 +17,14 @@ public class Sword extends Sprite implements Disposable {
     private Vector2 direction;
     private float speed;
 
-    Sword(Player player, World world, float damage, float lifeTime){
+    Sword(Player player, World world, float damage, float lifeTime) {
         super(new Texture("flying_sword.png"));
         this.player = player;
         this.world = world;
         this.damage = damage;
         this.lifeTime = lifeTime;
         this.direction = this.player.getPlayersBody().getPosition();
-        this.speed = 100.5f;
+        this.speed = 200f;
 
         BodyDef swordBodyDef = new BodyDef();
         swordBodyDef.angle = this.player.getPlayersBody().getAngle();
@@ -41,20 +41,19 @@ public class Sword extends Sprite implements Disposable {
         this.swordBody.getFixtureList().get(0).setUserData(this);
         shape.dispose();
 
-
         this.setBounds(0, 0, 75, 75);
     }
 
-    public void move(){
+    public void move() {
         this.direction.x = MathUtils.cos(this.swordBody.getAngle()) * this.speed;
         this.direction.y = MathUtils.sin(this.swordBody.getAngle()) * this.speed;
         this.swordBody.setLinearVelocity(this.direction.x, this.direction.y);
-        this.setRotation((float)Math.toDegrees(this.swordBody.getAngle()));
+        this.setRotation((float) Math.toDegrees(this.swordBody.getAngle()));
         this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
         this.setCenter(this.swordBody.getPosition().x, this.swordBody.getPosition().y);
     }
 
-    public void decreaseLifeTime(){
+    public void decreaseLifeTime() {
         this.lifeTime -= 0.1;
     }
 

@@ -10,14 +10,14 @@ import com.dreamwalker.game.enemy.Enemy;
 public class Control {
     private final Player player;
 
-    Control(Player player){
+    Control(Player player) {
         this.player = player;
     }
 
     /**
      * Общий метод, отвечающий за упрваление персонажем
      */
-    void handle(Vector2 mousePosition){
+    void handle(Vector2 mousePosition) {
         this.meleeAttack();
         this.move(mousePosition);
         this.useSkills(mousePosition);
@@ -27,9 +27,9 @@ public class Control {
      * Метод, отвечающий за ближнюю атаку игрока
      */
     private void meleeAttack() {
-        if(this.player.isEnemyInArea() && this.player.isDamageDealt()){
+        if (this.player.isEnemyInArea() && this.player.isDamageDealt()) {
             System.out.println("DEAL");
-            for(Enemy enemy : this.player.getEnemiesInRange()){
+            for (Enemy enemy : this.player.getEnemiesInRange()) {
                 System.out.println(enemy.getHealth() + " " + player.getEnemiesInRange().size());
                 enemy.receiveDamage(this.player.getDamage());
             }
@@ -52,28 +52,33 @@ public class Control {
         Vector2 playersViewPoint = mousePosition.sub(playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
         this.player.setViewAngle(Math.toDegrees(angle));
-        if(this.player.getViewAngle() < 0){
+        if (this.player.getViewAngle() < 0) {
             this.player.setViewAngle(180 + Math.abs(this.player.getViewAngle() + 180));
         }
-        // Позиция игрока остается прежней, в то время, как поворот меняется в зависимости от положения мыши
+        // Позиция игрока остается прежней, в то время, как поворот меняется в
+        // зависимости от положения мыши
         playersBody.setTransform(playersBody.getPosition(), angle);
         this.player.getAttackArea().setTransform(playersBody.getPosition(), angle);
 
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed),
+            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(0, speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed),
+            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(0, -speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0),
+            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(-speed, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            //this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0), this.box2DBody.getWorldCenter(), true);
+            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0),
+            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(speed, 0);
         }
 
@@ -91,7 +96,6 @@ public class Control {
             playersBody.setLinearVelocity(-speed, -speed);
         }
 
-
         // Проверка, нажата ли одна из клавиш WASD
         boolean isMoving = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.A)
                 || Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.D);
@@ -107,7 +111,7 @@ public class Control {
         }
     }
 
-    private void useSkills(Vector2 mousePosition){
+    private void useSkills(Vector2 mousePosition) {
         this.player.getSkillPanel().get(0).setMousePosition(mousePosition);
         this.player.getSkillPanel().get(0).usage();
     }

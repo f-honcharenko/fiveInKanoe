@@ -12,11 +12,12 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.player.Player;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public abstract class Enemy extends Sprite {
+public abstract class Enemy extends Sprite implements Disposable {
     // Физический мир, в котором находится враг
     private World world;
     // Физическое "тело" врага
@@ -31,6 +32,7 @@ public abstract class Enemy extends Sprite {
 
     private boolean isAttacking;
     private boolean isDamageDealt;
+    private boolean isAlive;
     private Player player;
 
     private double viewAngle;
@@ -46,36 +48,11 @@ public abstract class Enemy extends Sprite {
      * @param y - стартовая позиция врага по у
      */
     public Enemy(Player player, float x, float y) {
-        // Текстура врага для отрисовки
-        // !В будущем заменить на атлас
-        // super(new Texture("badlogic.jpg"));
+        this.defineEnemy(player, x, y);
 
-        this.player = player;
-        this.world = player.getWorld();
-        // Задача физических свойств для "тела" врага
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-
-        // Создаем физическое "тело" врага в игровом мире на основе свойств
-        this.box2DBody = this.world.createBody(bodyDef);
-        FixtureDef fixtureDef = new FixtureDef();
-
-        // Физические границы врага
-        CircleShape shape = new CircleShape();
-        shape.setRadius(15);
-
-        fixtureDef.shape = shape;
-        this.box2DBody.createFixture(fixtureDef);
-        this.box2DBody.getFixtureList().get(0).setUserData(this);
-        // Удаляем фигуру, которая была создана для "тела" врага
-        shape.dispose();
-
-        this.setBounds(0, 0, 30, 30);
-
-        // Для анимаций
+        // Изменяемые параметры
         this.speed = 80.5f;
-
+        this.isAlive = true;
         this.isAttacking = false;
         this.isDamageDealt = false;
     }
@@ -94,6 +71,54 @@ public abstract class Enemy extends Sprite {
 
     abstract public void idle();
 
+    private void defineEnemy(Player player, float x, float y) {
+        this.player = player;
+        this.world = player.getWorld();
+        // Задача физических свойств для "тела" врага
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(x, y);
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+        // Создаем физическое "тело" врага в игровом мире на основе свойств
+        this.box2DBody = this.world.createBody(bodyDef);
+        FixtureDef fixtureDef = new FixtureDef();
+        // Физические границы врага
+        CircleShape shape = new CircleShape();
+        shape.setRadius(15);
+
+        fixtureDef.shape = shape;
+        this.box2DBody.createFixture(fixtureDef);
+
+        this.box2DBody.getFixtureList().get(0).setUserData(this);
+        // Удаляем фигуру, которая была создана для "тела" врага
+        shape.dispose();
+
+        this.setBounds(0, 0, 30, 30);
+
+        // Сектор Атакаи врага
+        float scalar = shape.getRadius() * 3;
+        this.attackArea = this.world.createBody(bodyDef);
+        FixtureDef attackFixture = new FixtureDef();
+        PolygonShape dmgSectorShape = new PolygonShape();
+
+        Vector2[] vertices = { new Vector2(0, 0),
+                new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
+                new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3))) };
+
+        dmgSectorShape.set(vertices);
+        attackFixture.shape = dmgSectorShape;
+        attackFixture.isSensor = true;
+        this.attackArea.createFixture(attackFixture);
+        this.attackArea.getFixtureList().get(0).setUserData(this);
+        dmgSectorShape.dispose();
+    };
+
     /**
      * Метод, отвечающий за наложение эффектов на врага
      */
@@ -103,7 +128,15 @@ public abstract class Enemy extends Sprite {
 
     public void receiveDamage(double damage) {
         this.health -= damage;
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
+        this.dispose();
 
+    }
+
+    public Boolean isAlive() {
+        return this.isAlive;
     }
 
     public void setWorld(World world) {
@@ -190,8 +223,15 @@ public abstract class Enemy extends Sprite {
         this.meleeAttack();
         this.setRegion(this.enemysAnimations.getFrame(deltaTime));
     }
-    // @Override
-    // public void dispose() {
-    // this.getTexture().dispose();
-    // }
+
+    @Override
+    public void dispose() {
+        this.getTexture().dispose();
+        // this.attackArea.setUserData(null);
+        // this.attackArea = null;
+        // this.world.destroyBody(this.attackArea);
+        // this.box2DBody.setUserData(null);
+        // this.box2DBody = null;
+        // this.world.destroyBody(this.box2DBody);
+    }
 }

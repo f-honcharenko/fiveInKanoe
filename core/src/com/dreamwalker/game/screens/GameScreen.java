@@ -82,6 +82,8 @@ public class GameScreen implements Screen {
 
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new ScreenViewport(this.camera);
+        this.camera.zoom = 0.6f;
+
     }
 
     @Override
@@ -105,7 +107,6 @@ public class GameScreen implements Screen {
         this.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         this.hud.update(deltaTime);
-
         this.testGoblin.update(deltaTime);
         this.testGoblin2.update(deltaTime);
         this.testGoblin3.update(deltaTime);
@@ -136,9 +137,15 @@ public class GameScreen implements Screen {
         this.player.draw(this.game.getBatch());
 
         // рендер npc
-        this.testGoblin.draw(this.game.getBatch());
-        this.testGoblin2.draw(this.game.getBatch());
-        this.testGoblin3.draw(this.game.getBatch());
+        if (this.testGoblin.isAlive()) {
+            this.testGoblin.draw(this.game.getBatch());
+        }
+        if (this.testGoblin2.isAlive()) {
+            this.testGoblin2.draw(this.game.getBatch());
+        }
+        if (this.testGoblin3.isAlive()) {
+            this.testGoblin3.draw(this.game.getBatch());
+        }
 
         ArrayList<Sword> skillSwords = ((FlyingSword) this.player.getSkillPanel().get(0)).getSwordsOnScreen();
         for (int i = 0; i < skillSwords.size(); i++) {

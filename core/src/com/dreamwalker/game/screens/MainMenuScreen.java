@@ -13,12 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen implements Screen, Disposable {
     private DreamWalker game;
     private Image startButton;
     private Image exitButton;
@@ -31,6 +32,7 @@ public class MainMenuScreen implements Screen {
     private EventListener ExitEvent;
 
     public DreamWalker getGame() {
+
         return this.game;
     }
 
@@ -85,6 +87,7 @@ public class MainMenuScreen implements Screen {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                this.game.getScreen().dispose();
                 this.game.setScreen(new GameScreen(this.game));
             };
 

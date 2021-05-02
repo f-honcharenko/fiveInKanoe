@@ -43,7 +43,7 @@ public class Goblin extends Enemy {
         this.player = player;
 
         this.enemysAnimations = new Animations(this, "template.atlas", "template");
-        this.setBounds(0, 0, 140, 140); // 54
+        this.setBounds(0, 0, 54, 54); // 54
 
         this.spawnX = x;
         this.spawnY = y;
@@ -56,7 +56,7 @@ public class Goblin extends Enemy {
         this.attackSpeedCounter = 0;
         this.idleTimer = 0;
         this.idleTimerMax = rnd(50, 200);
-        this.waitingTimerMax = rnd(50, 200);
+        this.waitingTimerMax = rnd(50, 100);
         this.agroTimerMax = 150;
         this.idleRadius = 150;
         this.agroRadius = 100;

@@ -1,4 +1,5 @@
 package com.dreamwalker.game.player;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
@@ -14,7 +15,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class Player extends Sprite implements Disposable {
     // Физический мир, в котором находится игрок
@@ -80,10 +80,10 @@ public class Player extends Sprite implements Disposable {
         this.manaMax = 100;
         this.attackSpeedCoefficient = 1.5f;
 
-        this.setBounds(0, 0, 140, 140); //54
+        this.setBounds(0, 0, 54, 54); // 54
     }
 
-    private void definePlayer(float x, float y){
+    private void definePlayer(float x, float y) {
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -111,12 +111,12 @@ public class Player extends Sprite implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3)))
-        };
+                new Vector2(scalar * (float) (Math.cos(Math.PI / 3)), scalar * (float) (Math.sin(Math.PI / 3))) };
 
         dmgSectorShape.set(vertices);
         attackFixture.shape = dmgSectorShape;
@@ -125,7 +125,6 @@ public class Player extends Sprite implements Disposable {
         this.attackArea.getFixtureList().get(0).setUserData(this);
         dmgSectorShape.dispose();
     }
-
 
     /**
      * Конструктор
@@ -137,10 +136,12 @@ public class Player extends Sprite implements Disposable {
         this(world, spawnPoint.x, spawnPoint.y);
     }
 
-
     public void update(float deltaTime, Vector2 mousePosition) {
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
+            // this.world.destroyBody(this.playersBody);
+            // this.world.destroyBody(this.attackArea);
+            // this
             this.health = 0;
             this.isAlive = false;
         }
@@ -155,13 +156,12 @@ public class Player extends Sprite implements Disposable {
     public void regeneration() {
         if (isAlive) {
             if (this.mana < this.manaMax) {
-                this.mana += 1.00;
+                this.mana += 0.1;
             }
             if (this.health < this.healthMax) {
                 this.health += 0.1;
             }
         }
-        this.mana += 0.01;
     }
 
     /**
@@ -283,7 +283,7 @@ public class Player extends Sprite implements Disposable {
         this.viewAngle = viewAngle;
     }
 
-    Body getAttackArea() {
+    public Body getAttackArea() {
         return this.attackArea;
     }
 
@@ -313,6 +313,7 @@ public class Player extends Sprite implements Disposable {
 
     @Override
     public void dispose() {
+
         this.getTexture().dispose();
     }
 }
