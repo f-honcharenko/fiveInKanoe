@@ -7,7 +7,7 @@ import com.dreamwalker.game.player.Player;
 
 import java.util.ArrayList;
 
-public class FlyingSword extends ActiveSkill{
+public class FlyingSword extends ActiveSkill {
     private final World world;
     private final Player player;
 
@@ -16,8 +16,9 @@ public class FlyingSword extends ActiveSkill{
     private float damage;
     private float lifeTime;
     private int maxSwordsCount;
+    private int manaCost;
 
-    public FlyingSword(int hotKey, Player player, World world){
+    public FlyingSword(int hotKey, Player player, World world) {
         super(hotKey);
         this.player = player;
         this.world = world;
@@ -28,29 +29,32 @@ public class FlyingSword extends ActiveSkill{
         this.maxSwordsCount = 5;
         this.damage = 15;
         this.lifeTime = 35;
+        this.manaCost = 15;
     }
 
-
-
     @Override
-    public void usage(){
-        if(Gdx.input.isKeyJustPressed(super.hotKey)){
-            if(this.swordsOnScreen.size() <= this.maxSwordsCount){
-                Sword newSword = new Sword(this.player, this.world, this.damage, this.lifeTime);
-                this.swordsOnScreen.add(newSword);
+    public void usage() {
+        if (Gdx.input.isKeyJustPressed(super.hotKey)) {
+
+            if (this.player.getCurrentMana() >= this.manaCost) {
+                this.player.manaSpend(this.manaCost);
+                if (this.swordsOnScreen.size() <= this.maxSwordsCount) {
+                    Sword newSword = new Sword(this.player, this.world, this.damage, this.lifeTime);
+                    this.swordsOnScreen.add(newSword);
+                }
             }
         }
-        for(int i = 0; i < this.swordsOnScreen.size(); i++){
+        for (int i = 0; i < this.swordsOnScreen.size(); i++) {
             Sword currentSword = this.swordsOnScreen.get(i);
-            if(currentSword.getLifeTime() <= 0){
+            if (currentSword.getLifeTime() <= 0) {
                 this.swordsOnScreen.remove(i);
                 currentSword.dispose();
-            }
-            else {
+            } else {
                 currentSword.move();
                 currentSword.decreaseLifeTime();
             }
         }
+
     }
 
     public ArrayList<Sword> getSwordsOnScreen() {

@@ -311,6 +311,11 @@ public class Player extends Sprite implements Disposable {
         return this.playersBody.getPosition().y;
     }
 
+    public double manaSpend(int count) {
+        this.mana -= count;
+        return this.mana;
+    }
+
     @Override
     public void dispose() {
 
