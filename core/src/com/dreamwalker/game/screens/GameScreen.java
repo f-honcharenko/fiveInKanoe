@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -19,6 +20,7 @@ import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.skills.FlyingSword;
 import com.dreamwalker.game.skills.Sword;
+import com.dreamwalker.game.tools.Destroyer;
 
 import java.util.ArrayList;
 
@@ -47,6 +49,8 @@ public class GameScreen implements Screen {
     private Goblin testGoblin;
     private Goblin testGoblin2;
     private Goblin testGoblin3;
+
+    public Destroyer dstr;
 
     /**
      * Конструктор экрана игры
@@ -84,6 +88,8 @@ public class GameScreen implements Screen {
         this.viewport = new ScreenViewport(this.camera);
         this.camera.zoom = 0.6f;
 
+        this.dstr = new Destroyer(this.location.getWorld());
+
     }
 
     @Override
@@ -110,6 +116,7 @@ public class GameScreen implements Screen {
         this.testGoblin.update(deltaTime);
         this.testGoblin2.update(deltaTime);
         this.testGoblin3.update(deltaTime);
+        dstr.destroyBody2D();
 
     }
 

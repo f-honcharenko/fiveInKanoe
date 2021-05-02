@@ -74,7 +74,7 @@ public class Player extends Sprite implements Disposable {
         this.damage = 15;
         this.speed = 80.5f;
         this.health = 100;
-        this.mana = 0;
+        this.mana = 50;
         this.armor = 4;
         this.healthMax = 100;
         this.manaMax = 100;

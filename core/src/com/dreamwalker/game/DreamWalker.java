@@ -2,7 +2,6 @@ package com.dreamwalker.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dreamwalker.game.screens.GameScreen;
 import com.dreamwalker.game.screens.MainMenuScreen;
 
 public class DreamWalker extends Game {

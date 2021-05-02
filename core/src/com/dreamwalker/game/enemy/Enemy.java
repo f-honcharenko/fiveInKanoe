@@ -15,8 +15,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.player.Player;
+import com.dreamwalker.game.tools.Destroyer;
 import com.badlogic.gdx.graphics.Pixmap;
-
+import com.dreamwalker.game.DreamWalker;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class Enemy extends Sprite implements Disposable {
@@ -45,6 +46,8 @@ public abstract class Enemy extends Sprite implements Disposable {
     private Body enemysBody;
     private Texture HPTexture;
     protected Animations enemysAnimations;
+
+    private Destroyer dstr;
 
     /**
      * Конструктор
@@ -83,6 +86,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     private void defineEnemy(Player player, float x, float y) {
         this.player = player;
         this.world = player.getWorld();
+
         // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(x, y);
@@ -126,6 +130,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.attackArea.createFixture(attackFixture);
         this.attackArea.getFixtureList().get(0).setUserData(this);
         dmgSectorShape.dispose();
+        this.dstr = new Destroyer(this.world);
     };
 
     /**
@@ -139,8 +144,10 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.health -= damage;
         if (this.health <= 0) {
             this.isAlive = false;
-            this.dispose();
-
+            dstr.addToDestroyList(this.box2DBody);
+            // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
+            // this.dispose();
+            // this.game.addToDestroyList();
         }
 
     }
@@ -239,9 +246,11 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void update(float deltaTime) {
-        this.idle();
-        this.meleeAttack();
-        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+        if (this.isAlive()) {
+            this.idle();
+            this.meleeAttack();
+            this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+        }
     }
 
     private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {
@@ -256,6 +265,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     @Override
     public void dispose() {
         this.getTexture().dispose();
+        // this.box2DBody.set
         // this.attackArea.setUserData(null);
         // this.attackArea = null;
         // this.world.destroyBody(this.attackArea);
