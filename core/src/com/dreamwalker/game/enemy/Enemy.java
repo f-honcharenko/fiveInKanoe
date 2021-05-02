@@ -2,6 +2,7 @@ package com.dreamwalker.game.enemy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -33,6 +34,10 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected double armor;
     protected float speed;
     private float attackSpeedCoefficient;
+
+    private int atackedFilterTimerMax;
+    private int atackedFilterTimer;
+    private Boolean atackedFilterFlag;
 
     private float BarWidth;
     private float BarHeight;
@@ -73,6 +78,11 @@ public abstract class Enemy extends Sprite implements Disposable {
         // this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsHeight = 54 / DreamWalker.PPM;
+
+        this.atackedFilterTimerMax = 15;
+        this.atackedFilterTimer = 0;
+        this.atackedFilterFlag = false;
+
     }
 
     /**
@@ -150,6 +160,9 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void receiveDamage(double damage) {
         this.health -= damage;
+        this.atackedFilterFlag = true;
+        this.atackedFilterTimer = 0;
+        this.setColor(1f, 0f, 0f, 1.0f);
         if (this.health <= 0) {
             this.isAlive = false;
             dstr.addToDestroyList(this.box2DBody);
@@ -162,7 +175,6 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void drawBar(SpriteBatch sb) {
         float tempHPwidth = (((float) this.health / (float) this.healthMax) * (float) this.BarWidth);
-        System.out.println("tempHPwidth:" + tempHPwidth);
         sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2), this.getY() + (this.BoundsHeight / 2),
                 tempHPwidth, this.BarHeight);
 
@@ -254,6 +266,14 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void update(float deltaTime) {
         if (this.isAlive()) {
+            if (this.atackedFilterTimer < this.atackedFilterTimerMax) {
+                this.atackedFilterTimer++;
+                if (this.atackedFilterTimer == this.atackedFilterTimerMax) {
+                    this.atackedFilterTimer = this.atackedFilterTimerMax;
+                    this.setColor(1f, 1f, 1f, 1.0f);
+
+                }
+            }
             this.idle();
             this.meleeAttack();
             this.setRegion(this.enemysAnimations.getFrame(deltaTime));
