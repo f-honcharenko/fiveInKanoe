@@ -83,6 +83,8 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     abstract public void idle();
 
+    public abstract void render(SpriteBatch batch);
+
     private void defineEnemy(Player player, float x, float y) {
         this.player = player;
         this.world = player.getWorld();

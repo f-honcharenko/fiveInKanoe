@@ -63,7 +63,7 @@ public class Player extends Sprite implements Disposable {
 
         this.passiveSkills = new ArrayList<>();
         this.skillPanel = new ArrayList<>();
-        this.skillPanel.add(new FlyingSword(Input.Keys.E, this, this.world));
+        this.skillPanel.add(new FlyingSword(Input.Keys.E, this));
 
         this.enemiesInRange = new ArrayList<>();
         this.enemyInArea = false;
@@ -134,6 +134,13 @@ public class Player extends Sprite implements Disposable {
      */
     public Player(World world, Vector2 spawnPoint) {
         this(world, spawnPoint.x, spawnPoint.y);
+    }
+
+    public void render(SpriteBatch batch){
+        this.draw(batch);
+        for(ActiveSkill skill : this.skillPanel){
+            skill.render(batch);
+        }
     }
 
     public void update(float deltaTime, Vector2 mousePosition) {

@@ -152,26 +152,13 @@ public class GameScreen implements Screen {
         // рендер игрока
         this.game.getBatch().setProjectionMatrix(this.camera.combined);
         this.game.getBatch().begin();
-        this.player.draw(this.game.getBatch());
+        this.player.render(this.game.getBatch());
 
         // рендер npc
-        if (this.testGoblin.isAlive()) {
-            this.testGoblin.draw(this.game.getBatch());
-            this.testGoblin.drawBar(this.game.getBatch());
-        }
-        if (this.testGoblin2.isAlive()) {
-            this.testGoblin2.draw(this.game.getBatch());
-            this.testGoblin2.drawBar(this.game.getBatch());
-        }
-        if (this.testGoblin3.isAlive()) {
-            this.testGoblin3.draw(this.game.getBatch());
-            this.testGoblin3.drawBar(this.game.getBatch());
-        }
+        this.testGoblin.render(this.game.getBatch());
+        this.testGoblin2.render(this.game.getBatch());
+        this.testGoblin3.render(this.game.getBatch());
 
-        ArrayList<Sword> skillSwords = ((FlyingSword) this.player.getSkillPanel().get(0)).getSwordsOnScreen();
-        for (int i = 0; i < skillSwords.size(); i++) {
-            skillSwords.get(i).draw(this.game.getBatch());
-        }
         this.game.getBatch().end();
 
         // Рендер верхнего слоя

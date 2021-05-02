@@ -1,6 +1,7 @@
 package com.dreamwalker.game.skills;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.player.Player;
@@ -18,10 +19,10 @@ public class FlyingSword extends ActiveSkill {
     private int maxSwordsCount;
     private int manaCost;
 
-    public FlyingSword(int hotKey, Player player, World world) {
+    public FlyingSword(int hotKey, Player player) {
         super(hotKey);
         this.player = player;
-        this.world = world;
+        this.world = player.getWorld();
         this.swordsOnScreen = new ArrayList<>();
 
         this.mousePosition = null;
@@ -33,13 +34,20 @@ public class FlyingSword extends ActiveSkill {
     }
 
     @Override
+    public void render(SpriteBatch batch) {
+        for(Sword sword : this.swordsOnScreen){
+            sword.draw(batch);
+        }
+    }
+
+    @Override
     public void usage() {
         if (Gdx.input.isKeyJustPressed(super.hotKey)) {
 
             if (this.player.getCurrentMana() >= this.manaCost) {
                 this.player.manaSpend(this.manaCost);
                 if (this.swordsOnScreen.size() <= this.maxSwordsCount) {
-                    Sword newSword = new Sword(this.player, this.world, this.damage, this.lifeTime);
+                    Sword newSword = new Sword(this.player, this.damage, this.lifeTime);
                     this.swordsOnScreen.add(newSword);
                 }
             }
@@ -60,4 +68,6 @@ public class FlyingSword extends ActiveSkill {
     public ArrayList<Sword> getSwordsOnScreen() {
         return this.swordsOnScreen;
     }
+
+
 }

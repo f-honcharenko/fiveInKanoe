@@ -17,10 +17,10 @@ public class Sword extends Sprite implements Disposable {
     private Vector2 direction;
     private float speed;
 
-    Sword(Player player, World world, float damage, float lifeTime) {
+    Sword(Player player, float damage, float lifeTime) {
         super(new Texture("flying_sword.png"));
         this.player = player;
-        this.world = world;
+        this.world = player.getWorld();
         this.damage = damage;
         this.lifeTime = lifeTime;
         this.direction = this.player.getPlayersBody().getPosition();

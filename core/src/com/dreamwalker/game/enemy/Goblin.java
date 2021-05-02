@@ -2,6 +2,7 @@ package com.dreamwalker.game.enemy;
 
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.player.Player;
@@ -139,6 +140,14 @@ public class Goblin extends Enemy {
                     new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        if(this.isAlive()){
+            this.draw(batch);
+            this.drawBar(batch);
+        }
     }
 
     public static int rnd(int min, int max) {

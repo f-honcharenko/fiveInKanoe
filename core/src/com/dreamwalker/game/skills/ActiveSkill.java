@@ -1,6 +1,7 @@
 package com.dreamwalker.game.skills;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class ActiveSkill implements Skill{
@@ -14,4 +15,6 @@ public abstract class ActiveSkill implements Skill{
     public void setMousePosition(Vector2 mousePosition){
         this.mousePosition = mousePosition;
     }
+
+    public abstract void render(SpriteBatch batch);
 }
