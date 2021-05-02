@@ -37,6 +37,9 @@ public abstract class Enemy extends Sprite implements Disposable {
     private float BarWidth;
     private float BarHeight;
 
+    private float BoundsWidth;
+    private float BoundsHeight;
+
     private boolean isAttacking;
     private boolean isDamageDealt;
     private boolean isAlive;
@@ -65,8 +68,11 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.isAttacking = false;
         this.isDamageDealt = false;
         this.health = this.healthMax = 100;
-        this.BarWidth = 40 / DreamWalker.PPM;
+        this.BarWidth = this.BoundsWidth;
         this.BarHeight = 5 / DreamWalker.PPM;
+        // this.BoundsWidth = 54 / DreamWalker.PPM;
+        this.BoundsWidth = 54 / DreamWalker.PPM;
+        this.BoundsHeight = 54 / DreamWalker.PPM;
     }
 
     /**
@@ -107,8 +113,8 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.box2DBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
-        this.HPTexture = new Texture(createProceduralPixmap(100, 10, 1, 0, 0));
-        this.setBounds(0, 0, 30 / DreamWalker.PPM, 30 / DreamWalker.PPM);
+        this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
+        this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
 
         // Сектор Атакаи врага
         float scalar = shape.getRadius() * 3;
@@ -119,7 +125,8 @@ public abstract class Enemy extends Sprite implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -154,9 +161,11 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void drawBar(SpriteBatch sb) {
-        double tempHPwidth = ((this.health / this.healthMax) * this.BarWidth) / DreamWalker.PPM;
-        System.out.println(tempHPwidth);
-        sb.draw(this.HPTexture, this.getX() - 15 / DreamWalker.PPM, this.getY() + 20 / DreamWalker.PPM, (int) tempHPwidth, this.BarHeight);
+        float tempHPwidth = (((float) this.health / (float) this.healthMax) * (float) this.BarWidth);
+        System.out.println("tempHPwidth:" + tempHPwidth);
+        sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2), this.getY() + (this.BoundsHeight / 2),
+                tempHPwidth, this.BarHeight);
+
     }
 
     public Boolean isAlive() {
@@ -203,7 +212,6 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     /**
-     *
      * @return - позиция врага по х
      */
     public float getX() {
@@ -211,14 +219,12 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     /**
-     *
      * @return - позиция врага по х
      */
     public float getY() {
         return this.box2DBody.getPosition().y;
     }
 
-    // ANIMATIOM
     public float getAttackSpeedCoefficient() {
         return this.attackSpeedCoefficient;
     }
@@ -261,6 +267,15 @@ public abstract class Enemy extends Sprite implements Disposable {
         pixmap.fillRectangle(0, 0, width, height);
 
         return pixmap;
+    }
+
+    public void setBoundsCustom(float width, float height) {
+        this.BoundsWidth = width / DreamWalker.PPM;
+        this.BoundsHeight = height / DreamWalker.PPM;
+        this.BarWidth = this.BoundsWidth;
+
+        this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
+
     }
 
     @Override

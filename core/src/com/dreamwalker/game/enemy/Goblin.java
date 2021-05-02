@@ -45,8 +45,8 @@ public class Goblin extends Enemy {
         this.player = player;
 
         this.enemysAnimations = new Animations(this, "template.atlas", "template");
-        this.setBounds(0, 0, 54 / DreamWalker.PPM, 54 / DreamWalker.PPM); // 54
-
+        this.setBoundsCustom(60f, 60f); // 54
+        // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;
         this.spawnY = y;
 
@@ -145,7 +145,7 @@ public class Goblin extends Enemy {
 
     @Override
     public void render(SpriteBatch batch) {
-        if(this.isAlive()){
+        if (this.isAlive()) {
             this.draw(batch);
             this.drawBar(batch);
         }
