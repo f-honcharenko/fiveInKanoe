@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.player.Player;
 
 public class Sword extends Sprite implements Disposable {
@@ -24,7 +25,7 @@ public class Sword extends Sprite implements Disposable {
         this.damage = damage;
         this.lifeTime = lifeTime;
         this.direction = this.player.getPlayersBody().getPosition();
-        this.speed = 200f;
+        this.speed = 3.5f;
 
         BodyDef swordBodyDef = new BodyDef();
         swordBodyDef.angle = this.player.getPlayersBody().getAngle();
@@ -35,13 +36,13 @@ public class Sword extends Sprite implements Disposable {
         FixtureDef swordFixtureDef = new FixtureDef();
         swordFixtureDef.isSensor = true;
         CircleShape shape = new CircleShape();
-        shape.setRadius(7);
+        shape.setRadius(7 / DreamWalker.PPM);
         swordFixtureDef.shape = shape;
         this.swordBody.createFixture(swordFixtureDef);
         this.swordBody.getFixtureList().get(0).setUserData(this);
         shape.dispose();
 
-        this.setBounds(0, 0, 75, 75);
+        this.setBounds(0, 0, 75 / DreamWalker.PPM, 75 / DreamWalker.PPM);
     }
 
     public void move() {

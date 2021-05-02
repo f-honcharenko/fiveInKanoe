@@ -9,6 +9,8 @@ public class DreamWalker extends Game {
 	private SpriteBatch batch;
 	private ScreenSwitcher screenSwitcher;
 
+	public static final float PPM = 100;
+
 	@Override
 	public void create() {
 		this.batch = new SpriteBatch();

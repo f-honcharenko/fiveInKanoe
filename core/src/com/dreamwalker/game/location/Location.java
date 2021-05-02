@@ -64,11 +64,11 @@ public class Location implements Disposable {
 
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             body = world.createBody(bdef);
 
             // Задача областей коллизий
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
             fdef.shape = shape;
             body.createFixture(fdef);
         }
@@ -95,7 +95,7 @@ public class Location implements Disposable {
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
         // Координаты точки спавна
-        Vector2 spawnPoint = new Vector2(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+        Vector2 spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
 
         // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
         // |
@@ -110,7 +110,7 @@ public class Location implements Disposable {
         body = this.world.createBody(bodyDef);
 
         // Задача области спавна
-        shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+        shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
         fixtureDef.shape = shape;
         body.createFixture(fixtureDef);
 

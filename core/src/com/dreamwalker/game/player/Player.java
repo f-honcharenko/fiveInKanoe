@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
+import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
 import com.dreamwalker.game.skills.ActiveSkill;
 import com.dreamwalker.game.skills.FlyingSword;
@@ -72,7 +73,7 @@ public class Player extends Sprite implements Disposable {
 
         this.isAlive = true;
         this.damage = 15;
-        this.speed = 80.5f;
+        this.speed = 1.5f;
         this.health = 100;
         this.mana = 50;
         this.armor = 4;
@@ -80,7 +81,7 @@ public class Player extends Sprite implements Disposable {
         this.manaMax = 100;
         this.attackSpeedCoefficient = 1.5f;
 
-        this.setBounds(0, 0, 54, 54); // 54
+        this.setBounds(0, 0, 54 / DreamWalker.PPM, 54 / DreamWalker.PPM); // 54
     }
 
     private void definePlayer(float x, float y) {
@@ -95,7 +96,7 @@ public class Player extends Sprite implements Disposable {
 
         // Физические границы игрока
         CircleShape shape = new CircleShape();
-        shape.setRadius(15);
+        shape.setRadius(15 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
@@ -103,7 +104,7 @@ public class Player extends Sprite implements Disposable {
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
-        float scalar = shape.getRadius() * 3;
+        float scalar = shape.getRadius() * 2;
         this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();

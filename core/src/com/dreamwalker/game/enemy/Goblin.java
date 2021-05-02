@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.player.Player;
 
 public class Goblin extends Enemy {
@@ -25,8 +26,8 @@ public class Goblin extends Enemy {
     private float spawnX;
     private float spawnY;
     private float idleRadius;
-    private int agroRadius;
-    private int attackRadius;
+    private float agroRadius;
+    private float attackRadius;
 
     private Boolean attackFlag = true;
     // private Boolean idleFlag = true;
@@ -44,7 +45,7 @@ public class Goblin extends Enemy {
         this.player = player;
 
         this.enemysAnimations = new Animations(this, "template.atlas", "template");
-        this.setBounds(0, 0, 54, 54); // 54
+        this.setBounds(0, 0, 54 / DreamWalker.PPM, 54 / DreamWalker.PPM); // 54
 
         this.spawnX = x;
         this.spawnY = y;
@@ -59,9 +60,9 @@ public class Goblin extends Enemy {
         this.idleTimerMax = rnd(50, 200);
         this.waitingTimerMax = rnd(50, 100);
         this.agroTimerMax = 150;
-        this.idleRadius = 150;
-        this.agroRadius = 100;
-        this.attackRadius = 50;
+        this.idleRadius = 150 / DreamWalker.PPM;
+        this.agroRadius = 100 / DreamWalker.PPM;
+        this.attackRadius = 50 / DreamWalker.PPM;
     }
 
     /**

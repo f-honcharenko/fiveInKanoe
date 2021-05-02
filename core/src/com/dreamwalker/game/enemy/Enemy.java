@@ -34,8 +34,8 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected float speed;
     private float attackSpeedCoefficient;
 
-    private int BarWidth;
-    private int BarHeight;
+    private float BarWidth;
+    private float BarHeight;
 
     private boolean isAttacking;
     private boolean isDamageDealt;
@@ -60,13 +60,13 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.defineEnemy(player, x, y);
 
         // Изменяемые параметры
-        this.speed = 80.5f;
+        this.speed = 1.5f;
         this.isAlive = true;
         this.isAttacking = false;
         this.isDamageDealt = false;
         this.health = this.healthMax = 100;
-        this.BarWidth = 40;
-        this.BarHeight = 5;
+        this.BarWidth = 40 / DreamWalker.PPM;
+        this.BarHeight = 5 / DreamWalker.PPM;
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         FixtureDef fixtureDef = new FixtureDef();
         // Физические границы врага
         CircleShape shape = new CircleShape();
-        shape.setRadius(15);
+        shape.setRadius(15 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
         this.box2DBody.createFixture(fixtureDef);
@@ -108,7 +108,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
         this.HPTexture = new Texture(createProceduralPixmap(100, 10, 1, 0, 0));
-        this.setBounds(0, 0, 30, 30);
+        this.setBounds(0, 0, 30 / DreamWalker.PPM, 30 / DreamWalker.PPM);
 
         // Сектор Атакаи врага
         float scalar = shape.getRadius() * 3;
@@ -119,8 +119,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -155,9 +154,9 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void drawBar(SpriteBatch sb) {
-        double tempHPwidth = (this.getCurrentHealth() / this.getMaxHealth()) * this.BarWidth;
+        double tempHPwidth = ((this.health / this.healthMax) * this.BarWidth) / DreamWalker.PPM;
         System.out.println(tempHPwidth);
-        sb.draw(this.HPTexture, this.getX() - 15, this.getY() + 20, (int) tempHPwidth, this.BarHeight);
+        sb.draw(this.HPTexture, this.getX() - 15 / DreamWalker.PPM, this.getY() + 20 / DreamWalker.PPM, (int) tempHPwidth, this.BarHeight);
     }
 
     public Boolean isAlive() {
