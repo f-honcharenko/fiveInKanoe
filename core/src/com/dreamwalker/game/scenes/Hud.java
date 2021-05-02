@@ -59,7 +59,6 @@ public class Hud {
         }
 
         public void update(float deltaTime) {
-                System.out.println("MANA " + this.player.getCurrentMana());
                 this.initBars();
                 this.createTable();
         }

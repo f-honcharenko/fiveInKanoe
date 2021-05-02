@@ -105,14 +105,14 @@ public class AttackListener implements ContactListener {
                 Sword sword = (Sword) fixtureA.getUserData();
                 Enemy enemy = (Enemy) fixtureB.getUserData();
                 enemy.receiveDamage(sword.getDamage());
-                System.out.println(enemy.getHealth());
+                System.out.println(enemy.getCurrentHealth());
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Sword;
             if (variant2) {
                 Enemy enemy = (Enemy) fixtureA.getUserData();
                 Sword sword = (Sword) fixtureB.getUserData();
                 enemy.receiveDamage(sword.getDamage());
-                System.out.println(enemy.getHealth());
+                System.out.println(enemy.getCurrentHealth());
             }
         }
     }

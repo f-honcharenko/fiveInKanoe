@@ -13,7 +13,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.player.Player;
+import com.badlogic.gdx.graphics.Pixmap;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -25,10 +27,14 @@ public abstract class Enemy extends Sprite implements Disposable {
     private Body attackArea;
 
     protected double health;
+    protected double healthMax;
     protected double damage;
     protected double armor;
     protected float speed;
     private float attackSpeedCoefficient;
+
+    private int BarWidth;
+    private int BarHeight;
 
     private boolean isAttacking;
     private boolean isDamageDealt;
@@ -37,7 +43,7 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     private double viewAngle;
     private Body enemysBody;
-
+    private Texture HPTexture;
     protected Animations enemysAnimations;
 
     /**
@@ -55,6 +61,9 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.isAlive = true;
         this.isAttacking = false;
         this.isDamageDealt = false;
+        this.health = this.healthMax = 100;
+        this.BarWidth = 40;
+        this.BarHeight = 5;
     }
 
     /**
@@ -92,7 +101,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.box2DBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
-
+        this.HPTexture = new Texture(createProceduralPixmap(100, 10, 1, 0, 0));
         this.setBounds(0, 0, 30, 30);
 
         // Сектор Атакаи врага
@@ -130,9 +139,16 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.health -= damage;
         if (this.health <= 0) {
             this.isAlive = false;
-        }
-        this.dispose();
+            this.dispose();
 
+        }
+
+    }
+
+    public void drawBar(SpriteBatch sb) {
+        double tempHPwidth = (this.getCurrentHealth() / this.getMaxHealth()) * this.BarWidth;
+        System.out.println(tempHPwidth);
+        sb.draw(this.HPTexture, this.getX() - 15, this.getY() + 20, (int) tempHPwidth, this.BarHeight);
     }
 
     public Boolean isAlive() {
@@ -150,8 +166,12 @@ public abstract class Enemy extends Sprite implements Disposable {
         return this.world;
     }
 
-    public double getHealth() {
+    public double getCurrentHealth() {
         return this.health;
+    }
+
+    public double getMaxHealth() {
+        return this.healthMax;
     }
 
     public double getDamage() {
@@ -222,6 +242,15 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.idle();
         this.meleeAttack();
         this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+    }
+
+    private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+
+        pixmap.setColor(r, g, b, 1);
+        pixmap.fillRectangle(0, 0, width, height);
+
+        return pixmap;
     }
 
     @Override

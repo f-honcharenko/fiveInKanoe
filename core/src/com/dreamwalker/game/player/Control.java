@@ -30,7 +30,7 @@ public class Control {
         if (this.player.isEnemyInArea() && this.player.isDamageDealt()) {
             System.out.println("DEAL");
             for (Enemy enemy : this.player.getEnemiesInRange()) {
-                System.out.println(enemy.getHealth() + " " + player.getEnemiesInRange().size());
+                System.out.println(enemy.getCurrentHealth() + " " + player.getEnemiesInRange().size());
                 enemy.receiveDamage(this.player.getDamage());
             }
             this.player.setDamageDealt(false);
