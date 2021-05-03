@@ -78,16 +78,16 @@ public class AttackListener implements ContactListener {
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
                 System.out.println("TEST1");
-                // Player player = (Player) fixtureA.getUserData();
-                // player.getEnemiesInRange().add((Enemy) fixtureB.getUserData());
-                // player.setEnemyInArea(true);
+                Player player = (Player) fixtureA.getUserData();
+                player.getEnemiesInRange().add((Enemy) fixtureB.getUserData());
+                player.setEnemyInArea(true);
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if (variant2) {
                 System.out.println("TEST2");
-                // Player player = (Player) fixtureB.getUserData();
-                // player.getEnemiesInRange().add((Enemy) fixtureA.getUserData());
-                // player.setEnemyInArea(true);
+                Player player = (Player) fixtureB.getUserData();
+                player.getEnemiesInRange().add((Enemy) fixtureA.getUserData());
+                player.setEnemyInArea(true);
             }
         }
     }
@@ -104,15 +104,17 @@ public class AttackListener implements ContactListener {
             if (variant1) {
                 Sword sword = (Sword) fixtureA.getUserData();
                 Enemy enemy = (Enemy) fixtureB.getUserData();
-                enemy.receiveDamage(sword.getDamage());
-                System.out.println(enemy.getCurrentHealth());
+                if (!fixtureB.isSensor()) {
+                    enemy.receiveDamage(sword.getDamage());
+                }
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Sword;
             if (variant2) {
                 Enemy enemy = (Enemy) fixtureA.getUserData();
                 Sword sword = (Sword) fixtureB.getUserData();
-                enemy.receiveDamage(sword.getDamage());
-                System.out.println(enemy.getCurrentHealth());
+                if (!fixtureA.isSensor()) {
+                    enemy.receiveDamage(sword.getDamage());
+                }
             }
         }
     }

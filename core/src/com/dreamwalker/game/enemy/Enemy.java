@@ -147,6 +147,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         attackFixture.isSensor = true;
         this.attackArea.createFixture(attackFixture);
         this.attackArea.getFixtureList().get(0).setUserData(this);
+
         dmgSectorShape.dispose();
         this.dstr = new Destroyer(this.world);
     };
@@ -296,6 +297,10 @@ public abstract class Enemy extends Sprite implements Disposable {
 
         this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
 
+    }
+
+    public Boolean isAttackArea() {
+        return this.isAttackArea;
     }
 
     @Override
