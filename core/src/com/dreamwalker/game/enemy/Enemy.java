@@ -49,6 +49,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     private boolean isDamageDealt;
     private boolean isAlive;
     private Player player;
+    private boolean playerInArea;
 
     private double viewAngle;
     private Body enemysBody;
@@ -83,6 +84,9 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.atackedFilterTimer = 0;
         this.atackedFilterFlag = false;
 
+        this.playerInArea = false;
+        this.attackSpeedCoefficient = 1.5f;
+
     }
 
     /**
@@ -95,7 +99,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this(player, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
-    abstract public void meleeAttack();
+    abstract public void attack();
 
     abstract public void idle();
 
@@ -169,7 +173,6 @@ public abstract class Enemy extends Sprite implements Disposable {
             dstr.addToDestroyList(this.box2DBody);
             // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
             // this.dispose();
-            // this.game.addToDestroyList();
         }
 
     }
@@ -276,9 +279,10 @@ public abstract class Enemy extends Sprite implements Disposable {
                 }
             }
             this.idle();
-            this.meleeAttack();
-            this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+            this.attack();
         }
+        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
+        this.attackArea.setTransform(this.box2DBody.getPosition(), (float) this.box2DBody.getAngle());
     }
 
     private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {
@@ -299,8 +303,12 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     }
 
-    public Boolean isAttackArea() {
-        return this.isAttackArea;
+    public void setPlayerInArea(boolean playerInArea) {
+        this.playerInArea = playerInArea;
+    }
+
+    public boolean isPlayerInArea() {
+        return this.playerInArea;
     }
 
     @Override

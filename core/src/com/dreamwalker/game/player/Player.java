@@ -72,7 +72,7 @@ public class Player extends Sprite implements Disposable {
         this.isDamageDealt = false;
 
         this.isAlive = true;
-        this.damage = 15;
+        this.damage = 5;
         this.speed = 1.5f;
         this.health = 100;
         this.mana = 50;
@@ -100,6 +100,7 @@ public class Player extends Sprite implements Disposable {
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
+        this.playersBody.getFixtureList().get(0).setUserData(this);
 
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
@@ -137,9 +138,9 @@ public class Player extends Sprite implements Disposable {
         this(world, spawnPoint.x, spawnPoint.y);
     }
 
-    public void render(SpriteBatch batch){
+    public void render(SpriteBatch batch) {
         this.draw(batch);
-        for(ActiveSkill skill : this.skillPanel){
+        for (ActiveSkill skill : this.skillPanel) {
             skill.render(batch);
         }
     }
@@ -170,6 +171,10 @@ public class Player extends Sprite implements Disposable {
                 this.health += 0.1;
             }
         }
+    }
+
+    public void receiveDamage(double damage) {
+        this.health -= damage;
     }
 
     /**

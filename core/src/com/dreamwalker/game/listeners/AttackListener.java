@@ -74,26 +74,57 @@ public class AttackListener implements ContactListener {
     private void enterEnemiesMelee(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
+        // contact
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            System.out.println(fixtureA.getUserData() + "|" + fixtureB.getUserData());
+
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
-                System.out.println("TEST1");
-                Player player = (Player) fixtureA.getUserData();
-                player.getEnemiesInRange().add((Enemy) fixtureB.getUserData());
-                player.setEnemyInArea(true);
+                if ((fixtureB.isSensor()) && (!fixtureA.isSensor())) {
+                    Player player = (Player) fixtureA.getUserData();
+                    Enemy enemy = (Enemy) fixtureB.getUserData();
+                    enemy.setPlayerInArea(true);
+                    System.out.println(enemy.isPlayerInArea());
+                }
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if (variant2) {
-                System.out.println("TEST2");
-                Player player = (Player) fixtureB.getUserData();
-                player.getEnemiesInRange().add((Enemy) fixtureA.getUserData());
-                player.setEnemyInArea(true);
+                if ((fixtureA.isSensor()) && (!fixtureB.isSensor())) {
+                    Enemy enemy = (Enemy) fixtureA.getUserData();
+                    Player player = (Player) fixtureB.getUserData();
+                    enemy.setPlayerInArea(true);
+                    System.out.println(enemy.isPlayerInArea());
+                }
             }
         }
     }
 
     private void quitEnemiesMelee(Contact contact) {
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
+            if (variant1) {
+                System.out.println("PLayer exit Attack area1");
+                if ((fixtureB.isSensor()) && (!fixtureA.isSensor())) {
+                    Player player = (Player) fixtureA.getUserData();
+                    Enemy enemy = (Enemy) fixtureB.getUserData();
+                    enemy.setPlayerInArea(false);
+                    System.out.println(enemy.isPlayerInArea());
+                }
+            }
+            boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
+            if (variant2) {
+                System.out.println("PLayer exit Attack area2");
+                if ((fixtureA.isSensor()) && (!fixtureB.isSensor())) {
+                    Enemy enemy = (Enemy) fixtureA.getUserData();
+                    Player player = (Player) fixtureB.getUserData();
+                    enemy.setPlayerInArea(false);
+                    System.out.println(enemy.isPlayerInArea());
+                }
 
+            }
+        }
     }
 
     private void enterFlyingSword(Contact contact) {

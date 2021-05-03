@@ -76,22 +76,20 @@ public class Goblin extends Enemy {
     }
 
     @Override
-    public void meleeAttack() {
-        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.attackRadius) {
-            attackFlag = true;
-        } else {
-            attackFlag = false;
-        }
-
+    public void attack() {
         // Передлать перезарядку
-        if (attackFlag) {
+        // System.out.println(this.isPlayerInArea());
+        if (this.isPlayerInArea()) {
+            this.setIsAttacking(true);
             if (attackSpeedCounter < attackSpeedMax) {
                 attackSpeedCounter++;
             } else {
                 attackSpeedCounter = 0;
-
-                System.out.println("DAMAGED!" + player.damaged((float) this.getDamage(), 1));
+                System.out.println("DAMAGED!" + this.damage);
+                this.player.receiveDamage(this.damage);
             }
+        } else {
+            this.setIsAttacking(false);
         }
     }
 
@@ -105,8 +103,7 @@ public class Goblin extends Enemy {
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
             Vector2 goblinViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
-            // super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(),
-            // goblinViewPoint.angleRad());
+            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
             super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
                     (player.getY() - super.getY()) * this.speed));
         }
@@ -134,8 +131,7 @@ public class Goblin extends Enemy {
             // Повернуть непися
             Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.getBox2DBody().getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
-            // super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(),
-            // goblinViewPoint.angleRad());
+            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
             // Задать ему скорость
             super.getBox2DBody().setLinearVelocity(
                     new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));

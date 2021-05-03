@@ -73,9 +73,12 @@ public class GameScreen implements Screen {
         this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), location.getSpawnPoint());
-        this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM, location.getSpawnPoint().y + 200 / DreamWalker.PPM);
-        this.testGoblin2 = new Goblin(this.player, location.getSpawnPoint().x - 200 / DreamWalker.PPM, location.getSpawnPoint().y + 200 / DreamWalker.PPM);
-        this.testGoblin3 = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM, location.getSpawnPoint().y - 200 / DreamWalker.PPM);
+        this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
+                location.getSpawnPoint().y + 200 / DreamWalker.PPM);
+        this.testGoblin2 = new Goblin(this.player, location.getSpawnPoint().x - 200 / DreamWalker.PPM,
+                location.getSpawnPoint().y + 200 / DreamWalker.PPM);
+        this.testGoblin3 = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
+                location.getSpawnPoint().y - 200 / DreamWalker.PPM);
         this.location.getWorld().setContactListener(new AttackListener());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
@@ -85,7 +88,8 @@ public class GameScreen implements Screen {
         this.ortMapRender = new OrthogonalTiledMapRenderer(location.getMap(), 1 / DreamWalker.PPM);
         // Установка Ортоганальная проекция камеры, центрированная по вьюпорту
         // (первый параметр отвечает за направление оси у)
-        this.camera.setToOrtho(false, Gdx.graphics.getWidth()/ DreamWalker.PPM, Gdx.graphics.getHeight()/ DreamWalker.PPM);
+        this.camera.setToOrtho(false, Gdx.graphics.getWidth() / DreamWalker.PPM,
+                Gdx.graphics.getHeight() / DreamWalker.PPM);
 
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new ScreenViewport(this.camera);
@@ -113,7 +117,8 @@ public class GameScreen implements Screen {
         this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));
         this.camera.update();
         this.ortMapRender.setView(this.camera);
-        this.viewport.update((int)(Gdx.graphics.getWidth() / DreamWalker.PPM), (int)(Gdx.graphics.getHeight() / DreamWalker.PPM));
+        this.viewport.update((int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
+                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM));
 
         this.hud.update(deltaTime);
         this.testGoblin.update(deltaTime);

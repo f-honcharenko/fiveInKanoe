@@ -7,10 +7,8 @@ import com.badlogic.gdx.utils.Array;
 
 public class Animations {
     private enum State {
-        STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST,
-        RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH, RUNNING_WEST,
-        MELEE_ATTACKING_NORTH, MELEE_ATTACKING_EAST, MELEE_ATTACKING_SOUTH,
-        MELEE_ATTACKING_WEST
+        STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST, RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH,
+        RUNNING_WEST, MELEE_ATTACKING_NORTH, MELEE_ATTACKING_EAST, MELEE_ATTACKING_SOUTH, MELEE_ATTACKING_WEST
     };
 
     private final Player player;
@@ -37,7 +35,7 @@ public class Animations {
 
     private float stateTimer;
 
-    Animations(Player player, String atlasName){
+    Animations(Player player, String atlasName) {
         this.player = player;
 
         this.atlas = new TextureAtlas(atlasName);
@@ -65,9 +63,9 @@ public class Animations {
         this.player.setRegion(this.playerStandSouth);
     }
 
-    private Animation initAnimation(int rowOfAtlas, int spritesCount){
+    private Animation initAnimation(int rowOfAtlas, int spritesCount) {
         Array<TextureRegion> frames = new Array<>();
-        for(int i = 1; i < spritesCount; i++){
+        for (int i = 1; i < spritesCount; i++) {
             frames.add(new TextureRegion(this.player.getTexture(), i * 64, (rowOfAtlas - 1) * 64, 64, 64));
         }
         Animation newAnim = new Animation(0.1f, frames);
@@ -75,43 +73,47 @@ public class Animations {
         return newAnim;
     }
 
-    TextureRegion getFrame(float deltaTime){
+    TextureRegion getFrame(float deltaTime) {
         this.currentState = this.getState();
         TextureRegion region;
         float speed = this.player.getSpeed() + this.stateTimer;
         float attackSpeed = this.player.getAttackSpeedCoefficient() * this.stateTimer;
         boolean attack;
-        switch (this.currentState){
+        switch (this.currentState) {
             case RUNNING_NORTH:
-                region = (TextureRegion)this.playerRunNorth.getKeyFrame(speed, true);
+                region = (TextureRegion) this.playerRunNorth.getKeyFrame(speed, true);
                 break;
             case RUNNING_EAST:
-                region = (TextureRegion)this.playerRunEast.getKeyFrame(speed, true);
+                region = (TextureRegion) this.playerRunEast.getKeyFrame(speed, true);
                 break;
             case RUNNING_SOUTH:
-                region = (TextureRegion)this.playerRunSouth.getKeyFrame(speed, true);
+                region = (TextureRegion) this.playerRunSouth.getKeyFrame(speed, true);
                 break;
             case RUNNING_WEST:
-                region = (TextureRegion)this.playerRunWest.getKeyFrame(speed, true);
+                region = (TextureRegion) this.playerRunWest.getKeyFrame(speed, true);
                 break;
             case MELEE_ATTACKING_NORTH:
-                region = (TextureRegion)this.playerMeleeNorth.getKeyFrame(attackSpeed, true);
-                this.player.setDamageDealt(this.playerMeleeNorth.getKeyFrames()[this.playerMeleeNorth.getKeyFrames().length - 1] == region);
+                region = (TextureRegion) this.playerMeleeNorth.getKeyFrame(attackSpeed, true);
+                this.player.setDamageDealt(this.playerMeleeNorth
+                        .getKeyFrames()[this.playerMeleeNorth.getKeyFrames().length - 1] == region);
                 this.player.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_EAST:
-                region = (TextureRegion)this.playerMeleeEast.getKeyFrame(attackSpeed, true);
-                this.player.setDamageDealt(this.playerMeleeEast.getKeyFrames()[this.playerMeleeEast.getKeyFrames().length - 1] == region);
+                region = (TextureRegion) this.playerMeleeEast.getKeyFrame(attackSpeed, true);
+                this.player.setDamageDealt(
+                        this.playerMeleeEast.getKeyFrames()[this.playerMeleeEast.getKeyFrames().length - 1] == region);
                 this.player.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_SOUTH:
-                region = (TextureRegion)this.playerMeleeSouth.getKeyFrame(attackSpeed, true);
-                this.player.setDamageDealt(this.playerMeleeSouth.getKeyFrames()[this.playerMeleeSouth.getKeyFrames().length - 1] == region);
+                region = (TextureRegion) this.playerMeleeSouth.getKeyFrame(attackSpeed, true);
+                this.player.setDamageDealt(this.playerMeleeSouth
+                        .getKeyFrames()[this.playerMeleeSouth.getKeyFrames().length - 1] == region);
                 this.player.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_WEST:
-                region = (TextureRegion)this.playerMeleeWest.getKeyFrame(attackSpeed, true);
-                this.player.setDamageDealt(this.playerMeleeWest.getKeyFrames()[this.playerMeleeWest.getKeyFrames().length - 1] == region);
+                region = (TextureRegion) this.playerMeleeWest.getKeyFrame(attackSpeed, true);
+                this.player.setDamageDealt(
+                        this.playerMeleeWest.getKeyFrames()[this.playerMeleeWest.getKeyFrames().length - 1] == region);
                 this.player.setIsAttacking(false);
                 break;
             case STANDING_NORTH:
@@ -133,80 +135,65 @@ public class Animations {
         return region;
     }
 
-    private State getState(){
+    private State getState() {
         State currentState = null;
         float velocityX = this.player.getPlayersBody().getLinearVelocity().x;
         float velocityY = this.player.getPlayersBody().getLinearVelocity().y;
         double viewAngle = this.player.getViewAngle();
         boolean isAttacking = this.player.isAttacking();
         boolean isMoving = velocityX != 0 || velocityY != 0;
-        if(isMoving && !isAttacking){
-            if((viewAngle >= 315 && viewAngle <= 360) || (viewAngle >= 0 && viewAngle <= 45)){
+        if (isMoving && !isAttacking) {
+            if ((viewAngle >= 315 && viewAngle <= 360) || (viewAngle >= 0 && viewAngle <= 45)) {
                 currentState = State.RUNNING_EAST;
-                if(velocityX > 0){
+                if (velocityX > 0) {
                     this.playerRunEast.setPlayMode(Animation.PlayMode.NORMAL);
-                }
-                else{
+                } else {
                     this.playerRunEast.setPlayMode(Animation.PlayMode.REVERSED);
                 }
 
-            }
-            else if(viewAngle > 135 && viewAngle < 225){
+            } else if (viewAngle > 135 && viewAngle < 225) {
                 currentState = State.RUNNING_WEST;
-                if(velocityX > 0){
+                if (velocityX > 0) {
                     this.playerRunWest.setPlayMode(Animation.PlayMode.REVERSED);
-                }
-                else{
+                } else {
                     this.playerRunWest.setPlayMode(Animation.PlayMode.NORMAL);
                 }
-            }
-            else if(viewAngle > 45 && viewAngle < 135){
+            } else if (viewAngle > 45 && viewAngle < 135) {
                 currentState = State.RUNNING_NORTH;
-                if(velocityY > 0){
+                if (velocityY > 0) {
                     this.playerRunNorth.setPlayMode(Animation.PlayMode.NORMAL);
-                }
-                else{
+                } else {
                     this.playerRunNorth.setPlayMode(Animation.PlayMode.REVERSED);
                 }
-            }
-            else if(viewAngle >= 225 && viewAngle <= 315){
+            } else if (viewAngle >= 225 && viewAngle <= 315) {
                 currentState = State.RUNNING_SOUTH;
-                if(velocityX > 0){
+                if (velocityX > 0) {
                     this.playerRunSouth.setPlayMode(Animation.PlayMode.REVERSED);
-                }
-                else{
+                } else {
                     this.playerRunSouth.setPlayMode(Animation.PlayMode.NORMAL);
                 }
             }
-        }
-        else{
-            if(isAttacking){
-                if(viewAngle > 45 && viewAngle < 135){
+        } else {
+            if (isAttacking) {
+                if (viewAngle > 45 && viewAngle < 135) {
                     currentState = State.MELEE_ATTACKING_NORTH;
-                }
-                else if(viewAngle > 135 && viewAngle < 225){
+                } else if (viewAngle > 135 && viewAngle < 225) {
                     currentState = State.MELEE_ATTACKING_WEST;
                     this.playerMeleeWest.setPlayMode(Animation.PlayMode.REVERSED);
-                }
-                else if(viewAngle >= 225 && viewAngle <= 315){
+                } else if (viewAngle >= 225 && viewAngle <= 315) {
                     currentState = State.MELEE_ATTACKING_SOUTH;
-                }
-                else{
+                } else {
                     currentState = State.MELEE_ATTACKING_EAST;
                     this.playerMeleeEast.setPlayMode(Animation.PlayMode.REVERSED);
                 }
-            }
-            else{
-                if(viewAngle > 45 && viewAngle < 135){
+            } else {
+                if (viewAngle > 45 && viewAngle < 135) {
                     currentState = State.STANDING_NORTH;
-                }
-                else if(viewAngle > 135 && viewAngle < 225){
+                } else if (viewAngle > 135 && viewAngle < 225) {
                     currentState = State.STANDING_WEST;
-                }
-                else if(viewAngle >= 225 && viewAngle <= 315){
+                } else if (viewAngle >= 225 && viewAngle <= 315) {
                     currentState = State.STANDING_SOUTH;
-                }
-                else{
+                } else {
                     currentState = State.STANDING_EAST;
                 }
             }

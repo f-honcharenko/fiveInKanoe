@@ -114,7 +114,7 @@ public class Hud {
         }
 
         public void initBars() {
-                System.out.println(this.BarsWidth);
+                // System.out.println(this.BarsWidth);
                 Pixmap pixmap = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 1, 0, 0);
                 Pixmap pixmap2 = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 0, 0, 1);
                 this.TBarHP = new Texture(pixmap);

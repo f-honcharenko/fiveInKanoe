@@ -101,27 +101,31 @@ public class Animations {
                 break;
             case MELEE_ATTACKING_NORTH:
                 region = (TextureRegion) this.enemyMeleeNorth.getKeyFrame(attackSpeed, true);
-                this.enemy.setDamageDealt(
-                        this.enemyMeleeNorth.getKeyFrames()[this.enemyMeleeNorth.getKeyFrames().length - 1] == region);
-                this.enemy.setIsAttacking(false);
+                // this.enemy.setDamageDealt(
+                // this.enemyMeleeNorth.getKeyFrames()[this.enemyMeleeNorth.getKeyFrames().length
+                // - 1] == region);
+                // this.enemy.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_EAST:
                 region = (TextureRegion) this.enemyMeleeEast.getKeyFrame(attackSpeed, true);
-                this.enemy.setDamageDealt(
-                        this.enemyMeleeEast.getKeyFrames()[this.enemyMeleeEast.getKeyFrames().length - 1] == region);
-                this.enemy.setIsAttacking(false);
+                // this.enemy.setDamageDealt(
+                // this.enemyMeleeEast.getKeyFrames()[this.enemyMeleeEast.getKeyFrames().length
+                // - 1] == region);
+                // this.enemy.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_SOUTH:
                 region = (TextureRegion) this.enemyMeleeSouth.getKeyFrame(attackSpeed, true);
-                this.enemy.setDamageDealt(
-                        this.enemyMeleeSouth.getKeyFrames()[this.enemyMeleeSouth.getKeyFrames().length - 1] == region);
-                this.enemy.setIsAttacking(false);
+                // this.enemy.setDamageDealt(
+                // this.enemyMeleeSouth.getKeyFrames()[this.enemyMeleeSouth.getKeyFrames().length
+                // - 1] == region);
+                // this.enemy.setIsAttacking(false);
                 break;
             case MELEE_ATTACKING_WEST:
                 region = (TextureRegion) this.enemyMeleeWest.getKeyFrame(attackSpeed, true);
-                this.enemy.setDamageDealt(
-                        this.enemyMeleeWest.getKeyFrames()[this.enemyMeleeWest.getKeyFrames().length - 1] == region);
-                this.enemy.setIsAttacking(false);
+                // this.enemy.setDamageDealt(
+                // this.enemyMeleeWest.getKeyFrames()[this.enemyMeleeWest.getKeyFrames().length
+                // - 1] == region);
+                // this.enemy.setIsAttacking(false);
                 break;
             case STANDING_NORTH:
                 region = this.enemyStandNorth;
