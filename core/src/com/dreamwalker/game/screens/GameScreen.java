@@ -56,7 +56,7 @@ public class GameScreen implements Screen {
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
-    private LevelGraph graph;
+
 
     /**
      * Конструктор экрана игры
@@ -64,10 +64,7 @@ public class GameScreen implements Screen {
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
-        for(int i = 0; i < 50; i++){
-            this.graph = new LevelGraph("TestMapPool/", 3);
-            this.graph.print();
-        }
+
 
         this.game = game;
         this.mapLoader = new TmxMapLoader();

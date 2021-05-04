@@ -1,10 +1,16 @@
 package com.dreamwalker.game.generator;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Queue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -26,14 +32,12 @@ public class LevelGraph {
         this.edges = new ArrayList<>();
         this.roomsCount = roomsCount;
         this.path = path;
-
-
         this.generate();
     }
 
     public void addEdge(Vertex first, Vertex second){
-        Vector2 exitFirst = first.getExit(this.random);
-        Vector2 exitSecond = second.getExit(this.random);
+        Rectangle exitFirst = first.getExit(this.random);
+        Rectangle exitSecond = second.getExit(this.random);
         Edge edge = new Edge(first, exitFirst, second, exitSecond);
         first.addEdge(edge);
         second.addEdge(edge);
@@ -63,9 +67,6 @@ public class LevelGraph {
                     System.out.println(this.vertices.get(i).name + " - " + this.vertices.get(j).name);
                     this.addEdge(this.vertices.get(i), this.vertices.get(j));
                 }
-                if(j == this.vertices.size() - 1){
-                    break;
-                }
             }
         }
         if(this.vertices.get(this.vertices.size() - 1).getEdges().size() == 0){
@@ -76,6 +77,7 @@ public class LevelGraph {
         }
     }
 
+    //del
     public void print(){
         for(Edge edge : this.edges){
             System.out.printf("(%s)-------(%s)\n", edge.getFirst().name, edge.getSecond().name);

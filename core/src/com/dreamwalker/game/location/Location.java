@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 // import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.listeners.AttackListener;
 // import com.badlogic.gdx.maps.objects.RectangleMapObject;
 // import com.badlogic.gdx.math.Rectangle;
@@ -24,6 +25,7 @@ public class Location implements Disposable {
     private TiledMap map;
     // Физический игровой мир
     private World world;
+    private LevelGraph graph;
 
     /**
      * Конструктор
@@ -31,6 +33,11 @@ public class Location implements Disposable {
      * @param map - тайловая карта
      */
     public Location(TiledMap map) {
+        //del
+        for(int i = 0; i < 1; i++){
+            this.graph = new LevelGraph("TestMapPool/", 14);
+            this.graph.print();
+        }
         this.map = map;
         // Инициализация мира без гравитации
         this.world = new World(new Vector2(0, 0), true);
