@@ -35,11 +35,11 @@ public class Vertex {
         this.currentPower = 0;
     }
 
-    public Vector2 getExit(Random rand){
+    public Rectangle getExit(Random rand){
         int exitIndex = (int)(rand.nextDouble() * (this.maxPower - this.currentPower));
         Rectangle exitRect = this.exits.get(exitIndex).getRectangle();
         this.exits.remove(exitIndex);
-        return new Vector2((exitRect.getWidth() / 2) / DreamWalker.PPM, (exitRect.getHeight() / 2) / DreamWalker.PPM);
+        return exitRect;
     }
 
     public boolean isConnected(Vertex other){
