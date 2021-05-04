@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.listeners.AttackListener;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
@@ -55,12 +56,18 @@ public class GameScreen implements Screen {
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
+    private LevelGraph graph;
+
     /**
      * Конструктор экрана игры
      *
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
+        for(int i = 0; i < 50; i++){
+            this.graph = new LevelGraph("TestMapPool/", 3);
+            this.graph.print();
+        }
 
         this.game = game;
         this.mapLoader = new TmxMapLoader();
