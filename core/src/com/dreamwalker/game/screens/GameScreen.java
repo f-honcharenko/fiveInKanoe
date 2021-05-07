@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.enemy.Robber;
 import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.listeners.AttackListener;
 import com.dreamwalker.game.location.Location;
@@ -53,6 +54,10 @@ public class GameScreen implements Screen {
     private Goblin testGoblin2;
     private Goblin testGoblin3;
 
+    // Тестовый разбойник
+    private Robber testRobber;
+    private Robber testRobber1;
+
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
@@ -83,6 +88,10 @@ public class GameScreen implements Screen {
                 location.getSpawnPoint().y + 200 / DreamWalker.PPM);
         this.testGoblin3 = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
                 location.getSpawnPoint().y - 200 / DreamWalker.PPM);
+        this.testRobber = new Robber(this.player, location.getSpawnPoint().x + 80 / DreamWalker.PPM,
+                location.getSpawnPoint().y + 100 / DreamWalker.PPM);
+        this.testRobber1 = new Robber(this.player, location.getSpawnPoint().x + 150 / DreamWalker.PPM,
+                location.getSpawnPoint().y - 80 / DreamWalker.PPM);
         this.location.getWorld().setContactListener(new AttackListener());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
@@ -129,6 +138,9 @@ public class GameScreen implements Screen {
         this.testGoblin2.update(deltaTime);
         this.testGoblin3.update(deltaTime);
 
+        this.testRobber.update(deltaTime);
+        this.testRobber1.update(deltaTime);
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
 
@@ -166,6 +178,9 @@ public class GameScreen implements Screen {
         this.testGoblin.render(this.game.getBatch());
         this.testGoblin2.render(this.game.getBatch());
         this.testGoblin3.render(this.game.getBatch());
+
+        this.testRobber.render(this.game.getBatch());
+        this.testRobber1.render(this.game.getBatch());
 
         this.game.getBatch().end();
 
