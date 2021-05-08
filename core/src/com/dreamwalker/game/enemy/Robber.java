@@ -42,7 +42,7 @@ public class Robber extends Enemy{
         super(player, x, y);
         this.player = player;
 
-        this.enemysAnimations = new Animations(this, "template.atlas", "template");
+        this.enemysAnimations = new Animations(this, "Robber.atlas", "Robber");
         this.setBoundsCustom(60f, 60f); // 54
         // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;
