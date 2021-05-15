@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Queue;
+import com.dreamwalker.game.DreamWalker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -81,6 +82,10 @@ public class LevelGraph {
     public void print(){
         for(Edge edge : this.edges){
             System.out.printf("(%s)-------(%s)\n", edge.getFirst().name, edge.getSecond().name);
+            System.out.printf("[%s; %s]       [%s; %s]\n", (edge.getExitFirst().getX() + edge.getExitFirst().getWidth() / 2) / DreamWalker.PPM,
+                                                            (edge.getExitFirst().getY() + edge.getExitFirst().getHeight() / 2) / DreamWalker.PPM,
+                                                            (edge.getExitSecond().getX() + edge.getExitSecond().getWidth() / 2) / DreamWalker.PPM,
+                                                            (edge.getExitSecond().getY() + edge.getExitSecond().getHeight() / 2) / DreamWalker.PPM);
         }
         System.out.println("--------------------------------------");
     }
@@ -95,6 +100,10 @@ public class LevelGraph {
             mapPoolArr[i] = tempMap;
         }
         this.mapPool = new ArrayList<>(Arrays.asList(mapPoolArr));
+    }
+
+    public Vertex getStart(){
+        return this.vertices.get(0);
     }
 
 }

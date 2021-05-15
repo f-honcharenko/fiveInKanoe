@@ -9,23 +9,16 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.generator.LevelGraph;
-import com.dreamwalker.game.listeners.AttackListener;
+import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.enemy.Goblin;
-import com.dreamwalker.game.skills.FlyingSword;
-import com.dreamwalker.game.skills.Sword;
 import com.dreamwalker.game.tools.Destroyer;
 import com.dreamwalker.game.tools.ScreenSwitcher;
-
-import java.util.ArrayList;
 
 public class GameScreen implements Screen {
 
@@ -71,8 +64,7 @@ public class GameScreen implements Screen {
 
         this.screenSwitcher = new ScreenSwitcher(this.game);
         // Загрузка карты и создание коллизий
-        this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
-        this.location.initCollisions();
+        this.location = new Location();
 
         this.debugRenderer = new Box2DDebugRenderer();
 
@@ -83,13 +75,13 @@ public class GameScreen implements Screen {
                 location.getSpawnPoint().y + 200 / DreamWalker.PPM);
         this.testGoblin3 = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
                 location.getSpawnPoint().y - 200 / DreamWalker.PPM);
-        this.location.getWorld().setContactListener(new AttackListener());
+        this.location.getWorld().setContactListener(new ContactHandler());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
 
         this.camera = new OrthographicCamera();
         // Прогрузка карты
-        this.ortMapRender = new OrthogonalTiledMapRenderer(location.getMap(), 1 / DreamWalker.PPM);
+        this.ortMapRender = new OrthogonalTiledMapRenderer(null, 1 / DreamWalker.PPM);
         // Установка Ортоганальная проекция камеры, центрированная по вьюпорту
         // (первый параметр отвечает за направление оси у)
         this.camera.setToOrtho(false, Gdx.graphics.getWidth() / DreamWalker.PPM,
@@ -147,6 +139,11 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        System.out.println("Render problem");
+        this.ortMapRender.setMap(this.location.getMap());
+        this.ortMapRender.render();
+        System.out.println("Render problem2");
+
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)
         // Координаты мыши в пространстве игрового мира
 
@@ -154,8 +151,7 @@ public class GameScreen implements Screen {
         this.camera.position.x = this.player.getX();
         this.camera.position.y = this.player.getY();
 
-        // Рендер карты
-        this.ortMapRender.render();
+
 
         // рендер игрока
         this.game.getBatch().setProjectionMatrix(this.camera.combined);

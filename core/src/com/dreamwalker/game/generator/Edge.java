@@ -21,7 +21,15 @@ public class Edge {
         return this.first;
     }
 
+    public Rectangle getExitFirst() {
+        return this.exitFirst;
+    }
+
     public Vertex getSecond() {
         return this.second;
+    }
+
+    public Rectangle getExitSecond() {
+        return this.exitSecond;
     }
 }

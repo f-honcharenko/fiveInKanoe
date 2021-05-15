@@ -31,6 +31,7 @@ public class Vertex {
                         getByType(RectangleMapObject.class).
                         toArray()
         ));
+        //Переделать из вертекс в боди
         this.maxPower = this.exits.size();
         this.currentPower = 0;
     }
@@ -73,5 +74,9 @@ public class Vertex {
 
     public ArrayList<Edge> getEdges() {
         return this.edges;
+    }
+
+    public TiledMap getMap() {
+        return this.map;
     }
 }
