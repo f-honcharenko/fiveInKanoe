@@ -56,15 +56,12 @@ public class GameScreen implements Screen {
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
-
-
     /**
      * Конструктор экрана игры
      *
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
-
 
         this.game = game;
         this.mapLoader = new TmxMapLoader();
@@ -144,7 +141,7 @@ public class GameScreen implements Screen {
         update(delta);
 
         // Цвет окна и фикс мерцания экрана при изменении
-        Gdx.gl.glClearColor(0, 0, 1, 1);
+        Gdx.gl.glClearColor(50 / 225f, 33 / 225f, 37 / 225f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Получение привычных координат мыши (начало в левом НИЖНЕМ углу)

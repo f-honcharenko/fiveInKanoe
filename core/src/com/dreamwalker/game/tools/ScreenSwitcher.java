@@ -1,5 +1,11 @@
 package com.dreamwalker.game.tools;
 
+import java.nio.ByteBuffer;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.screens.*;
 
@@ -30,9 +36,9 @@ public class ScreenSwitcher {
     }
 
     public void ToGameMenu() {
-        if (this.gameMenuScreen == null) {
-            this.gameMenuScreen = new GameMenuScreen(this.game);
-        }
+        Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        this.gameMenuScreen = new GameMenuScreen(this.game, new Texture(flipPixmap(pixmap)));
+
         this.game.setScreen(this.gameMenuScreen);
     }
 
@@ -55,5 +61,23 @@ public class ScreenSwitcher {
             this.gameScreen.dispose();
             this.gameScreen = null;
         }
+    }
+
+    private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown) {
+        final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
+        return pixmap;
+    }
+
+    private static Pixmap flipPixmap(Pixmap src) {
+        final int width = src.getWidth();
+        final int height = src.getHeight();
+        Pixmap flipped = new Pixmap(width, height, src.getFormat());
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                flipped.drawPixel(x, y, src.getPixel(x, height - y - 1));
+            }
+        }
+        return flipped;
     }
 }

@@ -33,10 +33,10 @@ public class Location implements Disposable {
      * @param map - тайловая карта
      */
     public Location(TiledMap map) {
-        //del
-        for(int i = 0; i < 1; i++){
-            this.graph = new LevelGraph("TestMapPool/", 14);
-            this.graph.print();
+        // del
+        for (int i = 0; i < 1; i++) {
+            // this.graph = new LevelGraph("TestMapPool/", 14);
+            // this.graph.print();
         }
         this.map = map;
         // Инициализация мира без гравитации
@@ -71,7 +71,8 @@ public class Location implements Disposable {
 
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             body = world.createBody(bdef);
 
             // Задача областей коллизий
@@ -102,7 +103,8 @@ public class Location implements Disposable {
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
         // Координаты точки спавна
-        Vector2 spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+        Vector2 spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
 
         // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
         // |

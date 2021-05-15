@@ -1,10 +1,13 @@
 package com.dreamwalker.game.screens;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,8 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
@@ -36,6 +42,7 @@ public class GameMenuScreen implements Screen, Disposable {
     private EventListener startEvent;
 
     public ScreenSwitcher screenSwitcher;
+    private Sprite background;
 
     public DreamWalker getGame() {
 
@@ -55,6 +62,7 @@ public class GameMenuScreen implements Screen, Disposable {
     }
 
     public void updateTable() {
+
         // Установка взаимодействий
         this.resumeButton.addListener(this.resumeEvent);
         this.exitButton.addListener(this.ExitEvent);
@@ -73,7 +81,9 @@ public class GameMenuScreen implements Screen, Disposable {
         this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
         this.table.row();
         this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
-
+        // BG
+        // this.table.Background(new SpriteDrawable(new Sprite()));
+        this.table.setBackground(new SpriteDrawable(this.background));
         // Отладка таблицы
         // this.table.debugAll();
 
@@ -81,7 +91,9 @@ public class GameMenuScreen implements Screen, Disposable {
         this.stage.addActor(this.table);
     }
 
-    public GameMenuScreen(DreamWalker game) {
+    public GameMenuScreen(DreamWalker game, Texture bg) {
+        this.background = new Sprite(bg);
+        this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
         this.game = game;
         this.screenSwitcher = new ScreenSwitcher(this.game);
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
@@ -190,8 +202,9 @@ public class GameMenuScreen implements Screen, Disposable {
         update(delta);
 
         // Цвет окна и фикс мерцания экрана при изменении
-        Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        // Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
+
+        // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Отрисовка UI
         this.stage.draw();
         this.stage.act();
