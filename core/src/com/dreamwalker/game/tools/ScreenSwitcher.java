@@ -1,5 +1,7 @@
 package com.dreamwalker.game.tools;
 
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.screens.*;
 
@@ -15,45 +17,53 @@ public class ScreenSwitcher {
 
     }
 
-    public void ToMainMenu() {
+    public void toMainMenu(TiledMap map, Vector2 spawnPoint) {
         if (this.mainMenuScreen == null) {
-            this.mainMenuScreen = new MainMenuScreen(this.game);
+            this.mainMenuScreen = new MainMenuScreen(this.game, this, map, spawnPoint);
         }
         this.game.setScreen(this.mainMenuScreen);
     }
 
-    public void DisposeMainMenu() {
+    public void disposeMainMenu() {
         if (this.mainMenuScreen != null) {
             this.mainMenuScreen.dispose();
             this.mainMenuScreen = null;
         }
     }
 
-    public void ToGameMenu() {
+    public void toGameMenu(TiledMap map, Vector2 spawnPoint) {
         if (this.gameMenuScreen == null) {
-            this.gameMenuScreen = new GameMenuScreen(this.game);
+            this.gameMenuScreen = new GameMenuScreen(this.game, this,  map, spawnPoint);
         }
         this.game.setScreen(this.gameMenuScreen);
     }
 
-    public void DisposeGameMenu() {
+    public void disposeGameMenu() {
         if (this.gameMenuScreen != null) {
             this.gameMenuScreen.dispose();
             this.gameMenuScreen = null;
         }
     }
 
-    public void ToGame() {
+    public void toGame(TiledMap map, Vector2 spawnPoint) {
         if (this.gameScreen == null) {
-            this.gameScreen = new GameScreen(this.game);
+            this.gameScreen = new GameScreen(this.game, map, spawnPoint);
         }
         this.game.setScreen(this.gameScreen);
     }
 
-    public void DisposeGame() {
+    public void disposeGame() {
         if (this.gameScreen != null) {
             this.gameScreen.dispose();
             this.gameScreen = null;
         }
+    }
+
+    public static void setGameScreen(GameScreen gameScreen) {
+        ScreenSwitcher.gameScreen = gameScreen;
+    }
+
+    public static GameScreen getGameScreen() {
+        return gameScreen;
     }
 }

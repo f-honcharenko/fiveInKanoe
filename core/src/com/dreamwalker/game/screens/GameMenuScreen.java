@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,7 +24,6 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class GameMenuScreen implements Screen, Disposable {
-    private DreamWalker game;
     private Image resumeButton;
     private Image exitButton;
     private Image startButton;
@@ -36,11 +37,8 @@ public class GameMenuScreen implements Screen, Disposable {
     private EventListener startEvent;
 
     public ScreenSwitcher screenSwitcher;
-
-    public DreamWalker getGame() {
-
-        return this.game;
-    }
+    private TiledMap map;
+    private Vector2 spawnPoint;
 
     public void toggleresumeButton(Image newImage) {
         this.resumeButton = newImage;
@@ -81,13 +79,14 @@ public class GameMenuScreen implements Screen, Disposable {
         this.stage.addActor(this.table);
     }
 
-    public GameMenuScreen(DreamWalker game) {
-        this.game = game;
-        this.screenSwitcher = new ScreenSwitcher(this.game);
+    public GameMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher,
+                          final TiledMap map, final Vector2 spawnPoint) {
+        this.map = map;
+        this.spawnPoint = spawnPoint;
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
-
+        this.screenSwitcher = screenSwitcher;
         // Штука для отслеживания нажатий
         Gdx.input.setInputProcessor(stage);
 
@@ -98,15 +97,12 @@ public class GameMenuScreen implements Screen, Disposable {
 
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
-            DreamWalker game = getGame();
-            private ScreenSwitcher screenSwitcher;
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeGameMenu();
+                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.disposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
@@ -142,17 +138,12 @@ public class GameMenuScreen implements Screen, Disposable {
             };
         };
         this.startEvent = new ClickListener() {
-
-            DreamWalker game = getGame();
-            private ScreenSwitcher screenSwitcher;
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.DisposeGame();
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeGameMenu();
+                screenSwitcher.disposeGame();
+                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.disposeGameMenu();
             };
 
             @Override
@@ -176,7 +167,7 @@ public class GameMenuScreen implements Screen, Disposable {
         // this.hud.update(deltaTime);
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             // if (Gdx.input.idKey(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.ToGame();
+            this.screenSwitcher.toGame(map, spawnPoint);
 
         }
     }

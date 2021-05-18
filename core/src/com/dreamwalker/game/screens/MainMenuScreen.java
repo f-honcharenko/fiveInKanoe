@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,7 +23,6 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class MainMenuScreen implements Screen, Disposable {
-    private DreamWalker game;
     private Image startButton;
     private Image exitButton;
     // 2д сцена, на которой распологаются элементы интерфейса
@@ -32,46 +33,8 @@ public class MainMenuScreen implements Screen, Disposable {
     private EventListener StartEvent;
     private EventListener ExitEvent;
 
-    public DreamWalker getGame() {
-
-        return this.game;
-    }
-
-    public void toggleStartButton(Image newImage) {
-        this.startButton = newImage;
-    }
-
-    public void toggleExitButton(Image newImage) {
-        this.exitButton = newImage;
-    }
-
-    public void updateTable() {
-        // Установка взаимодействий
-        this.startButton.addListener(this.StartEvent);
-        this.exitButton.addListener(this.ExitEvent);
-
-        // Установка таблицы
-        this.table = new Table();
-
-        // Включить масштабирование под таблицу
-        this.table.setFillParent(true);
-
-        this.table.bottom();
-        this.table.left();
-        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
-        this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
-
-        // Отладка таблицы
-        this.table.debugAll();
-
-        // Добавить таблцу на "сцену"
-        this.stage.addActor(this.table);
-    }
-
-    public MainMenuScreen(DreamWalker game) {
-        this.game = game;
-
+    public MainMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher,
+                          final TiledMap map, final Vector2 spawnPoint) {
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -85,15 +48,11 @@ public class MainMenuScreen implements Screen, Disposable {
 
         // Действия для кнопок
         this.StartEvent = new ClickListener() {
-            DreamWalker game = getGame();
-            private ScreenSwitcher screenSwitcher;
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeMainMenu();
+                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.disposeMainMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
@@ -151,6 +110,38 @@ public class MainMenuScreen implements Screen, Disposable {
         // Добавить таблцу на "сцену"
         this.stage.addActor(this.table);
 
+    }
+
+    public void toggleStartButton(Image newImage) {
+        this.startButton = newImage;
+    }
+
+    public void toggleExitButton(Image newImage) {
+        this.exitButton = newImage;
+    }
+
+    public void updateTable() {
+        // Установка взаимодействий
+        this.startButton.addListener(this.StartEvent);
+        this.exitButton.addListener(this.ExitEvent);
+
+        // Установка таблицы
+        this.table = new Table();
+
+        // Включить масштабирование под таблицу
+        this.table.setFillParent(true);
+
+        this.table.bottom();
+        this.table.left();
+        this.table.add(this.startButton).padLeft(50).width(300f).height(120f);
+        this.table.row();
+        this.table.add(this.exitButton).padLeft(50).width(250f).height(120f);
+
+        // Отладка таблицы
+        this.table.debugAll();
+
+        // Добавить таблцу на "сцену"
+        this.stage.addActor(this.table);
     }
 
     public void update(float deltaTime) {

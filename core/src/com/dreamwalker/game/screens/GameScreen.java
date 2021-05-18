@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -49,6 +50,8 @@ public class GameScreen implements Screen {
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
+    private TiledMap map;
+    private Vector2 spawnPoint;
 
 
     /**
@@ -56,19 +59,20 @@ public class GameScreen implements Screen {
      *
      * @param game - экземпляр основного класса игры
      */
-    public GameScreen(DreamWalker game) {
-
-
+    public GameScreen(DreamWalker game, TiledMap map, Vector2 spawnPoint) {
         this.game = game;
+        this.map = map;
+        this.spawnPoint = spawnPoint;
+
         this.mapLoader = new TmxMapLoader();
 
         this.screenSwitcher = new ScreenSwitcher(this.game);
         // Загрузка карты и создание коллизий
-        this.location = new Location();
+        this.location = new Location(this.map);
 
         this.debugRenderer = new Box2DDebugRenderer();
 
-        this.player = new Player(location.getWorld(), location.getSpawnPoint());
+        this.player = new Player(location.getWorld(), spawnPoint);
         this.testGoblin = new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
                 location.getSpawnPoint().y + 200 / DreamWalker.PPM);
         this.testGoblin2 = new Goblin(this.player, location.getSpawnPoint().x - 200 / DreamWalker.PPM,
@@ -124,7 +128,7 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
 
-            this.screenSwitcher.ToGameMenu();
+            this.screenSwitcher.toGameMenu(this.map, this.spawnPoint);
 
         }
 
