@@ -54,6 +54,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     private double viewAngle;
     private Body enemysBody;
     private Texture HPTexture;
+    private Texture HPBarTexture;
     protected Animations enemysAnimations;
 
     private Destroyer dstr;
@@ -75,7 +76,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.isDamageDealt = false;
         this.health = this.healthMax = 100;
         this.BarWidth = this.BoundsWidth;
-        this.BarHeight = 5 / DreamWalker.PPM;
+        this.BarHeight = 10 / DreamWalker.PPM;
         // this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsHeight = 54 / DreamWalker.PPM;
@@ -128,6 +129,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
         this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
+        this.HPBarTexture = new Texture("EnemyHPBar.png");
         this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
 
         // Сектор Атакаи врага
@@ -179,8 +181,11 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void drawBar(SpriteBatch sb) {
         float tempHPwidth = (((float) this.health / (float) this.healthMax) * (float) this.BarWidth);
-        sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2), this.getY() + (this.BoundsHeight / 2),
-                tempHPwidth, this.BarHeight);
+        sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2),
+                this.getY() + ((this.BoundsHeight + 5 / DreamWalker.PPM) / 2) - 1 / DreamWalker.PPM, tempHPwidth,
+                this.BarHeight - 2 / DreamWalker.PPM);
+        sb.draw(this.HPBarTexture, this.getX() - (this.BoundsWidth / 2) - 5 / DreamWalker.PPM,
+                this.getY() + (this.BoundsHeight / 2), this.BarWidth + 10 / DreamWalker.PPM, this.BarHeight);
 
     }
 
