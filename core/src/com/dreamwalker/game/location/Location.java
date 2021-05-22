@@ -28,7 +28,7 @@ public class Location implements Disposable {
     // Физический игровой мир
     private World world;
     private Vector2 spawnPoint;
-    private ArrayList<Rectangle> exits;
+    private ArrayList<Body> exits;
 
 
     /**
@@ -138,7 +138,6 @@ public class Location implements Disposable {
 
         for (RectangleMapObject object : map.getLayers().get("exits").getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
-            exits.add(rect);
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
             bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
@@ -149,6 +148,7 @@ public class Location implements Disposable {
             fdef.isSensor = true;
             body.createFixture(fdef);
             body.getFixtureList().get(0).setUserData(this);
+            exits.add(body);
         }
 
         // Удаляем фигуру, которая была создана для коллизии
@@ -164,7 +164,7 @@ public class Location implements Disposable {
         return this.spawnPoint;
     }
 
-    public ArrayList<Rectangle> getExits() {
+    public ArrayList<Body> getExits() {
         return this.exits;
     }
 

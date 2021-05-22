@@ -1,5 +1,6 @@
 package com.dreamwalker.game.handler;
 
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -43,54 +44,26 @@ public class ContactHandler implements ContactListener {
     private void enterExit(Contact contact){
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-        if(fixtureA.getUserData() != null && fixtureB != null && !isTriggered){
+        if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
+            Player player = null;
+            Location location = null;
+            Body playersExit = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Location;
             if(variant1){
-                System.out.println("VAR1");
-                Vector2 exitPosition = fixtureB.getBody().getPosition();
-                for(Edge edge : MapChanger.getCurrentVertex().getEdges()){
-                    Rectangle exitArea = edge.getExitFirst();
-                    float exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
-                    float exitY = (exitArea.getY() + exitArea.getHeight() / 2) / DreamWalker.PPM;
-                    System.out.println(exitPosition.x + " " + exitPosition.y + '\n' + exitX + ' ' + exitY + "\n-------");
-                    if(exitPosition.x == exitX && exitPosition.y == exitY){
-                        MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
-                        isTriggered = true;
-                        break;
-                    }
-                    exitArea = edge.getExitSecond();
-                    exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
-                    exitY = (exitArea.getY() + exitArea.getHeight() / 2) / DreamWalker.PPM;
-                    System.out.println(exitPosition.x + " " + exitPosition.y + '\n' + exitX + ' ' + exitY + "\n-------");
-                    if(exitPosition.x == exitX && exitPosition.y == exitY){
-                        MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
-                        isTriggered = true;
-                        break;
-                    }
-                }
+                player = (Player)fixtureA.getUserData();
+                location = (Location)fixtureB.getUserData();
+                playersExit = fixtureB.getBody();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Location && fixtureB.getUserData() instanceof Player;
             if(variant2){
-                System.out.println("VAR2");
-                Vector2 exitPosition = fixtureA.getBody().getPosition();
+                player = (Player)fixtureB.getUserData();
+                location = (Location)fixtureA.getUserData();
+                playersExit = fixtureA.getBody();
+            }
+            if(player != null &&  location != null){
                 for(Edge edge : MapChanger.getCurrentVertex().getEdges()){
-                    Rectangle exitArea = edge.getExitFirst();
-                    float exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
-                    float exitY = (exitArea.getY() + exitArea.getHeight() / 2) / DreamWalker.PPM;
-                    System.out.println(exitPosition.x + " " + exitPosition.y + '\n' + exitX + ' ' + exitY + "\n-------");
-                    if(exitPosition.x == exitX && exitPosition.y == exitY){
+                    if(playersExit == edge.getExitFirst() || playersExit == edge.getExitSecond()){
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
-                        //player.setPosition(edge.getExitSecond().getX(), edge.getExitSecond().getY());
-                        isTriggered = true;
-                        break;
-                    }
-                    exitArea = edge.getExitSecond();
-                    exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
-                    exitY = (exitArea.getY() + exitArea.getHeight() / 2) / DreamWalker.PPM;
-                    System.out.println(exitPosition.x + " " + exitPosition.y + '\n' + exitX + ' ' + exitY + "\n-------");
-                    if(exitPosition.x == exitX && exitPosition.y == exitY){
-                        MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
-                        //player.setPosition(edge.getExitFirst().getX(), edge.getExitFirst().getY());
                         isTriggered = true;
                         break;
                     }
@@ -122,39 +95,47 @@ public class ContactHandler implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            Player player = null;
+            Enemy enemy = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
-            if (variant1) {
-                Player player = (Player) fixtureA.getUserData();
-                player.getEnemiesInRange().add((Enemy) fixtureB.getUserData());
-                player.setEnemyInArea(true);
+            if(variant1){
+                player = (Player)fixtureA.getUserData();
+                enemy = (Enemy)fixtureB.getUserData();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
-            if (variant2) {
-                Player player = (Player) fixtureB.getUserData();
-                player.getEnemiesInRange().add((Enemy) fixtureA.getUserData());
+            if(variant2){
+                player = (Player)fixtureB.getUserData();
+                enemy = (Enemy)fixtureA.getUserData();
+            }
+            if(player != null && enemy != null) {
+                player.getEnemiesInRange().add(enemy);
                 player.setEnemyInArea(true);
             }
         }
     }
 
+
     private void quitPlayersMelee(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            Player player = null;
+            Enemy enemy = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
-
             if (variant1) {
-                Player player = (Player) fixtureA.getUserData();
-                player.getEnemiesInRange().remove((Enemy) fixtureB.getUserData());
-                if (player.getEnemiesInRange().size() == 0) {
-                    player.setEnemyInArea(false);
-                }
+                player = (Player)fixtureA.getUserData();
+                enemy = (Enemy)fixtureB.getUserData();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if (variant2) {
-                Player player = (Player) fixtureB.getUserData();
-                player.getEnemiesInRange().remove((Enemy) fixtureA.getUserData());
-                player.setEnemyInArea(true);
+                player = (Player)fixtureB.getUserData();
+                enemy = (Enemy)fixtureA.getUserData();
+            }
+            if(player != null && enemy != null){
+                player.getEnemiesInRange().remove(enemy);
+                if (player.getEnemiesInRange().size() == 0) {
+                    player.setEnemyInArea(false);
+                }
             }
         }
     }
@@ -165,7 +146,6 @@ public class ContactHandler implements ContactListener {
         // contact
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
             System.out.println(fixtureA.getUserData() + "|" + fixtureB.getUserData());
-
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
                 if ((fixtureB.isSensor()) && (!fixtureA.isSensor())) {

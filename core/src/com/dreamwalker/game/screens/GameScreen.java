@@ -116,7 +116,7 @@ public class GameScreen implements Screen {
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
         Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y), new Vector2(0,0));//!
+        this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));//!
         this.camera.update();
         this.ortMapRender.setView(this.camera);
         this.viewport.update((int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
@@ -211,6 +211,10 @@ public class GameScreen implements Screen {
 
     }
 
+    public Player getPlayer() {
+        return this.player;
+    }
+
     /**
      * Очистка памяти от ресурсов, используемых игрок
      */
@@ -230,5 +234,9 @@ public class GameScreen implements Screen {
 
     public Location getLocation() {
         return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

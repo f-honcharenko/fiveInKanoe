@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
@@ -49,6 +50,7 @@ public class Player extends Sprite implements Disposable {
 
     private ArrayList<PassiveSkill> passiveSkills;
     private ArrayList<ActiveSkill> skillPanel;
+    private Vector2 spawnPoint;
 
     /**
      * Конструктор
@@ -61,7 +63,8 @@ public class Player extends Sprite implements Disposable {
         this.world = world;
         this.playersAnimations = new Animations(this, "player.atlas");
         this.playerControl = new Control(this);
-        this.definePlayer(x, y);
+        this.spawnPoint = new Vector2(x, y);
+        this.definePlayer();
 
         this.passiveSkills = new ArrayList<>();
         this.skillPanel = new ArrayList<>();
@@ -86,10 +89,10 @@ public class Player extends Sprite implements Disposable {
         this.setBounds(0, 0, 54 / DreamWalker.PPM, 54 / DreamWalker.PPM); // 54
     }
 
-    private void definePlayer(float x, float y) {
+    private void definePlayer() {
         // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(this.spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" игрока в игровом мире на основе свойств
@@ -147,9 +150,9 @@ public class Player extends Sprite implements Disposable {
         }
     }
 
-    public void update(float deltaTime, Vector2 mousePosition, Vector2 spawnPoint) {
+    public void update(float deltaTime, Vector2 mousePosition) {
         if(this.roomChanged){
-            this.definePlayer(spawnPoint.x, spawnPoint.y);
+            this.definePlayer();
             this.roomChanged = false;
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
@@ -224,6 +227,8 @@ public class Player extends Sprite implements Disposable {
 
     public void setWorld(World world) {
         if(this.world != world){
+            this.world.destroyBody(this.playersBody);
+            this.world.destroyBody(this.attackArea);
             this.world = world;
             this.roomChanged = true;
         }
@@ -315,6 +320,10 @@ public class Player extends Sprite implements Disposable {
 
     public ArrayList<ActiveSkill> getSkillPanel() {
         return this.skillPanel;
+    }
+
+    public void setSpawnPoint(Vector2 spawnPoint) {
+        this.spawnPoint = spawnPoint;
     }
 
     /**

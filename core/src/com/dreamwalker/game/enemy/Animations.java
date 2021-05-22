@@ -148,8 +148,8 @@ public class Animations {
 
     private State getState() {
         State currentState = null;
-        float velocityX = this.enemy.getBox2DBody().getLinearVelocity().x;
-        float velocityY = this.enemy.getBox2DBody().getLinearVelocity().y;
+        float velocityX = this.enemy.getEnemysBody().getLinearVelocity().x;
+        float velocityY = this.enemy.getEnemysBody().getLinearVelocity().y;
         double viewAngle = this.enemy.getViewAngle();
         boolean isAttacking = this.enemy.isAttacking();
         boolean isMoving = velocityX != 0 || velocityY != 0;

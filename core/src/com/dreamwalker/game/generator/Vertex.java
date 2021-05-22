@@ -1,5 +1,6 @@
 package com.dreamwalker.game.generator;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.location.Location;
 
@@ -11,7 +12,7 @@ public class Vertex {
 
     private Location location;
     private ArrayList<Edge> edges;
-    private ArrayList<Rectangle> exits;
+    private ArrayList<Body> exits;
     private int maxPower;
     private int currentPower;
 
@@ -26,9 +27,8 @@ public class Vertex {
         this.currentPower = 0;
     }
 
-    public Rectangle getExit(){
-        Rectangle exitRect = this.exits.get(currentPower);
-        return exitRect;
+    public Body getExit(){
+        return this.exits.get(currentPower);
     }
 
     public boolean isConnected(Vertex other){

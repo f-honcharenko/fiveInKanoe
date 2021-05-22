@@ -21,7 +21,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     // Физический мир, в котором находится враг
     private World world;
     // Физическое "тело" врага
-    private Body box2DBody;
+    private Body enemysBody;
     private Body attackArea;
 
     protected double health;
@@ -31,9 +31,9 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected float speed;
     private float attackSpeedCoefficient;
 
-    private int atackedFilterTimerMax;
-    private int atackedFilterTimer;
-    private Boolean atackedFilterFlag;
+    private int attackedFilterTimerMax;
+    private int attackedFilterTimer;
+    private Boolean attackedFilterFlag;
 
     private float BarWidth;
     private float BarHeight;
@@ -48,9 +48,8 @@ public abstract class Enemy extends Sprite implements Disposable {
     private boolean playerInArea;
 
     private double viewAngle;
-    private Body enemysBody;
     private Texture HPTexture;
-    protected Animations enemysAnimations;
+    protected Animations enemiesAnimations;
 
     private Destroyer dstr;
     private boolean roomChanged;
@@ -81,9 +80,9 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsHeight = 54 / DreamWalker.PPM;
 
-        this.atackedFilterTimerMax = 15;
-        this.atackedFilterTimer = 0;
-        this.atackedFilterFlag = false;
+        this.attackedFilterTimerMax = 15;
+        this.attackedFilterTimer = 0;
+        this.attackedFilterFlag = false;
 
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
@@ -109,23 +108,22 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     private void defineEnemy(Vector2 spawnPoint) {
         this.world = this.player.getWorld();
-
         // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" врага в игровом мире на основе свойств
-        this.box2DBody = this.world.createBody(bodyDef);
+        this.enemysBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
         // Физические границы врага
         CircleShape shape = new CircleShape();
         shape.setRadius(15 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
-        this.box2DBody.createFixture(fixtureDef);
+        this.enemysBody.createFixture(fixtureDef);
 
-        this.box2DBody.getFixtureList().get(0).setUserData(this);
+        this.enemysBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
         this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
@@ -166,12 +164,12 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void receiveDamage(double damage) {
         this.health -= damage;
-        this.atackedFilterFlag = true;
-        this.atackedFilterTimer = 0;
+        this.attackedFilterFlag = true;
+        this.attackedFilterTimer = 0;
         this.setColor(1f, 0f, 0f, 1.0f);
         if (this.health <= 0) {
             this.isAlive = false;
-            dstr.addToDestroyList(this.box2DBody);
+            dstr.addToDestroyList(this.enemysBody);
             // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
             // this.dispose();
         }
@@ -194,6 +192,8 @@ public abstract class Enemy extends Sprite implements Disposable {
             throw new IllegalArgumentException();
         }
         if(this.world != world){
+            this.world.destroyBody(this.enemysBody);
+            this.world.destroyBody(this.attackArea);
             this.world = world;
             this.roomChanged = true;
         }
@@ -228,22 +228,22 @@ public abstract class Enemy extends Sprite implements Disposable {
         return this.speed;
     }
 
-    public Body getBox2DBody() {
-        return this.box2DBody;
+    public Body getEnemysBody() {
+        return this.enemysBody;
     }
 
     /**
      * @return - позиция врага по х
      */
     public float getX() {
-        return this.box2DBody.getPosition().x;
+        return this.enemysBody.getPosition().x;
     }
 
     /**
      * @return - позиция врага по х
      */
     public float getY() {
-        return this.box2DBody.getPosition().y;
+        return this.enemysBody.getPosition().y;
     }
 
     public float getAttackSpeedCoefficient() {
@@ -279,10 +279,10 @@ public abstract class Enemy extends Sprite implements Disposable {
             this.roomChanged = false;
         }
         if (this.isAlive()) {
-            if (this.atackedFilterTimer < this.atackedFilterTimerMax) {
-                this.atackedFilterTimer++;
-                if (this.atackedFilterTimer == this.atackedFilterTimerMax) {
-                    this.atackedFilterTimer = this.atackedFilterTimerMax;
+            if (this.attackedFilterTimer < this.attackedFilterTimerMax) {
+                this.attackedFilterTimer++;
+                if (this.attackedFilterTimer == this.attackedFilterTimerMax) {
+                    this.attackedFilterTimer = this.attackedFilterTimerMax;
                     this.setColor(1f, 1f, 1f, 1.0f);
 
                 }
@@ -290,8 +290,8 @@ public abstract class Enemy extends Sprite implements Disposable {
             this.idle();
             this.attack();
         }
-        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
-        this.attackArea.setTransform(this.box2DBody.getPosition(), (float) this.box2DBody.getAngle());
+        this.setRegion(this.enemiesAnimations.getFrame(deltaTime));
+        this.attackArea.setTransform(this.enemysBody.getPosition(), this.enemysBody.getAngle());
     }
 
     private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {

@@ -3,6 +3,7 @@ package com.dreamwalker.game.generator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.location.Location;
@@ -34,8 +35,8 @@ public class LevelGraph {
     }
 
     public void addEdge(Vertex first, Vertex second){
-        Rectangle exitFirst = first.getExit();
-        Rectangle exitSecond = second.getExit();
+        Body exitFirst = first.getExit();
+        Body exitSecond = second.getExit();
         Edge edge = new Edge(first, exitFirst, second, exitSecond);
         first.addEdge(edge);
         second.addEdge(edge);
@@ -46,7 +47,7 @@ public class LevelGraph {
         for(int i = 1; i <= this.roomsCount; i++){
             this.mapPool.add(this.mapLoader.load(this.path + i + ".tmx"));
         }
-        this.shuffle();
+        //this.shuffle();
         this.vertices.add(new Vertex(
                 new Location(this.mapLoader.load(this.path + "start.tmx")),
                 "start",
@@ -94,10 +95,10 @@ public class LevelGraph {
     public void print(){
         for(Edge edge : this.edges){
             System.out.printf("(%s)-------(%s)\n", edge.getFirst().name, edge.getSecond().name);
-            System.out.printf("[%s; %s]       [%s; %s]\n", (edge.getExitFirst().getX() + edge.getExitFirst().getWidth() / 2) / DreamWalker.PPM,
-                                                            (edge.getExitFirst().getY() + edge.getExitFirst().getHeight() / 2) / DreamWalker.PPM,
-                                                            (edge.getExitSecond().getX() + edge.getExitSecond().getWidth() / 2) / DreamWalker.PPM,
-                                                            (edge.getExitSecond().getY() + edge.getExitSecond().getHeight() / 2) / DreamWalker.PPM);
+            System.out.printf("[%s; %s]       [%s; %s]\n", (edge.getExitFirst().getPosition().x) / DreamWalker.PPM,
+                                                            (edge.getExitFirst().getPosition().y) / DreamWalker.PPM,
+                                                            (edge.getExitSecond().getPosition().x) / DreamWalker.PPM,
+                                                            (edge.getExitSecond().getPosition().y) / DreamWalker.PPM);
         }
         System.out.println("--------------------------------------");
     }
