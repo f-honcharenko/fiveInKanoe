@@ -1,7 +1,5 @@
 package com.dreamwalker.game.tools;
 
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,56 +8,55 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.screens.*;
 
 public class ScreenSwitcher {
-    private DreamWalker game;
+    private static DreamWalker game;
 
     private static MainMenuScreen mainMenuScreen;
     private static GameScreen gameScreen;
     private static GameMenuScreen gameMenuScreen;
 
-    public ScreenSwitcher(DreamWalker game) {
-        this.game = game;
-
+    public static void setGame(DreamWalker _game) {
+        game = _game;
     }
 
-    public void ToMainMenu() {
-        if (this.mainMenuScreen == null) {
-            this.mainMenuScreen = new MainMenuScreen(this.game);
+    public static void ToMainMenu() {
+        if (mainMenuScreen == null) {
+            mainMenuScreen = new MainMenuScreen(game);
         }
-        this.game.setScreen(this.mainMenuScreen);
+        game.setScreen(mainMenuScreen);
     }
 
-    public void DisposeMainMenu() {
-        if (this.mainMenuScreen != null) {
-            this.mainMenuScreen.dispose();
-            this.mainMenuScreen = null;
+    public static void DisposeMainMenu() {
+        if (mainMenuScreen != null) {
+            mainMenuScreen.dispose();
+            mainMenuScreen = null;
         }
     }
 
-    public void ToGameMenu() {
+    public static void ToGameMenu() {
         Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        this.gameMenuScreen = new GameMenuScreen(this.game, new Texture(flipPixmap(pixmap)));
+        gameMenuScreen = new GameMenuScreen(game, new Texture(flipPixmap(pixmap)));
 
-        this.game.setScreen(this.gameMenuScreen);
+        game.setScreen(gameMenuScreen);
     }
 
-    public void DisposeGameMenu() {
-        if (this.gameMenuScreen != null) {
-            this.gameMenuScreen.dispose();
-            this.gameMenuScreen = null;
+    public static void DisposeGameMenu() {
+        if (gameMenuScreen != null) {
+            gameMenuScreen.dispose();
+            gameMenuScreen = null;
         }
     }
 
-    public void ToGame() {
-        if (this.gameScreen == null) {
-            this.gameScreen = new GameScreen(this.game);
+    public static void ToGame() {
+        if (gameScreen == null) {
+            gameScreen = new GameScreen(game);
         }
-        this.game.setScreen(this.gameScreen);
+        game.setScreen(gameScreen);
     }
 
-    public void DisposeGame() {
-        if (this.gameScreen != null) {
-            this.gameScreen.dispose();
-            this.gameScreen = null;
+    public static void DisposeGame() {
+        if (gameScreen != null) {
+            gameScreen.dispose();
+            gameScreen = null;
         }
     }
 
@@ -80,4 +77,5 @@ public class ScreenSwitcher {
         }
         return flipped;
     }
+
 }

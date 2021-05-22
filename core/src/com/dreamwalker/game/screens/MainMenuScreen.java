@@ -140,15 +140,13 @@ public class MainMenuScreen implements Screen, Disposable {
         // Действия для кнопок
         this.StartEvent = new ClickListener() {
             DreamWalker game = getGame();
-            private ScreenSwitcher screenSwitcher;
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 startButton = newGame_pressed;
                 updateTable();
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeMainMenu();
+                ScreenSwitcher.ToGame();
+                ScreenSwitcher.DisposeMainMenu();
 
             };
 

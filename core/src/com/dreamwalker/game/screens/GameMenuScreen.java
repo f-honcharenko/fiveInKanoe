@@ -48,7 +48,6 @@ public class GameMenuScreen implements Screen, Disposable {
         this.background = new Sprite(bg);
         this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
         this.game = game;
-        this.screenSwitcher = new ScreenSwitcher(this.game);
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -64,14 +63,12 @@ public class GameMenuScreen implements Screen, Disposable {
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
             DreamWalker game = getGame();
-            private ScreenSwitcher screenSwitcher;
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeGameMenu();
+                ScreenSwitcher.ToGame();
+                ScreenSwitcher.DisposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
@@ -114,10 +111,9 @@ public class GameMenuScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                this.screenSwitcher = new ScreenSwitcher(this.game);
-                this.screenSwitcher.DisposeGame();
-                this.screenSwitcher.ToGame();
-                this.screenSwitcher.DisposeGameMenu();
+                ScreenSwitcher.DisposeGame();
+                ScreenSwitcher.ToGame();
+                ScreenSwitcher.DisposeGameMenu();
             };
 
             @Override

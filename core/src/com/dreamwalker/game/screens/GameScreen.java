@@ -61,9 +61,6 @@ public class GameScreen implements Screen {
     private Goblin testGoblin3;
 
     public Destroyer dstr;
-    private ScreenSwitcher screenSwitcher;
-
-    private ArrayList items;
 
     /**
      * Конструктор экрана игры
@@ -75,7 +72,6 @@ public class GameScreen implements Screen {
         this.game = game;
         this.mapLoader = new TmxMapLoader();
 
-        this.screenSwitcher = new ScreenSwitcher(this.game);
         // Загрузка карты и создание коллизий
         this.location = new Location(this.mapLoader.load("Maps/StartFixed.tmx"));
         this.location.initCollisions();
@@ -107,7 +103,6 @@ public class GameScreen implements Screen {
 
         // this.dstr = new Destroyer(this.location.getWorld());
         // this.items = new ItemInWorld[10];
-        this.items = new ArrayList<ItemInWorld>();
     }
 
     @Override
@@ -138,7 +133,7 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
-            this.screenSwitcher.ToGameMenu();
+            ScreenSwitcher.ToGameMenu();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {

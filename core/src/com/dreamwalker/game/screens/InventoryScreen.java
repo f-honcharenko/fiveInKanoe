@@ -29,9 +29,11 @@ import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class InventoryScreen implements Screen, Disposable {
     private DreamWalker game;
-    private Image resumeButton;
-    private Image exitButton;
-    private Image startButton;
+
+    private Image inventoreyPattern;
+    private Image inventoreyActiveItemPattern;
+    private Image inventoreyDefaultItemPattern;
+
     // 2д сцена, на которой распологаются элементы интерфейса
     private Stage stage;
     private Viewport viewport;
@@ -57,9 +59,9 @@ public class InventoryScreen implements Screen, Disposable {
         Gdx.input.setInputProcessor(stage);
 
         // Текстуры
-        this.resumeButton = new Image(new Sprite(new Texture("buttons/button_resume_unactive.png")));
-        this.startButton = new Image(new Sprite(new Texture("buttons/button_play_unactive.png")));
-        this.exitButton = new Image(new Sprite(new Texture("buttons/button_exit_unactive.png")));
+        this.inventoreyPattern = new Image(new Sprite(new Texture("InventoryFrame.png")));
+        this.inventoreyActiveItemPattern = new Image(new Sprite(new Texture("ItemPanel_default.png")));
+        this.inventoreyDefaultItemPattern = new Image(new Sprite(new Texture("ItemPanel_active.png")));
 
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
@@ -137,12 +139,6 @@ public class InventoryScreen implements Screen, Disposable {
 
     }
 
-    public void update(float deltaTime) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.ToGame();
-        }
-    }
-
     public void updateTable() {
 
         // Установка взаимодействий
@@ -156,13 +152,14 @@ public class InventoryScreen implements Screen, Disposable {
         // Включить масштабирование под таблицу
         this.table.setFillParent(true);
 
-        this.table.bottom();
-        this.table.left();
+        this.table.center();
+        // this.table.bottom();
+        // this.table.left();
         this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
-        this.table.row();
-        this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
-        this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
+        // this.table.row();
+        // this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
+        // this.table.row();
+        // this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
         // BG
         // this.table.Background(new SpriteDrawable(new Sprite()));
         this.table.setBackground(new SpriteDrawable(this.background));
@@ -171,6 +168,12 @@ public class InventoryScreen implements Screen, Disposable {
 
         // Добавить таблцу на "сцену"
         this.stage.addActor(this.table);
+    }
+
+    public void update(float deltaTime) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            this.screenSwitcher.ToGame();
+        }
     }
 
     public DreamWalker getGame() {
@@ -196,10 +199,6 @@ public class InventoryScreen implements Screen, Disposable {
     @Override
     public void render(float delta) {
         update(delta);
-        // Цвет окна и фикс мерцания экрана при изменении
-        // Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
-        // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        // Отрисовка UI
         this.stage.draw();
         this.stage.act();
     }
