@@ -8,6 +8,9 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
 import com.dreamwalker.game.generator.Edge;
 import com.dreamwalker.game.location.Location;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.Item;
+import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.skills.Sword;
 import com.dreamwalker.game.tools.MapChanger;
@@ -22,6 +25,7 @@ public class ContactHandler implements ContactListener {
         this.enterEnemiesMelee(contact);
         this.enterFlyingSword(contact);
         this.enterExit(contact);
+        this.enterItem(contact);
     }
 
     @Override
@@ -41,28 +45,28 @@ public class ContactHandler implements ContactListener {
 
     }
 
-    private void enterExit(Contact contact){
+    private void enterExit(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-        if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
+        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
             Player player = null;
             Location location = null;
             Body playersExit = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Location;
-            if(variant1){
-                player = (Player)fixtureA.getUserData();
-                location = (Location)fixtureB.getUserData();
+            if (variant1) {
+                player = (Player) fixtureA.getUserData();
+                location = (Location) fixtureB.getUserData();
                 playersExit = fixtureB.getBody();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Location && fixtureB.getUserData() instanceof Player;
-            if(variant2){
-                player = (Player)fixtureB.getUserData();
-                location = (Location)fixtureA.getUserData();
+            if (variant2) {
+                player = (Player) fixtureB.getUserData();
+                location = (Location) fixtureA.getUserData();
                 playersExit = fixtureA.getBody();
             }
-            if(player != null &&  location != null){
-                for(Edge edge : MapChanger.getCurrentVertex().getEdges()){
-                    if(playersExit == edge.getExitFirst() || playersExit == edge.getExitSecond()){
+            if (player != null && location != null) {
+                for (Edge edge : MapChanger.getCurrentVertex().getEdges()) {
+                    if (playersExit == edge.getExitFirst() || playersExit == edge.getExitSecond()) {
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
                         isTriggered = true;
                         break;
@@ -72,20 +76,20 @@ public class ContactHandler implements ContactListener {
         }
     }
 
-    private void quitExit(Contact contact){
+    private void quitExit(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-        if(fixtureA.getUserData() != null && fixtureB != null){
+        if (fixtureA.getUserData() != null && fixtureB != null) {
             Location location = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Location;
-            if(variant1){
+            if (variant1) {
                 location = (Location) fixtureB.getUserData();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Location && fixtureB.getUserData() instanceof Player;
-            if(variant2){
+            if (variant2) {
                 location = (Location) fixtureA.getUserData();
             }
-            if(location != null){
+            if (location != null) {
                 isTriggered = false;
             }
         }
@@ -98,22 +102,21 @@ public class ContactHandler implements ContactListener {
             Player player = null;
             Enemy enemy = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
-            if(variant1){
-                player = (Player)fixtureA.getUserData();
-                enemy = (Enemy)fixtureB.getUserData();
+            if (variant1) {
+                player = (Player) fixtureA.getUserData();
+                enemy = (Enemy) fixtureB.getUserData();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
-            if(variant2){
-                player = (Player)fixtureB.getUserData();
-                enemy = (Enemy)fixtureA.getUserData();
+            if (variant2) {
+                player = (Player) fixtureB.getUserData();
+                enemy = (Enemy) fixtureA.getUserData();
             }
-            if(player != null && enemy != null) {
+            if (player != null && enemy != null) {
                 player.getEnemiesInRange().add(enemy);
                 player.setEnemyInArea(true);
             }
         }
     }
-
 
     private void quitPlayersMelee(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
@@ -123,15 +126,15 @@ public class ContactHandler implements ContactListener {
             Enemy enemy = null;
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
-                player = (Player)fixtureA.getUserData();
-                enemy = (Enemy)fixtureB.getUserData();
+                player = (Player) fixtureA.getUserData();
+                enemy = (Enemy) fixtureB.getUserData();
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if (variant2) {
-                player = (Player)fixtureB.getUserData();
-                enemy = (Enemy)fixtureA.getUserData();
+                player = (Player) fixtureB.getUserData();
+                enemy = (Enemy) fixtureA.getUserData();
             }
-            if(player != null && enemy != null){
+            if (player != null && enemy != null) {
                 player.getEnemiesInRange().remove(enemy);
                 if (player.getEnemiesInRange().size() == 0) {
                     player.setEnemyInArea(false);
@@ -209,6 +212,39 @@ public class ContactHandler implements ContactListener {
                 Sword sword = (Sword) fixtureB.getUserData();
                 if (!fixtureA.isSensor()) {
                     enemy.receiveDamage(sword.getDamage());
+                }
+            }
+        }
+    }
+
+    private void enterItem(Contact contact) {
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            boolean variant1 = fixtureA.getUserData() instanceof ItemInWorld
+                    && fixtureB.getUserData() instanceof Player;
+            if (variant1) {
+                ItemInWorld item = (ItemInWorld) fixtureA.getUserData();
+                Player player = (Player) fixtureB.getUserData();
+                if (fixtureA.isSensor()) {
+                    if (player.getInventory().putItem(item.getItem())) {
+                        item.dispose();
+                        player.getInventory().getInfoInConsole();
+                        AllItemsInWorld.removeItem(item);
+                    }
+                }
+            }
+            boolean variant2 = fixtureA.getUserData() instanceof Player
+                    && fixtureB.getUserData() instanceof ItemInWorld;
+            if (variant2) {
+                Player player = (Player) fixtureA.getUserData();
+                ItemInWorld item = (ItemInWorld) fixtureB.getUserData();
+                if (fixtureB.isSensor()) {
+                    if (player.getInventory().putItem(item.getItem())) {
+                        item.dispose();
+                        player.getInventory().getInfoInConsole();
+                        AllItemsInWorld.removeItem(item);
+                    }
                 }
             }
         }

@@ -1,8 +1,12 @@
 package com.dreamwalker.game.enemy;
 
+import java.util.Random;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TideMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,6 +19,12 @@ import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.tools.Destroyer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.Item;
+import com.dreamwalker.game.items.ItemInWorld;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class Enemy extends Sprite implements Disposable {
@@ -49,12 +59,15 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     private double viewAngle;
     private Texture HPTexture;
-    protected Animations enemiesAnimations;
+    private Texture HPBarTexture;
+    protected Animations enemysAnimations;
 
     private Destroyer dstr;
     private boolean roomChanged;
 
     private Vector2 standSpawnPoint;
+
+    private Random rnd;
 
     /**
      * Конструктор
@@ -75,14 +88,13 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.isDamageDealt = false;
         this.health = this.healthMax = 100;
         this.BarWidth = this.BoundsWidth;
-        this.BarHeight = 5 / DreamWalker.PPM;
+        this.BarHeight = 10 / DreamWalker.PPM;
         // this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsHeight = 54 / DreamWalker.PPM;
 
         this.attackedFilterTimerMax = 15;
         this.attackedFilterTimer = 0;
-        this.attackedFilterFlag = false;
 
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
@@ -127,6 +139,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
         this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
+        this.HPBarTexture = new Texture("EnemyHPBar.png");
         this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
 
         // Сектор Атакаи врага
@@ -153,6 +166,8 @@ public abstract class Enemy extends Sprite implements Disposable {
 
         dmgSectorShape.dispose();
         this.dstr = new Destroyer(this.world);
+
+        this.rnd = new Random();
     };
 
     /**
@@ -163,23 +178,29 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void receiveDamage(double damage) {
-        this.health -= damage;
-        this.attackedFilterFlag = true;
-        this.attackedFilterTimer = 0;
-        this.setColor(1f, 0f, 0f, 1.0f);
-        if (this.health <= 0) {
-            this.isAlive = false;
-            dstr.addToDestroyList(this.enemysBody);
-            // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
-            // this.dispose();
+        if (this.isAlive) {
+            this.health -= damage;
+            this.attackedFilterTimer = 0;
+            this.setColor(1f, 0f, 0f, 1.0f);
+            if (this.health <= 0) {
+                this.isAlive = false;
+                // dstr.addToDestroyList();
+                this.dropItem(new PotionHP(1), 1, 50d);
+                this.dropItem(new PotionMP(1), 1, 10d);
+                // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
+                // this.dispose();
+            }
         }
 
     }
 
     public void drawBar(SpriteBatch sb) {
         float tempHPwidth = (((float) this.health / (float) this.healthMax) * (float) this.BarWidth);
-        sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2), this.getY() + (this.BoundsHeight / 2),
-                tempHPwidth, this.BarHeight);
+        sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2),
+                this.getY() + ((this.BoundsHeight + 5 / DreamWalker.PPM) / 2) - 1 / DreamWalker.PPM, tempHPwidth,
+                this.BarHeight - 2 / DreamWalker.PPM);
+        sb.draw(this.HPBarTexture, this.getX() - (this.BoundsWidth / 2) - 5 / DreamWalker.PPM,
+                this.getY() + (this.BoundsHeight / 2), this.BarWidth + 10 / DreamWalker.PPM, this.BarHeight);
 
     }
 
@@ -191,7 +212,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         if (world == null) {
             throw new IllegalArgumentException();
         }
-        if(this.world != world){
+        if (this.world != world) {
             this.world.destroyBody(this.enemysBody);
             this.world.destroyBody(this.attackArea);
             this.world = world;
@@ -274,7 +295,7 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void update(float deltaTime) {
-        if(roomChanged){
+        if (roomChanged) {
             this.defineEnemy(this.standSpawnPoint);
             this.roomChanged = false;
         }
@@ -290,7 +311,7 @@ public abstract class Enemy extends Sprite implements Disposable {
             this.idle();
             this.attack();
         }
-        this.setRegion(this.enemiesAnimations.getFrame(deltaTime));
+        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
         this.attackArea.setTransform(this.enemysBody.getPosition(), this.enemysBody.getAngle());
     }
 
@@ -319,6 +340,20 @@ public abstract class Enemy extends Sprite implements Disposable {
     public boolean isPlayerInArea() {
         return this.playerInArea;
     }
+
+    public void dropItem(Item item, int count, double chance) {
+        double trigerChance = rnd.nextDouble() * 100;
+        if (chance >= 100d) {
+            chance = 100d;
+        }
+        if (chance <= 0) {
+            chance = 0d;
+        }
+        if (trigerChance < chance) {
+            ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.world);
+        }
+
+    };
 
     @Override
     public void dispose() {

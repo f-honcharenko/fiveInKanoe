@@ -41,7 +41,7 @@ public class Goblin extends Enemy {
         super(player, x, y);
         this.player = player;
 
-        this.enemiesAnimations = new Animations(this, "template.atlas", "template");
+        this.enemysAnimations = new Animations(this, "template.atlas", "template");
         this.setBoundsCustom(60f, 60f); // 54
         // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;
@@ -74,15 +74,12 @@ public class Goblin extends Enemy {
 
     @Override
     public void attack() {
-        // Передлать перезарядку
-        // System.out.println(this.isPlayerInArea());
         if (this.isPlayerInArea()) {
             this.setIsAttacking(true);
             if (attackSpeedCounter < attackSpeedMax) {
                 attackSpeedCounter++;
             } else {
                 attackSpeedCounter = 0;
-                System.out.println("DAMAGED!" + this.damage);
                 this.player.receiveDamage(this.damage);
             }
         } else {
@@ -93,7 +90,6 @@ public class Goblin extends Enemy {
     @Override
     public void idle() {
         this.idleTimer++;
-        // System.out.println(this.idleTimer);
         // Создать временные точки для перемещения
         if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
             this.status = "agro";

@@ -1,10 +1,13 @@
 package com.dreamwalker.game.screens;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -16,14 +19,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class GameMenuScreen implements Screen, Disposable {
+    private DreamWalker game;
+
     private Image resumeButton;
     private Image exitButton;
     private Image startButton;
@@ -37,48 +45,12 @@ public class GameMenuScreen implements Screen, Disposable {
     private EventListener startEvent;
 
     public ScreenSwitcher screenSwitcher;
+    private Sprite background;
 
-    public void toggleresumeButton(Image newImage) {
-        this.resumeButton = newImage;
-    }
-
-    public void toggleExitButton(Image newImage) {
-        this.exitButton = newImage;
-    }
-
-    public void toggleStartButton(Image newImage) {
-        this.startButton = newImage;
-    }
-
-    public void updateTable() {
-        // Установка взаимодействий
-        this.resumeButton.addListener(this.resumeEvent);
-        this.exitButton.addListener(this.ExitEvent);
-        this.startButton.addListener(this.startEvent);
-
-        // Установка таблицы
-        this.table = new Table();
-
-        // Включить масштабирование под таблицу
-        this.table.setFillParent(true);
-
-        this.table.bottom();
-        this.table.left();
-        this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
-        this.table.row();
-        this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
-        this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
-
-        // Отладка таблицы
-        // this.table.debugAll();
-
-        // Добавить таблцу на "сцену"
-        this.stage.addActor(this.table);
-    }
-
-    public GameMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher) {
-
+    public GameMenuScreen(DreamWalker game, Texture bg) {
+        this.background = new Sprite(bg);
+        this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
+        this.game = game;
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -93,12 +65,13 @@ public class GameMenuScreen implements Screen, Disposable {
 
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
+            DreamWalker game = getGame();
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                screenSwitcher.toGame();
-                screenSwitcher.disposeGameMenu();
+                ScreenSwitcher.ToGame();
+                ScreenSwitcher.DisposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
@@ -137,9 +110,9 @@ public class GameMenuScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                screenSwitcher.disposeGame();
-                screenSwitcher.toGame();
-                screenSwitcher.disposeGameMenu();
+                ScreenSwitcher.DisposeGame();
+                ScreenSwitcher.ToGame();
+                ScreenSwitcher.DisposeGameMenu();
             };
 
             @Override
@@ -160,12 +133,55 @@ public class GameMenuScreen implements Screen, Disposable {
     }
 
     public void update(float deltaTime) {
-        // this.hud.update(deltaTime);
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            // if (Gdx.input.idKey(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.toGame();
-
+            this.screenSwitcher.ToGame();
         }
+    }
+
+    public void updateTable() {
+
+        // Установка взаимодействий
+        this.resumeButton.addListener(this.resumeEvent);
+        this.exitButton.addListener(this.ExitEvent);
+        this.startButton.addListener(this.startEvent);
+
+        // Установка таблицы
+        this.table = new Table();
+
+        // Включить масштабирование под таблицу
+        this.table.setFillParent(true);
+
+        this.table.bottom();
+        this.table.left();
+        this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
+        this.table.row();
+        this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
+        this.table.row();
+        this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
+        // BG
+        // this.table.Background(new SpriteDrawable(new Sprite()));
+        this.table.setBackground(new SpriteDrawable(this.background));
+        // Отладка таблицы
+        // this.table.debugAll();
+
+        // Добавить таблцу на "сцену"
+        this.stage.addActor(this.table);
+    }
+
+    public DreamWalker getGame() {
+        return this.game;
+    }
+
+    public void toggleresumeButton(Image newImage) {
+        this.resumeButton = newImage;
+    }
+
+    public void toggleExitButton(Image newImage) {
+        this.exitButton = newImage;
+    }
+
+    public void toggleStartButton(Image newImage) {
+        this.startButton = newImage;
     }
 
     @Override
@@ -175,10 +191,9 @@ public class GameMenuScreen implements Screen, Disposable {
     @Override
     public void render(float delta) {
         update(delta);
-
         // Цвет окна и фикс мерцания экрана при изменении
-        Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        // Gdx.gl.glClearColor(0.5f, 0, 0.2f, 0.6f);
+        // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Отрисовка UI
         this.stage.draw();
         this.stage.act();

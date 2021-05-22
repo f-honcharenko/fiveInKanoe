@@ -30,7 +30,6 @@ public class Location implements Disposable {
     private Vector2 spawnPoint;
     private ArrayList<Body> exits;
 
-
     /**
      * Конструктор
      */
@@ -55,9 +54,9 @@ public class Location implements Disposable {
         this.map = map;
     }
 
-    public void initAreas(){
-        //this.initCollisions();
-        //this.initSpawnPoint();
+    public void initAreas() {
+        // this.initCollisions();
+        // this.initSpawnPoint();
         this.initExits();
     }
 
@@ -73,12 +72,14 @@ public class Location implements Disposable {
         FixtureDef fdef = new FixtureDef();
         // Тело коллизий
         Body body;
-        for (RectangleMapObject object : map.getLayers().get("collisions").getObjects().getByType(RectangleMapObject.class)) {
+        for (RectangleMapObject object : map.getLayers().get("collisions").getObjects()
+                .getByType(RectangleMapObject.class)) {
             Rectangle rect = (object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             body = world.createBody(bdef);
 
             // Задача областей коллизий
@@ -90,7 +91,7 @@ public class Location implements Disposable {
         shape.dispose();
     }
 
-    private void initSpawnPoint(){
+    private void initSpawnPoint() {
         // физические свойства для точки спавна
         BodyDef bodyDef = new BodyDef();
         // Границы точки спавна
@@ -104,7 +105,8 @@ public class Location implements Disposable {
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
         // Координаты точки спавна
-        this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+        this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
 
         // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
         // |
@@ -127,7 +129,7 @@ public class Location implements Disposable {
         shape.dispose();
     }
 
-    private void initExits(){
+    private void initExits() {
         // физические свойства для "областей" коллизий
         BodyDef bdef = new BodyDef();
         // Границы коллизий
@@ -136,11 +138,13 @@ public class Location implements Disposable {
         // Тело коллизий
         Body body;
 
-        for (RectangleMapObject object : map.getLayers().get("exits").getObjects().getByType(RectangleMapObject.class)) {
+        for (RectangleMapObject object : map.getLayers().get("exits").getObjects()
+                .getByType(RectangleMapObject.class)) {
             Rectangle rect = object.getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             body = world.createBody(bdef);
             // Задача областей коллизий
             shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
