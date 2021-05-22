@@ -50,7 +50,6 @@ public class InventoryScreen implements Screen, Disposable {
         this.background = new Sprite(bg);
         this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
         this.game = game;
-        this.screenSwitcher = new ScreenSwitcher(this.game);
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -137,14 +136,17 @@ public class InventoryScreen implements Screen, Disposable {
         // Установка взаимодействий
         this.updateTable();
 
+        System.out.println("w" + Gdx.graphics.getWidth());
+        System.out.println("h" + Gdx.graphics.getHeight());
+
     }
 
     public void updateTable() {
 
         // Установка взаимодействий
-        this.resumeButton.addListener(this.resumeEvent);
-        this.exitButton.addListener(this.ExitEvent);
-        this.startButton.addListener(this.startEvent);
+        // this.resumeButton.addListener(this.resumeEvent);
+        // this.exitButton.addListener(this.ExitEvent);
+        // this.startButton.addListener(this.startEvent);
 
         // Установка таблицы
         this.table = new Table();
@@ -155,7 +157,8 @@ public class InventoryScreen implements Screen, Disposable {
         this.table.center();
         // this.table.bottom();
         // this.table.left();
-        this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
+        this.table.add(this.inventoreyPattern).width(1200f).height(800f);
+        // this.table.add(this.inventoreyPattern).padLeft(50).width(310f).height(144f);
         // this.table.row();
         // this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
         // this.table.row();
