@@ -47,7 +47,7 @@ public class LevelGraph {
         for(int i = 1; i <= this.roomsCount; i++){
             this.mapPool.add(this.mapLoader.load(this.path + i + ".tmx"));
         }
-        //this.shuffle();
+        this.shuffle();
         this.vertices.add(new Vertex(
                 new Location(this.mapLoader.load(this.path + "start.tmx")),
                 "start",
@@ -69,6 +69,9 @@ public class LevelGraph {
                 this.contactHandler
                 )
         );
+        for(int i = 1; i < this.vertices.size(); i++){
+            this.addEdge(this.vertices.get(i-1), this.vertices.get(i));
+        }
         for(int i = 0; i < this.vertices.size(); i++){
             for(int j = i + 1; j < this.vertices.size(); j++){
                 if(this.vertices.get(i).getCurrentPower() == this.vertices.get(i).getMaxPower()){
@@ -83,22 +86,12 @@ public class LevelGraph {
                 }
             }
         }
-        if(this.vertices.get(this.vertices.size() - 1).getEdges().size() == 0){
-            System.out.println("Reconstruct!");
-            this.vertices.clear();
-            this.edges.clear();
-            this.generate();
-        }
     }
 
     //del
     public void print(){
         for(Edge edge : this.edges){
             System.out.printf("(%s)-------(%s)\n", edge.getFirst().name, edge.getSecond().name);
-            System.out.printf("[%s; %s]       [%s; %s]\n", (edge.getExitFirst().getPosition().x) / DreamWalker.PPM,
-                                                            (edge.getExitFirst().getPosition().y) / DreamWalker.PPM,
-                                                            (edge.getExitSecond().getPosition().x) / DreamWalker.PPM,
-                                                            (edge.getExitSecond().getPosition().y) / DreamWalker.PPM);
         }
         System.out.println("--------------------------------------");
     }

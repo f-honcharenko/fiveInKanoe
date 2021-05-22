@@ -30,8 +30,6 @@ public class MapChanger {
     }
 
     public static void changeLocation(int index){
-        //GameScreen prevScreen = ScreenSwitcher.getGameScreen();
-        //ScreenSwitcher.setGameScreen(null);
         Body spawnAreaBody;
         if(currentVertex == currentVertex.getEdges().get(index).getFirst()){
             spawnAreaBody = currentVertex.getEdges().get(index).getExitSecond();
@@ -48,7 +46,5 @@ public class MapChanger {
         System.out.println("THIS IS LOCATION " + ScreenSwitcher.getGameScreen().getLocation());
         ScreenSwitcher.getGameScreen().setLocation(currentVertex.getLocation());
         ScreenSwitcher.getGameScreen().getPlayer().setSpawnPoint(spawnPoint);
-        //screenSwitcher.toGame(currentVertex.getMap(), spawnPoint);
-        //prevScreen.dispose();
     }
 }
