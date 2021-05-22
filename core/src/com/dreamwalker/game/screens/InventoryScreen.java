@@ -172,7 +172,8 @@ public class InventoryScreen implements Screen, Disposable {
     }
 
     public void update(float deltaTime) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)
+                || Gdx.input.isKeyPressed(Input.Keys.I)) {
             this.screenSwitcher.ToGame();
         }
     }
