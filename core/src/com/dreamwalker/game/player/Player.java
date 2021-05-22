@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.items.PotionHP;
 import com.dreamwalker.game.skills.ActiveSkill;
 import com.dreamwalker.game.skills.FlyingSword;
 import com.dreamwalker.game.skills.PassiveSkill;
@@ -33,6 +34,8 @@ public class Player extends Sprite implements Disposable {
     private double manaMax;
     private double damage;
     private double armor;
+
+    private Inventory inventory;
 
     private float speed;
     private float attackSpeedCoefficient;
@@ -70,6 +73,8 @@ public class Player extends Sprite implements Disposable {
         this.enemyInArea = false;
         this.isAttacking = false;
         this.isDamageDealt = false;
+
+        this.inventory = new Inventory(10);
 
         this.isAlive = true;
         this.damage = 5;
@@ -327,6 +332,10 @@ public class Player extends Sprite implements Disposable {
     public double manaSpend(int count) {
         this.mana -= count;
         return this.mana;
+    }
+
+    public Inventory getInventory() {
+        return this.inventory;
     }
 
     @Override

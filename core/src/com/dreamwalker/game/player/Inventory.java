@@ -1,5 +1,7 @@
 package com.dreamwalker.game.player;
 
+import com.dreamwalker.game.items.*;
+
 /* TODO
     - Попытаться реализовать сортировку
     - Реализовать доступ по имени
@@ -9,75 +11,80 @@ public class Inventory {
     private Item[] inventory;
     private int itemsCount = 0;
 
-    public Inventory(int size){
+    public Inventory(int size) {
         this.inventory = new Item[size];
     }
 
     /**
-     * Метод получения доступа к предмету в инвентаре, без его удаления
-     * Может понадобится для вывода на панель быстрого доступа
+     * Метод получения доступа к предмету в инвентаре, без его удаления Может
+     * понадобится для вывода на панель быстрого доступа
      *
      * @param index - индекс предмета
      * @return - ссылка на предмет
      */
-    public Item getItem(int index){
+    public Item getItem(int index) {
         Item returnable = null;
-        if(index >= this.inventory.length){
+        if (index >= this.inventory.length) {
             System.out.println("There is no such item");
-        }
-        else{
+        } else {
             returnable = this.inventory[index];
         }
         return returnable;
     }
 
     /**
-     * Метод добавления предмета в инвентарь
-     * Если такой предмет уже есть в инвентаре - будет увеличен счетчик предмета
-     * и пустой слот занят не будет
-     * Иначе же займет первую пустую ячейку
+     * Метод добавления предмета в инвентарь Если такой предмет уже есть в инвентаре
+     * - будет увеличен счетчик предмета и пустой слот занят не будет Иначе же
+     * займет первую пустую ячейку
      *
      * @param item - вкладываемый предмет
      */
-    public void putItem(Item item){
-        if(this.itemsCount + 1 == this.inventory.length){
+    public Boolean putItem(Item item) {
+        if (this.itemsCount == this.inventory.length) {
             System.out.println("Inventory is full!");
-        }
-        else{
-            for(int i = 0; i < this.inventory.length; i++){
-                if(this.inventory[i].getName().equals(item.getName())){
-                    this.inventory[i].setCount(this.inventory[i].getCount() + 1);
+            return false;
+        } else {
+            boolean isAdded = false;
+            for (int i = 0; i < this.inventory.length; i++) {
+                if (this.inventory[i] != null) {
+                    if (this.inventory[i].getID() == item.getID()) {
+                        isAdded = true;
+                        this.itemsCount++;
+                        System.out.println(this.inventory[i].getCount() + "+" + item.getCount() + "="
+                                + (this.inventory[i].getCount() + item.getCount()));
+                        this.inventory[i].setCount(this.inventory[i].getCount() + item.getCount());
+                    }
                 }
             }
-            for(int i = 0; i < this.inventory.length; i++){
-                if(this.inventory[i] == null){
-                    this.inventory[i] = item;
-                    break;
+            int index = 0;
+            while ((!isAdded) && (index < inventory.length)) {
+                if (inventory[index] == null) {
+                    inventory[index] = item;
+                    isAdded = true;
                 }
+                index++;
             }
-            this.itemsCount++;
+            return isAdded;
         }
     }
 
     /**
-     * Метод удаления элемента из списка с получением его ссылки
-     * (Возможно стоит переделать, чтоб ссылку не возвращал)
+     * Метод удаления элемента из списка с получением его ссылки (Возможно стоит
+     * переделать, чтоб ссылку не возвращал)
      *
      * @param index - индекс искомого предмета
      * @return - ссылка на предмет
      */
-    public Item popItem(int index){
+    public Item popItem(int index) {
         Item returnable = null;
-        if(index >= this.inventory.length || index < 0){
+        if (index >= this.inventory.length || index < 0) {
             System.out.println("There is no such cell");
-        }
-        else{
-            if(this.inventory[index] != null){
+        } else {
+            if (this.inventory[index] != null) {
                 returnable = this.inventory[index];
                 this.inventory[index] = null;
                 this.itemsCount--;
-            }
-            else{
+            } else {
                 System.out.println("This cell is empty");
             }
         }
@@ -85,37 +92,47 @@ public class Inventory {
     }
 
     /**
-     * Метод замены предметов
-     * Может быть полезен для реализации перетаскивания предметов в инвентаре
-     * при его графической реализации.
-     * если обе ячейки не пустые - предметы поменяются местами
-     * если одна из них пустая - премдет просто переместится
+     * Метод замены предметов Может быть полезен для реализации перетаскивания
+     * предметов в инвентаре при его графической реализации. если обе ячейки не
+     * пустые - предметы поменяются местами если одна из них пустая - премдет просто
+     * переместится
      *
      * @param index1 - индекс первой ячейки
      * @param index2 - индекс второй ячейки
      */
-    public void replaceItems(int index1, int index2){
-        if(index1 >= this.inventory.length || index2 >= this.inventory.length || index1 < 0 || index2 < 0){
+    public void replaceItems(int index1, int index2) {
+        if (index1 >= this.inventory.length || index2 >= this.inventory.length || index1 < 0 || index2 < 0) {
             System.out.println("There is no such cell");
-        }
-        else{
-            if(this.inventory[index1] != null && this.inventory[index2] != null){
+        } else {
+            if (this.inventory[index1] != null && this.inventory[index2] != null) {
                 Item tempItem = this.inventory[index1];
                 this.inventory[index1] = this.inventory[index2];
                 this.inventory[index2] = tempItem;
             }
-            if(this.inventory[index1] != null && this.inventory[index2] == null){
+            if (this.inventory[index1] != null && this.inventory[index2] == null) {
                 this.inventory[index2] = this.inventory[index1];
                 this.inventory[index1] = null;
             }
-            if(this.inventory[index1] == null && this.inventory[index2] != null){
+            if (this.inventory[index1] == null && this.inventory[index2] != null) {
                 this.inventory[index1] = this.inventory[index2];
                 this.inventory[index2] = null;
             }
         }
     }
 
-    public int getSize(){
+    public int getSize() {
         return this.inventory.length;
+    }
+
+    public void getInfoInConsole() {
+        for (Item item : inventory) {
+            if (item != null) {
+                System.out.println(item.getName() + "[" + item.getID() + "] (" + item.getCount() + ")");
+            } else {
+                System.out.println("-");
+
+            }
+        }
+        System.out.println("=========");
     }
 }

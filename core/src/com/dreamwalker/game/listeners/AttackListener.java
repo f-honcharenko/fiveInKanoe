@@ -2,6 +2,9 @@ package com.dreamwalker.game.listeners;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.Item;
+import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.skills.Sword;
 
@@ -11,6 +14,7 @@ public class AttackListener implements ContactListener {
         this.enterPlayersMelee(contact);
         this.enterEnemiesMelee(contact);
         this.enterFlyingSword(contact);
+        this.enterItem(contact);
     }
 
     @Override
@@ -145,6 +149,39 @@ public class AttackListener implements ContactListener {
                 Sword sword = (Sword) fixtureB.getUserData();
                 if (!fixtureA.isSensor()) {
                     enemy.receiveDamage(sword.getDamage());
+                }
+            }
+        }
+    }
+
+    private void enterItem(Contact contact) {
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
+            boolean variant1 = fixtureA.getUserData() instanceof ItemInWorld
+                    && fixtureB.getUserData() instanceof Player;
+            if (variant1) {
+                ItemInWorld item = (ItemInWorld) fixtureA.getUserData();
+                Player player = (Player) fixtureB.getUserData();
+                if (fixtureA.isSensor()) {
+                    if (player.getInventory().putItem(item.getItem())) {
+                        item.dispose();
+                        player.getInventory().getInfoInConsole();
+                        AllItemsInWorld.removeItem(item);
+                    }
+                }
+            }
+            boolean variant2 = fixtureA.getUserData() instanceof Player
+                    && fixtureB.getUserData() instanceof ItemInWorld;
+            if (variant2) {
+                Player player = (Player) fixtureA.getUserData();
+                ItemInWorld item = (ItemInWorld) fixtureB.getUserData();
+                if (fixtureB.isSensor()) {
+                    if (player.getInventory().putItem(item.getItem())) {
+                        item.dispose();
+                        player.getInventory().getInfoInConsole();
+                        AllItemsInWorld.removeItem(item);
+                    }
                 }
             }
         }

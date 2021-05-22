@@ -1,10 +1,13 @@
 package com.dreamwalker.game.enemy;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TideMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,6 +22,12 @@ import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.tools.Destroyer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.Item;
+import com.dreamwalker.game.items.ItemInWorld;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class Enemy extends Sprite implements Disposable {
@@ -58,6 +67,8 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected Animations enemysAnimations;
 
     private Destroyer dstr;
+
+    private Random rnd;
 
     /**
      * Конструктор
@@ -156,6 +167,8 @@ public abstract class Enemy extends Sprite implements Disposable {
 
         dmgSectorShape.dispose();
         this.dstr = new Destroyer(this.world);
+
+        this.rnd = new Random();
     };
 
     /**
@@ -166,15 +179,19 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void receiveDamage(double damage) {
-        this.health -= damage;
-        this.atackedFilterFlag = true;
-        this.atackedFilterTimer = 0;
-        this.setColor(1f, 0f, 0f, 1.0f);
-        if (this.health <= 0) {
-            this.isAlive = false;
-            dstr.addToDestroyList(this.box2DBody);
-            // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
-            // this.dispose();
+        if (this.isAlive) {
+            this.health -= damage;
+            this.atackedFilterFlag = true;
+            this.atackedFilterTimer = 0;
+            this.setColor(1f, 0f, 0f, 1.0f);
+            if (this.health <= 0) {
+                this.isAlive = false;
+                dstr.addToDestroyList(this.box2DBody);
+                this.dropItem(new PotionHP(1), 1, 50d);
+                this.dropItem(new PotionMP(1), 1, 10d);
+                // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
+                // this.dispose();
+            }
         }
 
     }
@@ -315,6 +332,20 @@ public abstract class Enemy extends Sprite implements Disposable {
     public boolean isPlayerInArea() {
         return this.playerInArea;
     }
+
+    public void dropItem(Item item, int count, double chance) {
+        double trigerChance = rnd.nextDouble() * 100;
+        if (chance >= 100d) {
+            chance = 100d;
+        }
+        if (chance <= 0) {
+            chance = 0d;
+        }
+        if (trigerChance < chance) {
+            ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.world);
+        }
+
+    };
 
     @Override
     public void dispose() {

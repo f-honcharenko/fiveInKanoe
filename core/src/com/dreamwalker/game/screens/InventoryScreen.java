@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
-public class GameMenuScreen implements Screen, Disposable {
+public class InventoryScreen implements Screen, Disposable {
     private DreamWalker game;
     private Image resumeButton;
     private Image exitButton;
@@ -44,7 +44,7 @@ public class GameMenuScreen implements Screen, Disposable {
     public ScreenSwitcher screenSwitcher;
     private Sprite background;
 
-    public GameMenuScreen(DreamWalker game, Texture bg) {
+    public InventoryScreen(DreamWalker game, Texture bg) {
         this.background = new Sprite(bg);
         this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
         this.game = game;

@@ -17,6 +17,11 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.generator.LevelGraph;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.Item;
+import com.dreamwalker.game.items.ItemInWorld;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
 import com.dreamwalker.game.listeners.AttackListener;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
@@ -57,6 +62,8 @@ public class GameScreen implements Screen {
 
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
+
+    private ArrayList items;
 
     /**
      * Конструктор экрана игры
@@ -99,7 +106,8 @@ public class GameScreen implements Screen {
         this.camera.zoom = 0.6f;
 
         // this.dstr = new Destroyer(this.location.getWorld());
-
+        // this.items = new ItemInWorld[10];
+        this.items = new ArrayList<ItemInWorld>();
     }
 
     @Override
@@ -130,8 +138,35 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
-
             this.screenSwitcher.ToGameMenu();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            // this.pause();
+            this.player.getInventory().getInfoInConsole();
+            // this.screenSwitcher.ToGameMenu();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            // this.pause();
+            PotionHP tempItem = new PotionHP(1);
+            ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(), this.player.getY(), tempItem,
+                    this.player.getWorld());
+            // this.items[this.items.length] = tempItmInWorld;
+            // this.items.add(tempItmInWorld);
+            // this.items.add(tempItmInWorld);
+            AllItemsInWorld.addItem(tempItmInWorld);
+            // this.player.getInventory().putItem(new PotionHP(1));
+            // this.screenSwitcher.ToGameMenu();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            PotionMP tempItem = new PotionMP(1);
+            ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(), this.player.getY(), tempItem,
+                    this.player.getWorld());
+            // this.items[this.items.length] = tempItmInWorld;
+            // this.items.add(tempItmInWorld);
+            AllItemsInWorld.addItem(tempItmInWorld);
+
+            // this.player.getInventory().putItem(new PotionMP(1));
 
         }
 
@@ -160,6 +195,14 @@ public class GameScreen implements Screen {
         this.game.getBatch().setProjectionMatrix(this.camera.combined);
         this.game.getBatch().begin();
         this.player.render(this.game.getBatch());
+        // рендер вещей
+        if (AllItemsInWorld.getItemList() != null) {
+            for (int i = 0; i < AllItemsInWorld.getItemList().size(); i++) {
+                if (AllItemsInWorld.getItemList().get(i) != null) {
+                    ((ItemInWorld) AllItemsInWorld.getItemList().get(i)).draw(this.game.getBatch());
+                }
+            }
+        }
 
         // рендер npc
         this.testGoblin.render(this.game.getBatch());
@@ -210,6 +253,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         this.location.dispose();
+        AllItemsInWorld.clearItmes();
         this.player.dispose();
         this.ortMapRender.dispose();
         this.debugRenderer.dispose();

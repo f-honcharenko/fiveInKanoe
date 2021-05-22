@@ -12,7 +12,7 @@ public class DesktopLauncher {
 		config.width = 800;
 		config.height = 800;
 		config.title = "DreamWalker v.0.1";
-		config.fullscreen = true;
+		config.fullscreen = false;
 		config.addIcon("game_logo32.png", FileType.Internal);
 		new LwjglApplication(new DreamWalker(), config);
 	}
