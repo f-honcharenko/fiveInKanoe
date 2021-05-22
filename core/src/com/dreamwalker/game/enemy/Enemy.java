@@ -1,12 +1,9 @@
 package com.dreamwalker.game.enemy;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -14,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.tools.Destroyer;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -57,6 +53,9 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected Animations enemysAnimations;
 
     private Destroyer dstr;
+    private boolean roomChanged;
+
+    private Vector2 standSpawnPoint;
 
     /**
      * Конструктор
@@ -66,7 +65,9 @@ public abstract class Enemy extends Sprite implements Disposable {
      * @param y - стартовая позиция врага по у
      */
     public Enemy(Player player, float x, float y) {
-        this.defineEnemy(player, x, y);
+        this.standSpawnPoint = new Vector2(x, y);
+        this.player = player;
+        this.defineEnemy(this.standSpawnPoint);
 
         // Изменяемые параметры
         this.speed = 1.5f;
@@ -86,6 +87,7 @@ public abstract class Enemy extends Sprite implements Disposable {
 
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
+        this.roomChanged = false;
 
     }
 
@@ -105,13 +107,12 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public abstract void render(SpriteBatch batch);
 
-    private void defineEnemy(Player player, float x, float y) {
-        this.player = player;
-        this.world = player.getWorld();
+    private void defineEnemy(Vector2 spawnPoint) {
+        this.world = this.player.getWorld();
 
         // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(x, y);
+        bodyDef.position.set(spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" врага в игровом мире на основе свойств
@@ -192,7 +193,11 @@ public abstract class Enemy extends Sprite implements Disposable {
         if (world == null) {
             throw new IllegalArgumentException();
         }
-        this.world = world;
+        if(this.world != world){
+            this.world = world;
+            this.roomChanged = true;
+        }
+
     }
 
     public World getWorld() {
@@ -269,6 +274,10 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void update(float deltaTime) {
+        if(roomChanged){
+            this.defineEnemy(this.standSpawnPoint);
+            this.roomChanged = false;
+        }
         if (this.isAlive()) {
             if (this.atackedFilterTimer < this.atackedFilterTimerMax) {
                 this.atackedFilterTimer++;

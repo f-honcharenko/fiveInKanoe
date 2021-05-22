@@ -1,45 +1,33 @@
 package com.dreamwalker.game.generator;
-
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.handler.ContactHandler;
+import com.dreamwalker.game.location.Location;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class Vertex {
     public String name;
 
-    private TiledMap map;
+    private Location location;
     private ArrayList<Edge> edges;
-    private ArrayList<RectangleMapObject> exits;
+    private ArrayList<Rectangle> exits;
     private int maxPower;
     private int currentPower;
 
-    public Vertex(TiledMap map, String name){
+    public Vertex(Location location, String name, ContactHandler contactHandler){
         this.name = name;
-
-        this.map = map;
+        this.location = location;
+        this.location.getWorld().setContactListener(contactHandler);
         this.edges = new ArrayList<>();
-        this.exits = new ArrayList<>(Arrays.asList(
-                this.map.getLayers().
-                        get("exits").
-                        getObjects().
-                        getByType(RectangleMapObject.class).
-                        toArray()
-        ));
+        this.exits = this.location.getExits();
         //Переделать из вертекс в боди
         this.maxPower = this.exits.size();
         this.currentPower = 0;
     }
 
-    public Rectangle getExit(Random rand){
-        int exitIndex = (int)(rand.nextDouble() * (this.maxPower - this.currentPower));
-        Rectangle exitRect = this.exits.get(exitIndex).getRectangle();
-        this.exits.remove(exitIndex);
+    public Rectangle getExit(){
+        Rectangle exitRect = this.exits.get(currentPower);
         return exitRect;
     }
 
@@ -76,7 +64,7 @@ public class Vertex {
         return this.edges;
     }
 
-    public TiledMap getMap() {
-        return this.map;
+    public Location getLocation() {
+        return this.location;
     }
 }

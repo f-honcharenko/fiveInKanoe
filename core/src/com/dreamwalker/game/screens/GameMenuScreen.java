@@ -37,8 +37,6 @@ public class GameMenuScreen implements Screen, Disposable {
     private EventListener startEvent;
 
     public ScreenSwitcher screenSwitcher;
-    private TiledMap map;
-    private Vector2 spawnPoint;
 
     public void toggleresumeButton(Image newImage) {
         this.resumeButton = newImage;
@@ -79,10 +77,8 @@ public class GameMenuScreen implements Screen, Disposable {
         this.stage.addActor(this.table);
     }
 
-    public GameMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher,
-                          final TiledMap map, final Vector2 spawnPoint) {
-        this.map = map;
-        this.spawnPoint = spawnPoint;
+    public GameMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher) {
+
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -101,7 +97,7 @@ public class GameMenuScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.toGame();
                 screenSwitcher.disposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
@@ -142,7 +138,7 @@ public class GameMenuScreen implements Screen, Disposable {
             public void clicked(InputEvent event, float x, float y) {
 
                 screenSwitcher.disposeGame();
-                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.toGame();
                 screenSwitcher.disposeGameMenu();
             };
 
@@ -167,7 +163,7 @@ public class GameMenuScreen implements Screen, Disposable {
         // this.hud.update(deltaTime);
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             // if (Gdx.input.idKey(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.toGame(map, spawnPoint);
+            this.screenSwitcher.toGame();
 
         }
     }

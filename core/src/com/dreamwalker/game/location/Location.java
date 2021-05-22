@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,6 +17,8 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.generator.Vertex;
 import com.dreamwalker.game.tools.MapChanger;
+
+import java.util.ArrayList;
 // import com.badlogic.gdx.maps.objects.RectangleMapObject;
 // import com.badlogic.gdx.math.Rectangle;
 
@@ -25,6 +28,7 @@ public class Location implements Disposable {
     // Физический игровой мир
     private World world;
     private Vector2 spawnPoint;
+    private ArrayList<Rectangle> exits;
 
 
     /**
@@ -35,6 +39,7 @@ public class Location implements Disposable {
         this.world = new World(new Vector2(0, 0), true);
         this.map = map;
         this.spawnPoint = new Vector2(2, 2);
+        this.exits = new ArrayList<>();
         this.initAreas();
     }
 
@@ -50,7 +55,7 @@ public class Location implements Disposable {
         this.map = map;
     }
 
-    private void initAreas(){
+    public void initAreas(){
         //this.initCollisions();
         //this.initSpawnPoint();
         this.initExits();
@@ -60,6 +65,7 @@ public class Location implements Disposable {
      * Метод, отвичающий за создание коллизий
      */
     private void initCollisions() {
+
         // физические свойства для "областей" коллизий
         BodyDef bdef = new BodyDef();
         // Границы коллизий
@@ -67,8 +73,8 @@ public class Location implements Disposable {
         FixtureDef fdef = new FixtureDef();
         // Тело коллизий
         Body body;
-        for (MapObject object : map.getLayers().get("collisions").getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+        for (RectangleMapObject object : map.getLayers().get("collisions").getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = (object).getRectangle();
 
             bdef.type = BodyDef.BodyType.StaticBody;
             // Размещение коллизий по крате
@@ -131,19 +137,19 @@ public class Location implements Disposable {
         Body body;
 
         for (RectangleMapObject object : map.getLayers().get("exits").getObjects().getByType(RectangleMapObject.class)) {
-                Rectangle rect = object.getRectangle();
-                bdef.type = BodyDef.BodyType.StaticBody;
-                // Размещение коллизий по крате
-                bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
-                body = world.createBody(bdef);
-                // Задача областей коллизий
-                shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
-                fdef.shape = shape;
-                fdef.isSensor = true;
-                body.createFixture(fdef);
-                body.getFixtureList().get(0).setUserData(this);
+            Rectangle rect = object.getRectangle();
+            exits.add(rect);
+            bdef.type = BodyDef.BodyType.StaticBody;
+            // Размещение коллизий по крате
+            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM, (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+            body = world.createBody(bdef);
+            // Задача областей коллизий
+            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
+            fdef.shape = shape;
+            fdef.isSensor = true;
+            body.createFixture(fdef);
+            body.getFixtureList().get(0).setUserData(this);
         }
-
 
         // Удаляем фигуру, которая была создана для коллизии
         shape.dispose();
@@ -156,6 +162,10 @@ public class Location implements Disposable {
      */
     public Vector2 getSpawnPoint() {
         return this.spawnPoint;
+    }
+
+    public ArrayList<Rectangle> getExits() {
+        return this.exits;
     }
 
     /**

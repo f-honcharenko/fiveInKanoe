@@ -8,16 +8,11 @@ import com.dreamwalker.game.generator.Vertex;
 import com.dreamwalker.game.screens.GameScreen;
 
 public class MapChanger {
-    private static ScreenSwitcher screenSwitcher;
     private static Vertex currentVertex;
     private static LevelGraph levelGraph;
 
     public static void setLevelGraph(LevelGraph levelGraph) {
         MapChanger.levelGraph = levelGraph;
-    }
-
-    public static void setScreenSwitcher(ScreenSwitcher screenSwitcher) {
-        MapChanger.screenSwitcher = screenSwitcher;
     }
 
     public static void setCurrentVertex(Vertex currentVertex) {
@@ -34,7 +29,7 @@ public class MapChanger {
 
     public static void changeLocation(int index){
         //GameScreen prevScreen = ScreenSwitcher.getGameScreen();
-        ScreenSwitcher.setGameScreen(null);
+        //ScreenSwitcher.setGameScreen(null);
         Rectangle spawnArea;
         if(currentVertex == currentVertex.getEdges().get(index).getFirst()){
             spawnArea = currentVertex.getEdges().get(index).getExitSecond();
@@ -50,7 +45,10 @@ public class MapChanger {
                 (spawnArea.getX() + spawnArea.getWidth() / 2) / DreamWalker.PPM,
                 (spawnArea.getY() + spawnArea.getHeight() / 2) / DreamWalker.PPM
         );
-        screenSwitcher.toGame(currentVertex.getMap(), spawnPoint);
+        System.out.println("THIS IS MAP " + currentVertex.getLocation().getMap());
+        System.out.println("THIS IS LOCATION " + ScreenSwitcher.getGameScreen().getLocation());
+        ScreenSwitcher.getGameScreen().getLocation().setMap(currentVertex.getLocation().getMap());
+        //screenSwitcher.toGame(currentVertex.getMap(), spawnPoint);
         //prevScreen.dispose();
     }
 }

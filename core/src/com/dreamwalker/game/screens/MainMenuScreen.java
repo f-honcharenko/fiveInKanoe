@@ -33,8 +33,7 @@ public class MainMenuScreen implements Screen, Disposable {
     private EventListener StartEvent;
     private EventListener ExitEvent;
 
-    public MainMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher,
-                          final TiledMap map, final Vector2 spawnPoint) {
+    public MainMenuScreen(final DreamWalker game, final ScreenSwitcher screenSwitcher) {
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
@@ -51,7 +50,7 @@ public class MainMenuScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                screenSwitcher.toGame(map, spawnPoint);
+                screenSwitcher.toGame();
                 screenSwitcher.disposeMainMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 

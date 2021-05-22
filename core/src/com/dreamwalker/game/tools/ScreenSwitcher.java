@@ -14,12 +14,11 @@ public class ScreenSwitcher {
 
     public ScreenSwitcher(DreamWalker game) {
         this.game = game;
-
     }
 
-    public void toMainMenu(TiledMap map, Vector2 spawnPoint) {
+    public void toMainMenu() {
         if (this.mainMenuScreen == null) {
-            this.mainMenuScreen = new MainMenuScreen(this.game, this, map, spawnPoint);
+            this.mainMenuScreen = new MainMenuScreen(this.game, this);
         }
         this.game.setScreen(this.mainMenuScreen);
     }
@@ -31,9 +30,9 @@ public class ScreenSwitcher {
         }
     }
 
-    public void toGameMenu(TiledMap map, Vector2 spawnPoint) {
+    public void toGameMenu() {
         if (this.gameMenuScreen == null) {
-            this.gameMenuScreen = new GameMenuScreen(this.game, this,  map, spawnPoint);
+            this.gameMenuScreen = new GameMenuScreen(this.game, this);
         }
         this.game.setScreen(this.gameMenuScreen);
     }
@@ -45,9 +44,9 @@ public class ScreenSwitcher {
         }
     }
 
-    public void toGame(TiledMap map, Vector2 spawnPoint) {
+    public void toGame() {
         if (this.gameScreen == null) {
-            this.gameScreen = new GameScreen(this.game, map, spawnPoint);
+            this.gameScreen = new GameScreen(this.game);
         }
         this.game.setScreen(this.gameScreen);
     }
@@ -66,4 +65,5 @@ public class ScreenSwitcher {
     public static GameScreen getGameScreen() {
         return gameScreen;
     }
+
 }

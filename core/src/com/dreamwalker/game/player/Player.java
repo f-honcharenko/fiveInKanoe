@@ -45,6 +45,7 @@ public class Player extends Sprite implements Disposable {
     private boolean enemyInArea;
     private boolean isAttacking;
     private boolean isDamageDealt;
+    public boolean roomChanged;
 
     private ArrayList<PassiveSkill> passiveSkills;
     private ArrayList<ActiveSkill> skillPanel;
@@ -70,6 +71,7 @@ public class Player extends Sprite implements Disposable {
         this.enemyInArea = false;
         this.isAttacking = false;
         this.isDamageDealt = false;
+        this.roomChanged = false;
 
         this.isAlive = true;
         this.damage = 5;
@@ -145,7 +147,11 @@ public class Player extends Sprite implements Disposable {
         }
     }
 
-    public void update(float deltaTime, Vector2 mousePosition) {
+    public void update(float deltaTime, Vector2 mousePosition, Vector2 spawnPoint) {
+        if(this.roomChanged){
+            this.definePlayer(spawnPoint.x, spawnPoint.y);
+            this.roomChanged = false;
+        }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             // this.world.destroyBody(this.playersBody);
@@ -205,7 +211,7 @@ public class Player extends Sprite implements Disposable {
                 }
             default:
                 this.health = this.getCurrentHealth() - (damage);
-                return (float) (damage);
+                return damage;
         }
     }
 
@@ -217,7 +223,10 @@ public class Player extends Sprite implements Disposable {
     }
 
     public void setWorld(World world) {
-        this.world = world;
+        if(this.world != world){
+            this.world = world;
+            this.roomChanged = true;
+        }
     }
 
     public World getWorld() {

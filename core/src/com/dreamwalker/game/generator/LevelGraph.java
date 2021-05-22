@@ -1,17 +1,12 @@
 package com.dreamwalker.game.generator;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Queue;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.handler.ContactHandler;
+import com.dreamwalker.game.location.Location;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -24,8 +19,10 @@ public class LevelGraph {
     private ArrayList<TiledMap> mapPool;
     private ArrayList<Vertex> vertices;
     private ArrayList<Edge> edges;
+    private ContactHandler contactHandler;
 
     public LevelGraph(String path, int roomsCount){
+        this.contactHandler = new ContactHandler();
         this.mapLoader = new TmxMapLoader();
         this.random = new Random();
         this.mapPool = new ArrayList<>();
@@ -37,8 +34,8 @@ public class LevelGraph {
     }
 
     public void addEdge(Vertex first, Vertex second){
-        Rectangle exitFirst = first.getExit(this.random);
-        Rectangle exitSecond = second.getExit(this.random);
+        Rectangle exitFirst = first.getExit();
+        Rectangle exitSecond = second.getExit();
         Edge edge = new Edge(first, exitFirst, second, exitSecond);
         first.addEdge(edge);
         second.addEdge(edge);
@@ -50,12 +47,27 @@ public class LevelGraph {
             this.mapPool.add(this.mapLoader.load(this.path + i + ".tmx"));
         }
         this.shuffle();
-        this.vertices.add(new Vertex(this.mapLoader.load(this.path + "start.tmx"), "start"));
+        this.vertices.add(new Vertex(
+                new Location(this.mapLoader.load(this.path + "start.tmx")),
+                "start",
+                this.contactHandler
+                )
+        );
         for(int i = 0 ; i < this.roomsCount; i++){
-            this.vertices.add(new Vertex(this.mapPool.get(0), Integer.toString(i)));
+            this.vertices.add(new Vertex(
+                    new Location(this.mapPool.get(0)),
+                    Integer.toString(i),
+                    this.contactHandler
+                    )
+            );
             this.mapPool.remove(0);
         }
-        this.vertices.add(new Vertex(this.mapLoader.load(this.path + "exit.tmx"), "exit"));
+        this.vertices.add(new Vertex(
+                new Location(this.mapLoader.load(this.path + "exit.tmx")),
+                "exit",
+                this.contactHandler
+                )
+        );
         for(int i = 0; i < this.vertices.size(); i++){
             for(int j = i + 1; j < this.vertices.size(); j++){
                 if(this.vertices.get(i).getCurrentPower() == this.vertices.get(i).getMaxPower()){

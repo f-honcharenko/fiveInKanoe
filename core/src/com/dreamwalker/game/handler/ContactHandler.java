@@ -56,6 +56,7 @@ public class ContactHandler implements ContactListener {
                     if(exitPosition.x == exitX && exitPosition.y == exitY){
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
                         isTriggered = true;
+                        break;
                     }
                     exitArea = edge.getExitSecond();
                     exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
@@ -64,6 +65,7 @@ public class ContactHandler implements ContactListener {
                     if(exitPosition.x == exitX && exitPosition.y == exitY){
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
                         isTriggered = true;
+                        break;
                     }
                 }
             }
@@ -80,6 +82,7 @@ public class ContactHandler implements ContactListener {
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
                         //player.setPosition(edge.getExitSecond().getX(), edge.getExitSecond().getY());
                         isTriggered = true;
+                        break;
                     }
                     exitArea = edge.getExitSecond();
                     exitX = (exitArea.getX() + exitArea.getWidth() / 2) / DreamWalker.PPM;
@@ -89,6 +92,7 @@ public class ContactHandler implements ContactListener {
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
                         //player.setPosition(edge.getExitFirst().getX(), edge.getExitFirst().getY());
                         isTriggered = true;
+                        break;
                     }
                 }
             }
