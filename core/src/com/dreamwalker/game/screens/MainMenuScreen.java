@@ -147,8 +147,8 @@ public class MainMenuScreen implements Screen, Disposable {
             public void clicked(InputEvent event, float x, float y) {
                 startButton = newGame_pressed;
                 updateTable();
-                ScreenSwitcher.ToGame();
-                ScreenSwitcher.DisposeMainMenu();
+                ScreenSwitcher.toGame();
+                ScreenSwitcher.disposeMainMenu();
 
             };
 

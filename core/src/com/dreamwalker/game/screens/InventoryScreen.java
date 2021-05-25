@@ -70,8 +70,8 @@ public class InventoryScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
-                ScreenSwitcher.ToGame();
-                ScreenSwitcher.DisposeGameMenu();
+                ScreenSwitcher.toGame();
+                ScreenSwitcher.disposeGameMenu();
                 // this.game.setScreen(new GameScreen(this.game));
 
             };
@@ -114,9 +114,9 @@ public class InventoryScreen implements Screen, Disposable {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                ScreenSwitcher.DisposeGame();
-                ScreenSwitcher.ToGame();
-                ScreenSwitcher.DisposeGameMenu();
+                ScreenSwitcher.disposeGame();
+                ScreenSwitcher.toGame();
+                ScreenSwitcher.disposeGameMenu();
             };
 
             @Override
@@ -173,7 +173,7 @@ public class InventoryScreen implements Screen, Disposable {
 
     public void update(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.ToGame();
+            this.screenSwitcher.toGame();
         }
     }
 
