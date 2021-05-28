@@ -45,10 +45,10 @@ public class Goblin extends Enemy {
         this.spawnY = y;
 
         this.speed = 0.2f;
-        this.damage = 40;
+        this.damage = 10;
         this.health = 100;
 
-        this.attackSpeedMax = 100;
+        this.attackSpeedMax = 20;
         this.attackSpeedCounter = 0;
         this.idleTimer = 0;
         this.idleTimerMax = rnd(50, 200);
@@ -57,6 +57,8 @@ public class Goblin extends Enemy {
         this.idleRadius = 150 / DreamWalker.PPM;
         this.agroRadius = 100 / DreamWalker.PPM;
         this.attackRadius = 50 / DreamWalker.PPM;
+
+        this.respawnTime = 550;
     }
 
     /**

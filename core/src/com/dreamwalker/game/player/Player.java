@@ -82,7 +82,7 @@ public class Player extends Sprite implements Disposable {
         this.inventory = new Inventory(10);
 
         this.isAlive = true;
-        this.damage = 5;
+        this.damage = 2;
         this.speed = 1.5f;
         this.health = 100;
         this.mana = 50;
@@ -328,6 +328,10 @@ public class Player extends Sprite implements Disposable {
 
     public void setSpawnPoint(Vector2 spawnPoint) {
         this.spawnPoint = spawnPoint;
+    }
+
+    public boolean isAlive() {
+        return this.isAlive;
     }
 
     /**

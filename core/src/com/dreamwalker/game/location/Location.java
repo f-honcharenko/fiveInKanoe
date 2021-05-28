@@ -220,7 +220,9 @@ public class Location implements Disposable {
 
 
     public void enemiesResp(){
-
+        for (Enemy enemy : this.enemies) {
+            enemy.respawn();
+        }
     }
 
     public void enemiesUpdate(float deltaTime, Player player){

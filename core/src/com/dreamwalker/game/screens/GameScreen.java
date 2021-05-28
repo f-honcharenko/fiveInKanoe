@@ -44,7 +44,6 @@ public class GameScreen implements Screen {
 
     public Destroyer dstr;
 
-    private Vector2 spawnPoint;
 
     /**
      * Конструктор экрана игры
@@ -57,7 +56,6 @@ public class GameScreen implements Screen {
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
 
         this.game = game;
-        this.spawnPoint = new Vector2(0, 0);
 
 
         // Загрузка карты и создание коллизий
@@ -98,17 +96,23 @@ public class GameScreen implements Screen {
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
+        if(!this.player.isAlive()){
+            ScreenSwitcher.ToMainMenu();
+        }
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
         Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));// !
         this.camera.update();
         this.ortMapRender.setView(this.camera);
-        this.viewport.update((int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
-                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM));
+        this.viewport.update(
+                (int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
+                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM)
+        );
 
         this.hud.update(deltaTime);
         this.location.enemiesUpdate(deltaTime, this.player);
+        this.location.enemiesResp();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
@@ -152,9 +156,6 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         this.location = MapChanger.getCurrentVertex().getLocation();
         this.player.setWorld(this.location.getWorld());
-        /*for (Enemy enemy : this.enemies) {
-            enemy.setWorld(this.location.getWorld());
-        }*/
 
         update(delta);
 
@@ -235,7 +236,7 @@ public class GameScreen implements Screen {
      */
     @Override
     public void dispose() {
-        this.location.dispose();
+        MapChanger.getLevelGraph().dispose();
         AllItemsInWorld.clearItmes();
         this.player.dispose();
         this.ortMapRender.dispose();

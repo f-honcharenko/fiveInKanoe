@@ -60,6 +60,9 @@ public abstract class Enemy extends Sprite implements Disposable {
     private Texture HPBarTexture;
     protected Animations enemysAnimations;
 
+    protected int respawnTime;
+    protected int respawnCounter;
+
     private Destroyer dstr;
     private boolean roomChanged;
 
@@ -97,7 +100,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
         this.roomChanged = false;
-
+        this.respawnCounter = 0;
     }
 
     /**
@@ -113,6 +116,20 @@ public abstract class Enemy extends Sprite implements Disposable {
     abstract public void attack(Player player);
 
     abstract public void idle(Player player);
+
+    public void respawn() {
+        if(!this.isAlive){
+            this.respawnCounter++;
+            this.enemysBody.getFixtureList().get(0).setSensor(true);
+            if(this.respawnCounter == this.respawnTime){
+                this.enemysBody.getFixtureList().get(0).setSensor(false);
+                this.enemysBody.setTransform(this.standSpawnPoint.x, this.standSpawnPoint.y, (float)this.viewAngle);
+                this.health = this.healthMax;
+                this.isAlive = true;
+                this.respawnCounter = 0;
+            }
+        }
+    }
 
     public abstract void render(SpriteBatch batch);
 

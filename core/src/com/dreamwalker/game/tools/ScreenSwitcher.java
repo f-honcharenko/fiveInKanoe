@@ -26,6 +26,7 @@ public class ScreenSwitcher {
             mainMenuScreen = new MainMenuScreen(game);
         }
         game.setScreen(mainMenuScreen);
+        gameScreen = null; //!!!
     }
 
     public static void DisposeMainMenu() {
