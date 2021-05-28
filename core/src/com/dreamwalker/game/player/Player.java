@@ -123,8 +123,7 @@ public class Player extends Sprite implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -160,7 +159,7 @@ public class Player extends Sprite implements Disposable {
             this.definePlayer();
             this.roomChanged = false;
         }
-        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 0.04f - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             // this.world.destroyBody(this.playersBody);
             // this.world.destroyBody(this.attackArea);

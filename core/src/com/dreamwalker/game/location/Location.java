@@ -1,6 +1,9 @@
 package com.dreamwalker.game.location;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
@@ -14,9 +17,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 // import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.generator.LevelGraph;
-import com.dreamwalker.game.generator.Vertex;
-import com.dreamwalker.game.tools.MapChanger;
+import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.enemy.Goblin;
+import com.dreamwalker.game.player.Player;
 
 import java.util.ArrayList;
 // import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -29,6 +32,8 @@ public class Location implements Disposable {
     private World world;
     private Vector2 spawnPoint;
     private ArrayList<Body> exits;
+    private ArrayList<Body> enemiesSP;
+    private ArrayList<Enemy> enemies;
 
     /**
      * Конструктор
@@ -39,7 +44,13 @@ public class Location implements Disposable {
         this.map = map;
         this.spawnPoint = new Vector2(2, 2);
         this.exits = new ArrayList<>();
-        this.initAreas();
+        this.enemiesSP = new ArrayList<>();
+        this.enemies = new ArrayList<>();
+        this.initCollisions();
+        this.initSpawnPoint();
+        this.initEnemiesSpawnPoint();
+        this.initExits();
+        this.initEnemies();
     }
 
     public World getWorld() {
@@ -54,109 +65,174 @@ public class Location implements Disposable {
         this.map = map;
     }
 
-    public void initAreas() {
-        // this.initCollisions();
-        // this.initSpawnPoint();
-        this.initExits();
+    private void initEnemies(){
+        for(Body enemySP : this.enemiesSP){
+            this.enemies.add(new Goblin(this.world, enemySP.getPosition()));
+        }
     }
 
     /**
      * Метод, отвичающий за создание коллизий
      */
     private void initCollisions() {
+        MapLayer objLayer = map.getLayers().get("collisions");
+        MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        Array<RectangleMapObject> collisionsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        if(collisionsObj != null){
+            for (RectangleMapObject object : collisionsObj) {
+                // физические свойства для "областей" коллизий
+                BodyDef bdef = new BodyDef();
+                // Границы коллизий
+                PolygonShape shape = new PolygonShape();
+                FixtureDef fdef = new FixtureDef();
+                // Тело коллизий
+                Body body;
+                Rectangle rect = (object).getRectangle();
+                bdef.type = BodyDef.BodyType.StaticBody;
+                // Размещение коллизий по крате
+                bdef.position.set(
+                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
+                );
+                body = world.createBody(bdef);
 
-        // физические свойства для "областей" коллизий
-        BodyDef bdef = new BodyDef();
-        // Границы коллизий
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        // Тело коллизий
-        Body body;
-        for (RectangleMapObject object : map.getLayers().get("collisions").getObjects()
-                .getByType(RectangleMapObject.class)) {
-            Rectangle rect = (object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            // Размещение коллизий по крате
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
-            body = world.createBody(bdef);
-
-            // Задача областей коллизий
-            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
+                // Задача областей коллизий
+                shape.setAsBox(
+                        (rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getHeight() / 2) / DreamWalker.PPM
+                );
+                fdef.shape = shape;
+                body.createFixture(fdef);
+                // Удаляем фигуру, которая была создана для коллизии
+                shape.dispose();
+            }
         }
-        // Удаляем фигуру, которая была создана для коллизии
-        shape.dispose();
     }
 
     private void initSpawnPoint() {
-        // физические свойства для точки спавна
-        BodyDef bodyDef = new BodyDef();
-        // Границы точки спавна
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fixtureDef = new FixtureDef();
-        // Тело точки спавна
-        Body body;
+        MapLayer objLayer = this.map.getLayers().get("spawnPoint");
+        MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
+        if(object != null){
+            // физические свойства для точки спавна
+            BodyDef bodyDef = new BodyDef();
+            // Границы точки спавна
+            PolygonShape shape = new PolygonShape();
+            FixtureDef fixtureDef = new FixtureDef();
+            // Тело точки спавна
+            Body body;
+            // Получение данных с самой карты
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // Координаты точки спавна
+            this.spawnPoint = new Vector2(
+                    (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
+            );
+            // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
+            // |
+            // V
+            // Размещение точки спавна на карте
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+            bodyDef.position.set(this.spawnPoint);
+            // Область будет проходимой
+            fixtureDef.isSensor = true;
+            body = this.world.createBody(bodyDef);
+            // Задача области спавна
+            shape.setAsBox(
+                    (rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getHeight() / 2) / DreamWalker.PPM
+            );
+            fixtureDef.shape = shape;
+            body.createFixture(fixtureDef);
 
-        // Получение данных с самой карты
-        MapObject object = this.map.getLayers().get("spawnPoint").getObjects().get(0);
-        Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            // Удаляем фигуру, которая была создана для коллизии
+            shape.dispose();
+        }
 
-        // Координаты точки спавна
-        this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
-
-        // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
-        // |
-        // V
-
-        // Размещение точки спавна на карте
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(this.spawnPoint);
-
-        // Область будет проходимой
-        fixtureDef.isSensor = true;
-        body = this.world.createBody(bodyDef);
-
-        // Задача области спавна
-        shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
-        fixtureDef.shape = shape;
-        body.createFixture(fixtureDef);
-
-        // Удаляем фигуру, которая была создана для коллизии
-        shape.dispose();
     }
 
     private void initExits() {
-        // физические свойства для "областей" коллизий
-        BodyDef bdef = new BodyDef();
-        // Границы коллизий
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        // Тело коллизий
-        Body body;
-
-        for (RectangleMapObject object : map.getLayers().get("exits").getObjects()
-                .getByType(RectangleMapObject.class)) {
-            Rectangle rect = object.getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            // Размещение коллизий по крате
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
-            body = world.createBody(bdef);
-            // Задача областей коллизий
-            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
-            fdef.shape = shape;
-            fdef.isSensor = true;
-            body.createFixture(fdef);
-            body.getFixtureList().get(0).setUserData(this);
-            exits.add(body);
+        MapLayer objLayer = map.getLayers().get("exits");
+        MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        Array<RectangleMapObject> exitsObj = mapObjects.getByType(RectangleMapObject.class);
+        if(exitsObj != null){
+            for (RectangleMapObject object : exitsObj) {
+                // физические свойства для "областей" коллизий
+                BodyDef bdef = new BodyDef();
+                // Границы коллизий
+                PolygonShape shape = new PolygonShape();
+                FixtureDef fdef = new FixtureDef();
+                // Тело коллизий
+                Body body;
+                Rectangle rect = object.getRectangle();
+                bdef.type = BodyDef.BodyType.StaticBody;
+                // Размещение коллизий по крате
+                bdef.position.set(
+                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
+                );
+                body = world.createBody(bdef);
+                // Задача областей коллизий
+                shape.setAsBox(
+                        (rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getHeight() / 2) / DreamWalker.PPM)
+                ;
+                fdef.shape = shape;
+                fdef.isSensor = true;
+                body.createFixture(fdef);
+                body.getFixtureList().get(0).setUserData(this);
+                this.exits.add(body);
+                // Удаляем фигуру, которая была создана для коллизии
+                shape.dispose();
+            }
         }
+    }
 
-        // Удаляем фигуру, которая была создана для коллизии
-        shape.dispose();
+    private void initEnemiesSpawnPoint(){
+        MapLayer objLayer = map.getLayers().get("enemies");
+        MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        if(enemiesSPObj != null){
+            for(RectangleMapObject object : enemiesSPObj){
+                BodyDef bdef = new BodyDef();
+                PolygonShape shape = new PolygonShape();
+                FixtureDef fdef = new FixtureDef();
+                Body body;
+                Rectangle rect = object.getRectangle();
+                bdef.type = BodyDef.BodyType.StaticBody;
+                bdef.position.set(
+                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
+                );
+                body = world.createBody(bdef);
+                shape.setAsBox(
+                        (rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getHeight() / 2) / DreamWalker.PPM
+                );
+                fdef.shape = shape;
+                fdef.isSensor = true;
+                body.createFixture(fdef);
+                this.enemiesSP.add(body);
+                shape.dispose();
+            }
+        }
+    }
+
+
+    public void enemiesResp(){
+
+    }
+
+    public void enemiesUpdate(float deltaTime, Player player){
+        for (Enemy enemy : this.enemies) {
+            enemy.update(deltaTime, player);
+        }
+    }
+
+    public void enemiesRender(SpriteBatch spriteBatch){
+        for(Enemy enemy : this.enemies){
+            enemy.render(spriteBatch);
+        }
     }
 
     /**

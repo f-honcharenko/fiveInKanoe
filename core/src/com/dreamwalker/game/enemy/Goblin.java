@@ -2,12 +2,11 @@ package com.dreamwalker.game.enemy;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.player.Player;
 
 public class Goblin extends Enemy {
-
-    private Player player;
 
     private int attackSpeedMax;
     private int attackSpeedCounter;
@@ -32,14 +31,12 @@ public class Goblin extends Enemy {
 
     /**
      * Конструктор
-     * 
-     * @param player - обьект игрока
+     *
      * @param x      - стартовая позиция врага по х
      * @param y      - стартовая позиция врага по у
      */
-    public Goblin(Player player, float x, float y) {
-        super(player, x, y);
-        this.player = player;
+    public Goblin(World world, float x, float y) {
+        super(world, x, y);
 
         this.enemysAnimations = new Animations(this, "template.atlas", "template");
         this.setBoundsCustom(60f, 60f); // 54
@@ -64,23 +61,22 @@ public class Goblin extends Enemy {
 
     /**
      * Конструктор
-     * 
-     * @param player          - обьект игрока
+     *
      * @param enemySpawnPoint - позиция врага
      */
-    public Goblin(Player player, Vector2 enemySpawnPoint) {
-        this(player, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Goblin(World world, Vector2 enemySpawnPoint) {
+        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override
-    public void attack() {
+    public void attack(Player player) {
         if (this.isPlayerInArea()) {
             this.setIsAttacking(true);
             if (attackSpeedCounter < attackSpeedMax) {
                 attackSpeedCounter++;
             } else {
                 attackSpeedCounter = 0;
-                this.player.receiveDamage(this.damage);
+                player.receiveDamage(this.damage);
             }
         } else {
             this.setIsAttacking(false);
@@ -88,7 +84,7 @@ public class Goblin extends Enemy {
     }
 
     @Override
-    public void idle() {
+    public void idle(Player player) {
         this.idleTimer++;
         // Создать временные точки для перемещения
         if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
