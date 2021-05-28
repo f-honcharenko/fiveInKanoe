@@ -20,10 +20,9 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
 import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.player.Player;
+import com.dreamwalker.game.tools.ScreenSwitcher;
 
 import java.util.ArrayList;
-// import com.badlogic.gdx.maps.objects.RectangleMapObject;
-// import com.badlogic.gdx.math.Rectangle;
 
 public class Location implements Disposable {
     // Тайловая карта
@@ -51,6 +50,7 @@ public class Location implements Disposable {
         this.initEnemiesSpawnPoint();
         this.initExits();
         this.initEnemies();
+        this.initFinalExit();
     }
 
     public World getWorld() {
@@ -215,6 +215,35 @@ public class Location implements Disposable {
                 this.enemiesSP.add(body);
                 shape.dispose();
             }
+        }
+    }
+
+    private void initFinalExit(){
+        MapLayer objLayer = this.map.getLayers().get("finalExit");
+        MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
+        if(object != null){
+            BodyDef bodyDef = new BodyDef();
+            PolygonShape shape = new PolygonShape();
+            FixtureDef fixtureDef = new FixtureDef();
+            Body body;
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+            this.spawnPoint = new Vector2(
+                    (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
+            );
+            bodyDef.type = BodyDef.BodyType.StaticBody;
+            bodyDef.position.set(this.spawnPoint);
+            fixtureDef.isSensor = true;
+            body = this.world.createBody(bodyDef);
+            shape.setAsBox(
+                    (rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getHeight() / 2) / DreamWalker.PPM
+            );
+            fixtureDef.shape = shape;
+            body.createFixture(fixtureDef);
+            body.getFixtureList().get(0).setUserData("Exit"); //Сомнения по поводу такого варианта
+            shape.dispose();
         }
     }
 

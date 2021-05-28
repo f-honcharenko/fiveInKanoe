@@ -54,8 +54,8 @@ public class Goblin extends Enemy {
         this.idleTimerMax = rnd(50, 200);
         this.waitingTimerMax = rnd(50, 100);
         this.agroTimerMax = 150;
-        this.idleRadius = 150 / DreamWalker.PPM;
-        this.agroRadius = 100 / DreamWalker.PPM;
+        this.idleRadius = 250 / DreamWalker.PPM;
+        this.agroRadius = 200 / DreamWalker.PPM;
         this.attackRadius = 50 / DreamWalker.PPM;
 
         this.respawnTime = 550;

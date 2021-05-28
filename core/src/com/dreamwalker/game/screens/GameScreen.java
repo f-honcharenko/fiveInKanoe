@@ -22,6 +22,7 @@ import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.tools.*;
 
 import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
 
 public class GameScreen implements Screen {
 
@@ -54,17 +55,12 @@ public class GameScreen implements Screen {
         MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
-
         this.game = game;
-
-
         // Загрузка карты и создание коллизий
         this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
-
         this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), this.location.getSpawnPoint());
-        this.location.getWorld().setContactListener(new ContactHandler());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
 
@@ -203,6 +199,15 @@ public class GameScreen implements Screen {
         this.game.getBatch().setProjectionMatrix(this.hud.getStage().getCamera().combined);
         // Отрисовка интерфейса
         this.hud.getStage().draw();
+    }
+
+    public void nextFloor(){
+        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
+        MapChanger.getLevelGraph().print();
+        MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
+        this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
+        this.player.setSpawnPoint(this.location.getSpawnPoint());
+        System.out.println();
     }
 
     @Override
