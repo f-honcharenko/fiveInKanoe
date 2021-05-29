@@ -131,9 +131,6 @@ public class GameScreen implements Screen {
             enemy.update(deltaTime);
         }
 
-        this.testRobber.update(deltaTime);
-        this.testRobber1.update(deltaTime);
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
             ScreenSwitcher.ToGameMenu();
@@ -214,8 +211,6 @@ public class GameScreen implements Screen {
             enemy.render(this.game.getBatch());
         }
 
-        this.testRobber.render(this.game.getBatch());
-        this.testRobber1.render(this.game.getBatch());
 
         this.game.getBatch().end();
 

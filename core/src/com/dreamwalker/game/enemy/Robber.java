@@ -99,20 +99,20 @@ public class Robber extends Enemy{
         if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
             this.status = "agro";
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
-            Vector2 goblinViewPoint = playerPosition.sub(super.getBox2DBody().getPosition());
+            Vector2 goblinViewPoint = playerPosition.sub(super.getEnemysBody().getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
-            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
-            super.getBox2DBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
+            super.getEnemysBody().setTransform(super.getEnemysBody().getPosition(), goblinViewPoint.angleRad());
+            super.getEnemysBody().setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
                     (player.getY() - super.getY()) * this.speed));
         }
         if ((this.status == "agro") && (this.idleTimer == this.agroTimerMax)) {
             this.status = "waiting";
-            super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
+            super.getEnemysBody().setLinearVelocity(new Vector2(0, 0));
         }
         if ((this.idleTimer == this.idleTimerMax) || ((this.tempX == super.getX()) && (this.tempY == super.getY()))) {
             // Если таймер(время ожидания) истек, или непись уже на месте.
             // Меняем статус и обнулялем таймер
-            super.getBox2DBody().setLinearVelocity(new Vector2(0, 0));
+            super.getEnemysBody().setLinearVelocity(new Vector2(0, 0));
             this.status = "waiting";
             this.idleTimer = 0;
 
@@ -127,11 +127,11 @@ public class Robber extends Enemy{
         }
         if (this.status == "idleGo") {
             // Повернуть непися
-            Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.getBox2DBody().getPosition());
+            Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.getEnemysBody().getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
-            super.getBox2DBody().setTransform(super.getBox2DBody().getPosition(), goblinViewPoint.angleRad());
+            super.getEnemysBody().setTransform(super.getEnemysBody().getPosition(), goblinViewPoint.angleRad());
             // Задать ему скорость
-            super.getBox2DBody().setLinearVelocity(
+            super.getEnemysBody().setLinearVelocity(
                     new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
