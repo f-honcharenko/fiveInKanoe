@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.player.Inventory;
 import com.dreamwalker.game.screens.*;
 
 public class ScreenSwitcher {
@@ -42,9 +43,9 @@ public class ScreenSwitcher {
         game.setScreen(gameMenuScreen);
     }
 
-    public static void toInventory() {
+    public static void toInventory(Inventory inv) {
         Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        inventoryScreen = new InventoryScreen(game, new Texture(flipPixmap(pixmap)));
+        inventoryScreen = new InventoryScreen(game, new Texture(flipPixmap(pixmap)), inv);
 
         game.setScreen(inventoryScreen);
     }

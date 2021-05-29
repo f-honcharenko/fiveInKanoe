@@ -120,6 +120,26 @@ public class Inventory {
         }
     }
 
+    public int getCorrectSize() {
+        int sum = 0;
+        for (Item item : inventory) {
+            if (item != null) {
+                sum += item.getCount();
+            }
+        }
+        return sum;
+    }
+
+    public int getTypesSize() {
+        int sum = 0;
+        for (Item item : inventory) {
+            if (item != null) {
+                sum += 1;
+            }
+        }
+        return sum;
+    }
+
     public int getSize() {
         return this.inventory.length;
     }

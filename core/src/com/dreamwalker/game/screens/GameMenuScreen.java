@@ -54,7 +54,6 @@ public class GameMenuScreen implements Screen, Disposable {
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
-        this.screenSwitcher = screenSwitcher;
         // Штука для отслеживания нажатий
         Gdx.input.setInputProcessor(stage);
 
@@ -65,8 +64,6 @@ public class GameMenuScreen implements Screen, Disposable {
 
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
-            DreamWalker game = getGame();
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // this.game.getScreen().dispose();
@@ -134,7 +131,7 @@ public class GameMenuScreen implements Screen, Disposable {
 
     public void update(float deltaTime) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            this.screenSwitcher.toGame();
+            ScreenSwitcher.toGame();
         }
     }
 

@@ -129,7 +129,7 @@ public class GameScreen implements Screen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             // this.pause();
-            ScreenSwitcher.toInventory();
+            ScreenSwitcher.toInventory(player.getInventory());
             this.player.getInventory().getInfoInConsole();
             // this.screenSwitcher.ToGameMenu();
         }
