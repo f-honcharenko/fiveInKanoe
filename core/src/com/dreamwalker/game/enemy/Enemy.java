@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TideMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,7 +18,6 @@ import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.tools.Destroyer;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.items.AllItemsInWorld;
 import com.dreamwalker.game.items.Item;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.items.PotionHP;
@@ -54,13 +52,16 @@ public abstract class Enemy extends Sprite implements Disposable {
     private boolean isAttacking;
     private boolean isDamageDealt;
     private boolean isAlive;
-    private Player player;
+
     private boolean playerInArea;
 
     private double viewAngle;
     private Texture HPTexture;
     private Texture HPBarTexture;
     protected Animations enemysAnimations;
+
+    protected int respawnTime;
+    protected int respawnCounter;
 
     private Destroyer dstr;
     private boolean roomChanged;
@@ -76,9 +77,9 @@ public abstract class Enemy extends Sprite implements Disposable {
      * @param x - стартовая позиция врага по х
      * @param y - стартовая позиция врага по у
      */
-    public Enemy(Player player, float x, float y) {
+    public Enemy(World world, float x, float y) {
+        this.world = world;
         this.standSpawnPoint = new Vector2(x, y);
-        this.player = player;
         this.defineEnemy(this.standSpawnPoint);
 
         // Изменяемые параметры
@@ -99,7 +100,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
         this.roomChanged = false;
-
+        this.respawnCounter = 0;
     }
 
     /**
@@ -108,18 +109,31 @@ public abstract class Enemy extends Sprite implements Disposable {
      *
      * @param enemySpawnPoint - стартовая позиция игрока
      */
-    public Enemy(Player player, Vector2 enemySpawnPoint) {
-        this(player, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Enemy(World world, Vector2 enemySpawnPoint) {
+        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
-    abstract public void attack();
+    abstract public void attack(Player player);
 
-    abstract public void idle();
+    abstract public void idle(Player player);
+
+    public void respawn() {
+        if(!this.isAlive){
+            this.respawnCounter++;
+            this.enemysBody.getFixtureList().get(0).setSensor(true);
+            if(this.respawnCounter == this.respawnTime){
+                this.enemysBody.getFixtureList().get(0).setSensor(false);
+                this.enemysBody.setTransform(this.standSpawnPoint.x, this.standSpawnPoint.y, (float)this.viewAngle);
+                this.health = this.healthMax;
+                this.isAlive = true;
+                this.respawnCounter = 0;
+            }
+        }
+    }
 
     public abstract void render(SpriteBatch batch);
 
     private void defineEnemy(Vector2 spawnPoint) {
-        this.world = this.player.getWorld();
         // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(spawnPoint);
@@ -294,7 +308,7 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.isAttacking = isAttacking;
     }
 
-    public void update(float deltaTime) {
+    public void update(float deltaTime, Player player) {
         if (roomChanged) {
             this.defineEnemy(this.standSpawnPoint);
             this.roomChanged = false;
@@ -308,8 +322,8 @@ public abstract class Enemy extends Sprite implements Disposable {
 
                 }
             }
-            this.idle();
-            this.attack();
+            this.idle(player);
+            this.attack(player);
         }
         this.setRegion(this.enemysAnimations.getFrame(deltaTime));
         this.attackArea.setTransform(this.enemysBody.getPosition(), this.enemysBody.getAngle());

@@ -8,7 +8,6 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.player.Player;
 
 public class Robber extends Enemy{
-    private Player player;
 
     private int attackSpeedMax;
     private int attackSpeedCounter;
@@ -34,13 +33,11 @@ public class Robber extends Enemy{
     /**
      * Конструктор
      *
-     * @param player - обьект игрока
      * @param x      - стартовая позиция врага по х
      * @param y      - стартовая позиция врага по у
      */
-    public Robber (Player player, float x, float y) {
-        super(player, x, y);
-        this.player = player;
+    public Robber (World world, float x, float y) {
+        super(world, x, y);
 
         this.enemysAnimations = new Animations(this, "Robber.atlas", "Robber");
         this.setBoundsCustom(60f, 60f); // 54
@@ -66,15 +63,14 @@ public class Robber extends Enemy{
     /**
      * Конструктор
      *
-     * @param player          - обьект игрока
      * @param enemySpawnPoint - позиция врага
      */
-    public Robber (Player player, Vector2 enemySpawnPoint) {
-        this(player, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Robber (World world, Vector2 enemySpawnPoint) {
+        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override
-    public void attack() {
+    public void attack(Player player) {
         // Передлать перезарядку
         // System.out.println(this.isPlayerInArea());
         if (this.isPlayerInArea()) {
@@ -84,7 +80,7 @@ public class Robber extends Enemy{
             } else {
                 attackSpeedCounter = 0;
                 System.out.println("DAMAGED!" + this.damage);
-                this.player.receiveDamage(this.damage);
+                player.receiveDamage(this.damage);
             }
         } else {
             this.setIsAttacking(false);
@@ -92,7 +88,7 @@ public class Robber extends Enemy{
     }
 
     @Override
-    public void idle() {
+    public void idle(Player player) {
         this.idleTimer++;
         // System.out.println(this.idleTimer);
         // Создать временные точки для перемещения

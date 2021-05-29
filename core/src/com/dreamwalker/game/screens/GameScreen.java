@@ -23,6 +23,7 @@ import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.tools.*;
 
 import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
 
 public class GameScreen implements Screen {
 
@@ -43,17 +44,8 @@ public class GameScreen implements Screen {
     // Временный "прогрузчик" для отладки
     private Box2DDebugRenderer debugRenderer;
 
-    // Тестовый голбин
-    private ArrayList<Enemy> enemies;
-
-    // Тестовый разбойник
-    private Robber testRobber;
-    private Robber testRobber1;
-
     public Destroyer dstr;
-    private ScreenSwitcher screenSwitcher;
 
-    private Vector2 spawnPoint;
 
     /**
      * Конструктор экрана игры
@@ -61,31 +53,15 @@ public class GameScreen implements Screen {
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
-        MapChanger.setLevelGraph(new LevelGraph("TestMapPool/", 14));
+        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
-
         this.game = game;
-        this.spawnPoint = new Vector2(0, 0);
-        this.enemies = new ArrayList<>();
-
         // Загрузка карты и создание коллизий
         this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
-
         this.debugRenderer = new Box2DDebugRenderer();
 
-        this.player = new Player(location.getWorld(), spawnPoint);
-        this.enemies.add(new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
-                location.getSpawnPoint().y + 200 / DreamWalker.PPM));
-        this.enemies.add(new Goblin(this.player, location.getSpawnPoint().x - 200 / DreamWalker.PPM,
-                location.getSpawnPoint().y + 200 / DreamWalker.PPM));
-        this.enemies.add(new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
-                location.getSpawnPoint().y - 200 / DreamWalker.PPM));
-        this.location.getWorld().setContactListener(new ContactHandler());
-        this.enemies.add(new Robber(this.player, location.getSpawnPoint().x + 80 / DreamWalker.PPM,
-                location.getSpawnPoint().y + 100 / DreamWalker.PPM));
-        this.enemies.add(new Robber(this.player, location.getSpawnPoint().x + 150 / DreamWalker.PPM,
-                location.getSpawnPoint().y - 80 / DreamWalker.PPM));
+        this.player = new Player(location.getWorld(), this.location.getSpawnPoint());
 
         this.hud = new Hud(this.game.getBatch(), this.player);
 
@@ -117,19 +93,23 @@ public class GameScreen implements Screen {
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
+        if(!this.player.isAlive()){
+            ScreenSwitcher.ToMainMenu();
+        }
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
         Vector3 mousePosition = this.camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));// !
         this.camera.update();
         this.ortMapRender.setView(this.camera);
-        this.viewport.update((int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
-                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM));
+        this.viewport.update(
+                (int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
+                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM)
+        );
 
         this.hud.update(deltaTime);
-        for (Enemy enemy : this.enemies) {
-            enemy.update(deltaTime);
-        }
+        this.location.enemiesUpdate(deltaTime, this.player);
+        this.location.enemiesResp();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
@@ -173,14 +153,11 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         this.location = MapChanger.getCurrentVertex().getLocation();
         this.player.setWorld(this.location.getWorld());
-        for (Enemy enemy : this.enemies) {
-            enemy.setWorld(this.location.getWorld());
-        }
 
         update(delta);
 
         // Цвет окна и фикс мерцания экрана при изменении
-        Gdx.gl.glClearColor(50 / 225f, 33 / 225f, 37 / 225f, 1f);
+        Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         this.ortMapRender.setMap(this.location.getMap());
@@ -207,9 +184,7 @@ public class GameScreen implements Screen {
         }
 
         // рендер npc
-        for (Enemy enemy : this.enemies) {
-            enemy.render(this.game.getBatch());
-        }
+        this.location.enemiesRender(this.game.getBatch());
 
 
         this.game.getBatch().end();
@@ -226,6 +201,15 @@ public class GameScreen implements Screen {
         this.game.getBatch().setProjectionMatrix(this.hud.getStage().getCamera().combined);
         // Отрисовка интерфейса
         this.hud.getStage().draw();
+    }
+
+    public void nextFloor(){
+        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
+        MapChanger.getLevelGraph().print();
+        MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
+        this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
+        this.player.setSpawnPoint(this.location.getSpawnPoint());
+        System.out.println();
     }
 
     @Override
@@ -259,7 +243,7 @@ public class GameScreen implements Screen {
      */
     @Override
     public void dispose() {
-        this.location.dispose();
+        MapChanger.getLevelGraph().dispose();
         AllItemsInWorld.clearItmes();
         this.player.dispose();
         this.ortMapRender.dispose();

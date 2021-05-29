@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.location.Location;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class LevelGraph {
+public class LevelGraph implements Disposable {
     private String path;
     private int roomsCount;
     private final Random random;
@@ -112,4 +113,13 @@ public class LevelGraph {
         return this.vertices.get(0);
     }
 
+    @Override
+    public void dispose() {
+        for(TiledMap map : this.mapPool){
+            map.dispose();
+        }
+        for(Vertex vertex : vertices){
+            vertex.getLocation().dispose();
+        }
+    }
 }

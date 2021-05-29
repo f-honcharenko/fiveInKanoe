@@ -27,7 +27,7 @@ public class FlyingSword extends ActiveSkill {
 
         this.mousePosition = null;
 
-        this.maxSwordsCount = 5;
+        this.maxSwordsCount = 3;
         this.damage = 15;
         this.lifeTime = 35;
         this.manaCost = 15;
