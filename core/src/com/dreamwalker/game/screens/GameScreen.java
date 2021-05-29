@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.enemy.Robber;
 import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.items.*;
@@ -45,6 +46,10 @@ public class GameScreen implements Screen {
     // Тестовый голбин
     private ArrayList<Enemy> enemies;
 
+    // Тестовый разбойник
+    private Robber testRobber;
+    private Robber testRobber1;
+
     public Destroyer dstr;
     private ScreenSwitcher screenSwitcher;
 
@@ -77,6 +82,10 @@ public class GameScreen implements Screen {
         this.enemies.add(new Goblin(this.player, location.getSpawnPoint().x + 200 / DreamWalker.PPM,
                 location.getSpawnPoint().y - 200 / DreamWalker.PPM));
         this.location.getWorld().setContactListener(new ContactHandler());
+        this.enemies.add(new Robber(this.player, location.getSpawnPoint().x + 80 / DreamWalker.PPM,
+                location.getSpawnPoint().y + 100 / DreamWalker.PPM));
+        this.enemies.add(new Robber(this.player, location.getSpawnPoint().x + 150 / DreamWalker.PPM,
+                location.getSpawnPoint().y - 80 / DreamWalker.PPM));
 
         this.hud = new Hud(this.game.getBatch(), this.player);
 
@@ -121,6 +130,9 @@ public class GameScreen implements Screen {
         for (Enemy enemy : this.enemies) {
             enemy.update(deltaTime);
         }
+
+        this.testRobber.update(deltaTime);
+        this.testRobber1.update(deltaTime);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.pause();
@@ -201,6 +213,9 @@ public class GameScreen implements Screen {
         for (Enemy enemy : this.enemies) {
             enemy.render(this.game.getBatch());
         }
+
+        this.testRobber.render(this.game.getBatch());
+        this.testRobber1.render(this.game.getBatch());
 
         this.game.getBatch().end();
 
