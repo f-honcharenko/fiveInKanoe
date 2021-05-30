@@ -55,7 +55,7 @@ public class Sword extends Sprite implements Disposable {
     }
 
     public void decreaseLifeTime() {
-        this.lifeTime -= 0.1;
+        this.lifeTime -= 0.3;
     }
 
     public float getLifeTime() {

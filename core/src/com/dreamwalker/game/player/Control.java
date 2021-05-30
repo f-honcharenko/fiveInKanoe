@@ -113,6 +113,6 @@ public class Control {
 
     private void useSkills(Vector2 mousePosition) {
         this.player.getSkillPanel().get(0).setMousePosition(mousePosition);
-        this.player.getSkillPanel().get(0).usage();
+        this.player.getSkillPanel().get(0).usage(this.player);
     }
 }

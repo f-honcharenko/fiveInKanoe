@@ -11,20 +11,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.enemy.Enemy;
-import com.dreamwalker.game.enemy.Robber;
 import com.dreamwalker.game.generator.LevelGraph;
-import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.items.*;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
-import com.dreamwalker.game.enemy.Goblin;
 import com.dreamwalker.game.tools.*;
-
-import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
-
 public class GameScreen implements Screen {
 
     private DreamWalker game;

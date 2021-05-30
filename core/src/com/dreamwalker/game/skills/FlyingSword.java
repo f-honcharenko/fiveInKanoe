@@ -9,8 +9,6 @@ import com.dreamwalker.game.player.Player;
 import java.util.ArrayList;
 
 public class FlyingSword extends ActiveSkill {
-    private final World world;
-    private final Player player;
 
     private final ArrayList<Sword> swordsOnScreen;
 
@@ -19,14 +17,13 @@ public class FlyingSword extends ActiveSkill {
     private int maxSwordsCount;
     private int manaCost;
 
-    public FlyingSword(int hotKey, Player player) {
+    public FlyingSword(int hotKey) {
         super(hotKey);
-        this.player = player;
-        this.world = player.getWorld();
         this.swordsOnScreen = new ArrayList<>();
 
-        this.mousePosition = null;
+        this.coolDown = 100;
 
+        this.mousePosition = null;
         this.maxSwordsCount = 3;
         this.damage = 15;
         this.lifeTime = 35;
@@ -41,17 +38,25 @@ public class FlyingSword extends ActiveSkill {
     }
 
     @Override
-    public void usage() {
-        if (Gdx.input.isKeyJustPressed(super.hotKey)) {
-
-            if (this.player.getCurrentMana() >= this.manaCost) {
-                this.player.manaSpend(this.manaCost);
-                if (this.swordsOnScreen.size() <= this.maxSwordsCount) {
-                    Sword newSword = new Sword(this.player, this.damage, this.lifeTime);
-                    this.swordsOnScreen.add(newSword);
+    public void usage(Player player) {
+        if(this.currentCoolDown == this.coolDown){
+            this.currentCoolDown = 0;
+        }
+        if(this.currentCoolDown == 0 && this.swordsOnScreen.size() != 3){
+            if (Gdx.input.isKeyJustPressed(super.hotKey)) {
+                if (player.getCurrentMana() >= this.manaCost) {
+                    player.manaSpend(this.manaCost);
+                    if (this.swordsOnScreen.size() <= this.maxSwordsCount) {
+                        Sword newSword = new Sword(player, this.damage, this.lifeTime);
+                        this.swordsOnScreen.add(newSword);
+                    }
                 }
             }
         }
+        else {
+            this.currentCoolDown++;
+        }
+
         for (int i = 0; i < this.swordsOnScreen.size(); i++) {
             Sword currentSword = this.swordsOnScreen.get(i);
             if (currentSword.getLifeTime() <= 0) {
@@ -62,7 +67,6 @@ public class FlyingSword extends ActiveSkill {
                 currentSword.decreaseLifeTime();
             }
         }
-
     }
 
     public ArrayList<Sword> getSwordsOnScreen() {

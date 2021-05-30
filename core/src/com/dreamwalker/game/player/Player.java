@@ -71,7 +71,7 @@ public class Player extends Sprite implements Disposable {
 
         this.passiveSkills = new ArrayList<>();
         this.skillPanel = new ArrayList<>();
-        this.skillPanel.add(new FlyingSword(Input.Keys.E, this));
+        this.skillPanel.add(new FlyingSword(Input.Keys.E));
 
         this.enemiesInRange = new ArrayList<>();
         this.enemyInArea = false;

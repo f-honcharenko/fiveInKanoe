@@ -181,7 +181,7 @@ public class Animations {
                 return State.RUNNING_NORTH;
             } else if (viewAngle >= 225 && viewAngle <= 315) {
                 // currentState = State.RUNNING_SOUTH;
-                if (velocityX > 0) {
+                if (velocityY > 0) {
                     this.enemyRunSouth.setPlayMode(Animation.PlayMode.REVERSED);
                 } else {
                     this.enemyRunSouth.setPlayMode(Animation.PlayMode.NORMAL);

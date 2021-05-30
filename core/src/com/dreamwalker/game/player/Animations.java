@@ -78,7 +78,6 @@ public class Animations {
         TextureRegion region;
         float speed = this.player.getSpeed() + this.stateTimer;
         float attackSpeed = this.player.getAttackSpeedCoefficient() * this.stateTimer;
-        boolean attack;
         switch (this.currentState) {
             case RUNNING_NORTH:
                 region = (TextureRegion) this.playerRunNorth.getKeyFrame(speed, true);
@@ -167,7 +166,7 @@ public class Animations {
                 }
             } else if (viewAngle >= 225 && viewAngle <= 315) {
                 currentState = State.RUNNING_SOUTH;
-                if (velocityX > 0) {
+                if (velocityY > 0) {
                     this.playerRunSouth.setPlayMode(Animation.PlayMode.REVERSED);
                 } else {
                     this.playerRunSouth.setPlayMode(Animation.PlayMode.NORMAL);
