@@ -78,6 +78,8 @@ public class ItemInWorld implements Disposable {
 
     @Override
     public void dispose() {
+        // this.
+        // world.destroyBody(this.box2DBody);
         // ItemInWorld temp = this;
         // this.box2DBody.destroyFixture(this.box2DBody.getFixtureList().get(0));
         // this.item.getTexture().dispose();

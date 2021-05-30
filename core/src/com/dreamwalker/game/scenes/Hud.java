@@ -43,8 +43,8 @@ public class Hud {
         private Image ItemAreaImage;
         private Image SkillBarImage;
 
-        private int BarsHeight;
-        private int BarsWidth;
+        private float BarsHeight;
+        private float BarsWidth;
 
         private SpriteBatch sb;
 
@@ -58,22 +58,15 @@ public class Hud {
                 this.player = player;
                 this.sb = sb;
 
-                this.BarsHeight = 40;
-                this.BarsWidth = 246;
+                this.BarsHeight = 40f;
+                this.BarsWidth = 246f;
 
                 this.defineHud();
-                this.defineK();
         }
 
         public void update(float deltaTime) {
                 this.initBars();
                 this.updateTables();
-        }
-
-        public void defineK() {
-                // int heightK = Gdx.graphics.getWidth()/
-                // System.out.println(Gdx.graphics.getWidth());
-                // System.out.println(Gdx.graphics.getHeight());
         }
 
         public void defineHud() {
@@ -101,14 +94,15 @@ public class Hud {
         }
 
         public void createTableHP() {
-                System.out.println("CREATETALBEHP");
-                double tempPercentHP = (this.player.getCurrentHealth() / this.player.getMaxHealth()) * this.BarsWidth;
-                double tempPercentMP = (this.player.getCurrentMana() / this.player.getMaxMana()) * this.BarsWidth;
+                float tempPercentHP = ((float) this.player.getCurrentHealth()) / ((float) this.player.getMaxHealth())
+                                * this.BarsWidth;
+                float tempPercentMP = ((float) this.player.getCurrentMana()) / ((float) this.player.getMaxMana())
+                                * this.BarsWidth;
 
                 this.tableHP = new Table();
                 this.tableHP.setFillParent(true);
 
-                this.tableHP.top();
+                this.tableHP.center().top();
 
                 Stack bar = new Stack();
                 Table containerHPMP = new Table();
@@ -117,19 +111,26 @@ public class Hud {
                 containerHPMP.setFillParent(true);
                 containerBorder.setFillParent(true);
 
-                containerHPMP.top();
-                containerBorder.top();
+                containerHPMP.center().top();
+                containerBorder.center().top();
 
-                containerHPMP.add(this.BarHP).padBottom(200).height((int) this.BarsHeight).width((int) tempPercentHP)
-                                .maxWidth((int) this.BarsWidth).align(Align.right)
-                                .padLeft((int) (this.BarsWidth - tempPercentHP));
-                containerHPMP.add(this.BarMP).padBottom(200).height((int) this.BarsHeight).width((int) tempPercentMP)
-                                .maxWidth((int) this.BarsWidth).align(Align.left)
-                                .padRight((int) (this.BarsWidth - tempPercentMP));
+                containerHPMP.add(this.BarHP).width((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .maxWidth((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .height(((this.BarsHeight * Gdx.graphics.getHeight()) / 1080)).align(Align.right)
+                                .padLeft(((float) (this.BarsWidth - tempPercentHP) * ((float) Gdx.graphics.getWidth())
+                                                / 1920f));
+                containerHPMP.add(this.BarMP).width((tempPercentMP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .maxWidth((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .height(((this.BarsHeight * Gdx.graphics.getHeight()) / 1080)).align(Align.left)
+                                .padRight(((float) (this.BarsWidth - tempPercentMP) * ((float) Gdx.graphics.getWidth())
+                                                / 1920f));
 
-                containerBorder.add(this.BarImage).expandX().padTop(0).height(Gdx.graphics.getHeight() / 10)
-                                .width(Gdx.graphics.getWidth() / 3).colspan(2);
-
+                containerBorder.add(this.BarImage).expandX().padTop(0)
+                                .maxWidth(((tempPercentHP * Gdx.graphics.getWidth()) / 1920))
+                                .width(((900 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((150 * Gdx.graphics.getHeight()) / 1080)).colspan(2);
+                // System.out.println(this.BarsWidth + "-" + tempPercentHP + "=" +
+                // (this.BarsWidth - tempPercentHP));
                 bar.add(containerHPMP);
                 bar.add(containerBorder);
                 this.tableHP.add(bar).expandX().padTop(0).colspan(2);
@@ -159,7 +160,8 @@ public class Hud {
                 // .maxWidth((int) this.BarsWidth).align(Align.left)
                 // .padRight((int) (this.BarsWidth - tempPercentMP));
 
-                borderPotion.add(this.ItemAreaImage).expandX().padTop(0).height(300).width(300);
+                borderPotion.add(this.ItemAreaImage).expandX().padTop(0).width(((250 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((250 * Gdx.graphics.getHeight()) / 1080));
 
                 itemsContainer.add(containerPotion);
                 itemsContainer.add(borderPotion);
@@ -191,7 +193,8 @@ public class Hud {
                 // .maxWidth((int) this.BarsWidth).align(Align.left)
                 // .padRight((int) (this.BarsWidth - tempPercentMP));
 
-                borderSkills.add(this.SkillBarImage).expandX().padTop(0).height(150).width(800);
+                borderSkills.add(this.SkillBarImage).expandX().padTop(0).width(((800 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((100 * Gdx.graphics.getHeight()) / 1080));
 
                 skillsContainer.add(containerSkills);
                 skillsContainer.add(borderSkills);
