@@ -32,13 +32,19 @@ public class Hud {
         private Image BarMP;
         private Texture TBarMP;
 
-        private Table table;
+        private Table tableHP;
+        private Table tableItems;
+        private Table tableSkills;
 
         private Texture BarTexture;
+        private Texture ItemAreaTexture;
+        private Texture SkillBarTexture;
         private Image BarImage;
+        private Image ItemAreaImage;
+        private Image SkillBarImage;
 
-        private int BarsHeight;
-        private int BarsWidth;
+        private float BarsHeight;
+        private float BarsWidth;
 
         private SpriteBatch sb;
 
@@ -52,39 +58,51 @@ public class Hud {
                 this.player = player;
                 this.sb = sb;
 
-                this.BarsHeight = 40;
-                this.BarsWidth = 246;
+                this.BarsHeight = 40f;
+                this.BarsWidth = 246f;
 
                 this.defineHud();
         }
 
         public void update(float deltaTime) {
                 this.initBars();
-                this.createTable();
+                this.updateTables();
         }
 
         public void defineHud() {
                 // Инициализация Бара
                 this.BarTexture = new Texture("Bar.png");
+                this.ItemAreaTexture = new Texture("ItemArea.png");
+                this.SkillBarTexture = new Texture("SkillBar.png");
                 this.BarImage = new Image(this.BarTexture);
+                this.ItemAreaImage = new Image(this.ItemAreaTexture);
+                this.SkillBarImage = new Image(this.SkillBarTexture);
                 this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
                                 new OrthographicCamera());
 
                 this.stage = new Stage(this.viewport, sb);
                 this.initBars();
-                this.createTable();
+                this.updateTables();
+        }
+
+        public void updateTables() {
+                this.stage = new Stage(this.viewport, sb);
+                this.createTableHP();
+                this.createTableItems();
+                this.createTableSkils();
 
         }
 
-        public void createTable() {
-                double tempPercentHP = (this.player.getCurrentHealth() / this.player.getMaxHealth()) * this.BarsWidth;
-                double tempPercentMP = (this.player.getCurrentMana() / this.player.getMaxMana()) * this.BarsWidth;
+        public void createTableHP() {
+                float tempPercentHP = ((float) this.player.getCurrentHealth()) / ((float) this.player.getMaxHealth())
+                                * this.BarsWidth;
+                float tempPercentMP = ((float) this.player.getCurrentMana()) / ((float) this.player.getMaxMana())
+                                * this.BarsWidth;
 
-                this.table = new Table();
-                this.stage = new Stage(this.viewport, sb);
-                this.table.setFillParent(true);
+                this.tableHP = new Table();
+                this.tableHP.setFillParent(true);
 
-                this.table.top();
+                this.tableHP.center().top();
 
                 Stack bar = new Stack();
                 Table containerHPMP = new Table();
@@ -93,24 +111,99 @@ public class Hud {
                 containerHPMP.setFillParent(true);
                 containerBorder.setFillParent(true);
 
-                containerHPMP.top();
-                containerBorder.top();
+                containerHPMP.center().top();
+                containerBorder.center().top();
 
-                containerHPMP.add(this.BarHP).padBottom(200).height((int) this.BarsHeight).width((int) tempPercentHP)
-                                .maxWidth((int) this.BarsWidth).align(Align.right)
-                                .padLeft((int) (this.BarsWidth - tempPercentHP));
-                containerHPMP.add(this.BarMP).padBottom(200).height((int) this.BarsHeight).width((int) tempPercentMP)
-                                .maxWidth((int) this.BarsWidth).align(Align.left)
-                                .padRight((int) (this.BarsWidth - tempPercentMP));
+                containerHPMP.add(this.BarHP).width((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .maxWidth((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .height(((this.BarsHeight * Gdx.graphics.getHeight()) / 1080)).align(Align.right)
+                                .padLeft(((float) (this.BarsWidth - tempPercentHP) * ((float) Gdx.graphics.getWidth())
+                                                / 1920f));
+                containerHPMP.add(this.BarMP).width((tempPercentMP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .maxWidth((tempPercentHP * ((float) Gdx.graphics.getWidth()) / 1920f))
+                                .height(((this.BarsHeight * Gdx.graphics.getHeight()) / 1080)).align(Align.left)
+                                .padRight(((float) (this.BarsWidth - tempPercentMP) * ((float) Gdx.graphics.getWidth())
+                                                / 1920f));
 
-                containerBorder.add(this.BarImage).expandX().padTop(0).height(100).width(600).colspan(2);
-
+                containerBorder.add(this.BarImage).expandX().padTop(0)
+                                .maxWidth(((tempPercentHP * Gdx.graphics.getWidth()) / 1920))
+                                .width(((900 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((150 * Gdx.graphics.getHeight()) / 1080)).colspan(2);
+                // System.out.println(this.BarsWidth + "-" + tempPercentHP + "=" +
+                // (this.BarsWidth - tempPercentHP));
                 bar.add(containerHPMP);
                 bar.add(containerBorder);
+                this.tableHP.add(bar).expandX().padTop(0).colspan(2);
 
-                this.table.add(bar).expandX().padTop(0).colspan(2);
-                this.table.pack();
-                this.stage.addActor(this.table);
+                this.tableHP.pack();
+                this.tableHP.debug();
+                this.stage.addActor(this.tableHP);
+        }
+
+        public void createTableItems() {
+                this.tableItems = new Table();
+                this.tableItems.setFillParent(true);
+
+                this.tableItems.bottom().left();
+
+                Stack itemsContainer = new Stack();
+                Table containerPotion = new Table();
+                Table borderPotion = new Table();
+
+                containerPotion.setFillParent(true);
+                borderPotion.setFillParent(true);
+
+                containerPotion.top().left();
+                borderPotion.top().left();
+                // containerPotion.add(this.BarMP).padBottom(200).height((int)
+                // this.BarsHeight).width((int) tempPercentMP)
+                // .maxWidth((int) this.BarsWidth).align(Align.left)
+                // .padRight((int) (this.BarsWidth - tempPercentMP));
+
+                borderPotion.add(this.ItemAreaImage).expandX().padTop(0).width(((250 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((250 * Gdx.graphics.getHeight()) / 1080));
+
+                itemsContainer.add(containerPotion);
+                itemsContainer.add(borderPotion);
+
+                this.tableItems.row();
+                this.tableItems.add(itemsContainer);
+                this.tableItems.pack();
+                this.tableItems.debug();
+                this.stage.addActor(this.tableItems);
+        }
+
+        public void createTableSkils() {
+                this.tableSkills = new Table();
+                this.tableSkills.setFillParent(true);
+
+                this.tableSkills.center().bottom();
+
+                Stack skillsContainer = new Stack();
+                Table containerSkills = new Table();
+                Table borderSkills = new Table();
+
+                containerSkills.setFillParent(true);
+                borderSkills.setFillParent(true);
+
+                containerSkills.top().left();
+                borderSkills.top().left();
+                // containerPotion.add(this.BarMP).padBottom(200).height((int)
+                // this.BarsHeight).width((int) tempPercentMP)
+                // .maxWidth((int) this.BarsWidth).align(Align.left)
+                // .padRight((int) (this.BarsWidth - tempPercentMP));
+
+                borderSkills.add(this.SkillBarImage).expandX().padTop(0).width(((800 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((100 * Gdx.graphics.getHeight()) / 1080));
+
+                skillsContainer.add(containerSkills);
+                skillsContainer.add(borderSkills);
+
+                this.tableSkills.row();
+                this.tableSkills.add(skillsContainer);
+                this.tableSkills.pack();
+                this.tableSkills.debug();
+                this.stage.addActor(this.tableSkills);
         }
 
         public void initBars() {

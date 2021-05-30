@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.player.Inventory;
 import com.dreamwalker.game.screens.*;
 
 public class ScreenSwitcher {
@@ -21,7 +22,7 @@ public class ScreenSwitcher {
         game = _game;
     }
 
-    public static void ToMainMenu() {
+    public static void toMainMenu() {
         if (mainMenuScreen == null) {
             mainMenuScreen = new MainMenuScreen(game);
         }
@@ -29,49 +30,49 @@ public class ScreenSwitcher {
         gameScreen = null; //!!!
     }
 
-    public static void DisposeMainMenu() {
+    public static void disposeMainMenu() {
         if (mainMenuScreen != null) {
             mainMenuScreen.dispose();
             mainMenuScreen = null;
         }
     }
 
-    public static void ToGameMenu() {
+    public static void toGameMenu() {
         Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         gameMenuScreen = new GameMenuScreen(game, new Texture(flipPixmap(pixmap)));
 
         game.setScreen(gameMenuScreen);
     }
 
-    public static void ToInventory() {
+    public static void toInventory(Inventory inv) {
         Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        inventoryScreen = new InventoryScreen(game, new Texture(flipPixmap(pixmap)));
+        inventoryScreen = new InventoryScreen(game, new Texture(flipPixmap(pixmap)), inv);
 
         game.setScreen(inventoryScreen);
     }
 
-    public static void DisposeInventory() {
+    public static void disposeInventory() {
         if (inventoryScreen != null) {
             inventoryScreen.dispose();
             inventoryScreen = null;
         }
     }
 
-    public static void DisposeGameMenu() {
+    public static void disposeGameMenu() {
         if (gameMenuScreen != null) {
             gameMenuScreen.dispose();
             gameMenuScreen = null;
         }
     }
 
-    public static void ToGame() {
+    public static void toGame() {
         if (gameScreen == null) {
             gameScreen = new GameScreen(game);
         }
         game.setScreen(gameScreen);
     }
 
-    public static void DisposeGame() {
+    public static void disposeGame() {
         if (gameScreen != null) {
             gameScreen.dispose();
             gameScreen = null;

@@ -18,7 +18,7 @@ public class DreamWalker extends Game {
 	public void create() {
 		this.batch = new SpriteBatch();
 		ScreenSwitcher.setGame(this);
-		ScreenSwitcher.ToMainMenu();
+		ScreenSwitcher.toMainMenu();
 	}
 
 	@Override

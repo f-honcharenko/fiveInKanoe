@@ -1,7 +1,13 @@
 package com.dreamwalker.game.screens;
 
+import java.io.Console;
+
+import javax.management.monitor.Monitor;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
@@ -63,6 +71,9 @@ public class MainMenuScreen implements Screen, Disposable {
     private float buttonsWidth;
     private float buttonsHeight;
     private float paddingRight;
+    private float paddingBottom;
+    private float iconWidth;
+    private float iconHeight;
 
     public void updateTable() {
         // Установка взаимодействий
@@ -74,48 +85,70 @@ public class MainMenuScreen implements Screen, Disposable {
         // Установка таблицы
         this.table = new Table();
 
-        // Включить масштабирование под таблицу
+        // БГ
+        this.table.setBackground(new SpriteDrawable(this.background));
+
+        // Включить масштабирование
         this.table.setFillParent(true);
 
         this.table.bottom();
         this.table.right();
-        this.table.add(this.gameIcon).padRight(this.paddingRight).padBottom(35).width(90 * 2.8f).height(100 * 2.8f);
+        this.table.add(this.gameIcon).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.iconWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.iconHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.startButton).padRight(this.paddingRight).padBottom(25).width(this.buttonsWidth)
-                .height(this.buttonsHeight);
+        this.table.add(this.startButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.continueButton).padRight(this.paddingRight).padBottom(25).width(this.buttonsWidth)
-                .height(this.buttonsHeight);
+        this.table.add(this.continueButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.optionsButton).padRight(this.paddingRight).padBottom(25).width(this.buttonsWidth)
-                .height(this.buttonsHeight);
+        this.table.add(this.optionsButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.exitButton).padRight(this.paddingRight).padBottom(100).width(this.buttonsWidth)
-                .height(this.buttonsHeight);
-        // БГ
-        this.table.setBackground(new SpriteDrawable(this.background));
+        this.table.add(this.exitButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+
         // Отладка таблицы
-        // this.table.debugAll();
+        // this.table.debug();
+
+        // Упаковака таблицы
+        this.table.pack();
 
         // Добавить таблцу на "сцену"
         this.stage.addActor(this.table);
+
     }
 
     public MainMenuScreen(DreamWalker game) {
         this.buttonsWidth = 400f;
         this.buttonsHeight = 150f;
         this.paddingRight = 150f;
+        this.paddingBottom = 20f;
+        this.iconHeight = 400f;
+        this.iconWidth = 400f;
         this.game = game;
         this.background = new Sprite(new Texture("./Art.png"));
         this.gameIcon = new Image(new Sprite(new Texture("./game_logo.png")));
-        // this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
 
-        // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
-        this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
+        this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
         this.stage = new Stage(this.viewport, game.getBatch());
 
         // Штука для отслеживания нажатий
         Gdx.input.setInputProcessor(stage);
+
+        // Отключить Масштабирование окна
+        Gdx.graphics.setResizable(false);
 
         // Текстуры
         this.newGame_default = new Image(new Sprite(new Texture("./buttons/NewGameBtn_default.png")));
@@ -141,14 +174,12 @@ public class MainMenuScreen implements Screen, Disposable {
 
         // Действия для кнопок
         this.StartEvent = new ClickListener() {
-            DreamWalker game = getGame();
-
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 startButton = newGame_pressed;
                 updateTable();
-                ScreenSwitcher.ToGame();
-                ScreenSwitcher.DisposeMainMenu();
+                ScreenSwitcher.toGame();
+                ScreenSwitcher.disposeMainMenu();
 
             };
 
@@ -161,7 +192,6 @@ public class MainMenuScreen implements Screen, Disposable {
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
                 startButton = newGame_default;
-                // toggleButtonImage(startButton, "./buttons/NewGameBtn_default.png");
                 updateTable();
             };
         };
@@ -243,7 +273,7 @@ public class MainMenuScreen implements Screen, Disposable {
     }
 
     public void update(float deltaTime) {
-        // this.hud.update(deltaTime);
+
     }
 
     public DreamWalker getGame() {
@@ -265,13 +295,18 @@ public class MainMenuScreen implements Screen, Disposable {
     @Override
     public void resize(int width, int height) {
         // Обновление вьюпорта при изменении размеров окна
-        this.viewport.update(width, height);
+        // this.viewport.update(width, height);
+        this.stage.getViewport().update(width, height);
+        this.updateTable();
+
     }
 
     @Override
     public void dispose() {
         this.StartEvent = null;
         this.ExitEvent = null;
+        this.OptionEvent = null;
+        this.ContinueEvent = null;
         this.stage.dispose();
     }
 
