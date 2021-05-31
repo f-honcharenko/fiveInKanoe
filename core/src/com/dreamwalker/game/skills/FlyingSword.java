@@ -15,7 +15,6 @@ public class FlyingSword extends ActiveSkill {
     private float damage;
     private float lifeTime;
     private int maxSwordsCount;
-    private int manaCost;
 
     public FlyingSword(int hotKey) {
         super(hotKey);
@@ -32,17 +31,17 @@ public class FlyingSword extends ActiveSkill {
 
     @Override
     public void render(SpriteBatch batch) {
-        for(Sword sword : this.swordsOnScreen){
+        for (Sword sword : this.swordsOnScreen) {
             sword.draw(batch);
         }
     }
 
     @Override
     public void usage(Player player) {
-        if(this.currentCoolDown == this.coolDown){
+        if (this.currentCoolDown == this.coolDown) {
             this.currentCoolDown = 0;
         }
-        if(this.currentCoolDown == 0 && this.swordsOnScreen.size() != 3){
+        if (this.currentCoolDown == 0 && this.swordsOnScreen.size() != 3) {
             if (Gdx.input.isKeyJustPressed(super.hotKey)) {
                 if (player.getCurrentMana() >= this.manaCost) {
                     player.manaSpend(this.manaCost);
@@ -52,8 +51,7 @@ public class FlyingSword extends ActiveSkill {
                     }
                 }
             }
-        }
-        else {
+        } else {
             this.currentCoolDown++;
         }
 
@@ -72,6 +70,5 @@ public class FlyingSword extends ActiveSkill {
     public ArrayList<Sword> getSwordsOnScreen() {
         return this.swordsOnScreen;
     }
-
 
 }

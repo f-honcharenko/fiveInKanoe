@@ -9,8 +9,8 @@ public class DesktopLauncher {
 
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 120 * 16;
-		config.height = 120 * 9;
+		config.width = 80 * 16;
+		config.height = 80 * 9;
 		config.title = "DreamWalker v.0.1";
 		config.fullscreen = false; // PROD TRUE
 		// config.vSyncEnabled = true;
