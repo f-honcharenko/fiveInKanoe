@@ -17,6 +17,7 @@ import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.tools.*;
+
 public class GameScreen implements Screen {
 
     private DreamWalker game;
@@ -37,7 +38,6 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
 
     public Destroyer dstr;
-
 
     /**
      * Конструктор экрана игры
@@ -85,8 +85,8 @@ public class GameScreen implements Screen {
      * @param deltaTime - время тика
      */
     public void update(float deltaTime) {
-        if(!this.player.isAlive()){
-            ScreenSwitcher.ToMainMenu();
+        if (!this.player.isAlive()) {
+            ScreenSwitcher.toMainMenu();
         }
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
@@ -94,10 +94,8 @@ public class GameScreen implements Screen {
         this.player.update(deltaTime, new Vector2(mousePosition.x, mousePosition.y));// !
         this.camera.update();
         this.ortMapRender.setView(this.camera);
-        this.viewport.update(
-                (int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
-                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM)
-        );
+        this.viewport.update((int) (Gdx.graphics.getWidth() / DreamWalker.PPM),
+                (int) (Gdx.graphics.getHeight() / DreamWalker.PPM));
 
         this.hud.update(deltaTime);
         this.location.enemiesUpdate(deltaTime, this.player);
@@ -178,7 +176,6 @@ public class GameScreen implements Screen {
         // рендер npc
         this.location.enemiesRender(this.game.getBatch());
 
-
         this.game.getBatch().end();
 
         // Рендер верхнего слоя
@@ -195,7 +192,7 @@ public class GameScreen implements Screen {
         this.hud.getStage().draw();
     }
 
-    public void nextFloor(){
+    public void nextFloor() {
         MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
