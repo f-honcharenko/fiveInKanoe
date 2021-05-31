@@ -58,8 +58,8 @@ public class Hud {
                 this.player = player;
                 this.sb = sb;
 
-                this.BarsHeight = 40f;
-                this.BarsWidth = 246f;
+                this.BarsHeight = 60f;
+                this.BarsWidth = 370f;
 
                 this.defineHud();
         }
