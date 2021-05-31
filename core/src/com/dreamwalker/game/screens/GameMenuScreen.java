@@ -33,16 +33,23 @@ public class GameMenuScreen implements Screen, Disposable {
     private DreamWalker game;
 
     private Image resumeButton;
-    private Image exitButton;
-    private Image startButton;
+    private Image helpButton;
+    private Image optionButton;
+    private Image mainMenuButton;
     // 2д сцена, на которой распологаются элементы интерфейса
     private Stage stage;
     private Viewport viewport;
     private Table table;
 
     private EventListener resumeEvent;
-    private EventListener ExitEvent;
-    private EventListener startEvent;
+    private EventListener helpEvent;
+    private EventListener optionEvent;
+    private EventListener mainMenuEvent;
+
+    private float buttonsWidth;
+    private float buttonsHeight;
+    private float paddingRight;
+    private float paddingBottom;
 
     public ScreenSwitcher screenSwitcher;
     private Sprite background;
@@ -50,6 +57,10 @@ public class GameMenuScreen implements Screen, Disposable {
     public GameMenuScreen(DreamWalker game, Texture bg) {
         this.background = new Sprite(bg);
         this.background.setColor(50 / 225f, 33 / 225f, 37 / 225f, 0.2f);
+        this.buttonsWidth = 400f;
+        this.buttonsHeight = 150f;
+        this.paddingRight = 150f;
+        this.paddingBottom = 20f;
         this.game = game;
         // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
@@ -58,9 +69,10 @@ public class GameMenuScreen implements Screen, Disposable {
         Gdx.input.setInputProcessor(stage);
 
         // Текстуры
-        this.resumeButton = new Image(new Sprite(new Texture("buttons/button_resume_unactive.png")));
-        this.startButton = new Image(new Sprite(new Texture("buttons/button_play_unactive.png")));
-        this.exitButton = new Image(new Sprite(new Texture("buttons/button_exit_unactive.png")));
+        this.resumeButton = new Image(new Sprite(new Texture("buttons/ContinueBtn_default.png")));
+        this.helpButton = new Image(new Sprite(new Texture("buttons/HelpBtn_default.png")));
+        this.optionButton = new Image(new Sprite(new Texture("buttons/OptionsBtn_default.png")));
+        this.mainMenuButton = new Image(new Sprite(new Texture("buttons/MainMenuBtn_default.png")));
 
         // Действия для кнопок
         this.resumeEvent = new ClickListener() {
@@ -75,52 +87,77 @@ public class GameMenuScreen implements Screen, Disposable {
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleresumeButton(new Image(new Texture("buttons/button_resume_active.png")));
+                toggleresumeButton(new Image(new Texture("buttons/ContinueBtn_hover.png")));
                 updateTable();
             };
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleresumeButton(new Image(new Texture("buttons/button_resume_unactive.png")));
+                toggleresumeButton(new Image(new Texture("buttons/ContinueBtn_default.png")));
                 updateTable();
             };
         };
-        this.ExitEvent = new ClickListener() {
+        this.helpEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                // this.game.getScreen().dispose();
+                // ScreenSwitcher.toGame();
+                // ScreenSwitcher.disposeGameMenu();
+                // this.game.setScreen(new GameScreen(this.game));
+
             };
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleExitButton(new Image(new Texture("buttons/button_exit_active.png")));
+                toggleHelpButton(new Image(new Texture("buttons/HelpBtn_hover.png")));
                 updateTable();
             };
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleExitButton(new Image(new Texture("buttons/button_exit_unactive.png")));
+                toggleHelpButton(new Image(new Texture("buttons/HelpBtn_default.png")));
                 updateTable();
             };
         };
-        this.startEvent = new ClickListener() {
+        this.optionEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                // this.game.getScreen().dispose();
+                // ScreenSwitcher.toGame();
+                // ScreenSwitcher.disposeGameMenu();
+                // this.game.setScreen(new GameScreen(this.game));
 
+            };
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleOptionButton(new Image(new Texture("buttons/OptionsBtn_hover.png")));
+                updateTable();
+            };
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
+                toggleOptionButton(new Image(new Texture("buttons/OptionsBtn_default.png")));
+                updateTable();
+            };
+        };
+        this.mainMenuEvent = new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Gdx.app.exit();
                 ScreenSwitcher.disposeGame();
-                ScreenSwitcher.toGame();
-                ScreenSwitcher.disposeGameMenu();
+                ScreenSwitcher.toMainMenu();
             };
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleStartButton(new Image(new Texture("buttons/button_play_active.png")));
+                toggleMainMenuButton(new Image(new Texture("buttons/MainMenuBtn_hover.png")));
                 updateTable();
             };
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleStartButton(new Image(new Texture("buttons/button_play_unactive.png")));
+                toggleMainMenuButton(new Image(new Texture("buttons/MainMenuBtn_default.png")));
                 updateTable();
             };
         };
@@ -139,8 +176,9 @@ public class GameMenuScreen implements Screen, Disposable {
 
         // Установка взаимодействий
         this.resumeButton.addListener(this.resumeEvent);
-        this.exitButton.addListener(this.ExitEvent);
-        this.startButton.addListener(this.startEvent);
+        this.helpButton.addListener(this.helpEvent);
+        this.optionButton.addListener(this.optionEvent);
+        this.mainMenuButton.addListener(this.mainMenuEvent);
 
         // Установка таблицы
         this.table = new Table();
@@ -150,11 +188,26 @@ public class GameMenuScreen implements Screen, Disposable {
 
         this.table.bottom();
         this.table.left();
-        this.table.add(this.resumeButton).padLeft(50).width(310f).height(144f);
+        this.table.add(this.resumeButton).padLeft(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
+        this.table.add(this.helpButton).padLeft(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
+        this.table.add(this.optionButton).padLeft(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        this.table.row();
+        this.table.add(this.mainMenuButton).padLeft(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        this.table.row();
         // BG
         // this.table.Background(new SpriteDrawable(new Sprite()));
         this.table.setBackground(new SpriteDrawable(this.background));
@@ -173,12 +226,16 @@ public class GameMenuScreen implements Screen, Disposable {
         this.resumeButton = newImage;
     }
 
-    public void toggleExitButton(Image newImage) {
-        this.exitButton = newImage;
+    public void toggleHelpButton(Image newImage) {
+        this.helpButton = newImage;
     }
 
-    public void toggleStartButton(Image newImage) {
-        this.startButton = newImage;
+    public void toggleOptionButton(Image newImage) {
+        this.optionButton = newImage;
+    }
+
+    public void toggleMainMenuButton(Image newImage) {
+        this.mainMenuButton = newImage;
     }
 
     @Override
@@ -217,8 +274,9 @@ public class GameMenuScreen implements Screen, Disposable {
     @Override
     public void dispose() {
         this.resumeEvent = null;
-        this.ExitEvent = null;
-        this.startEvent = null;
+        this.mainMenuEvent = null;
+        this.helpEvent = null;
+        this.optionEvent = null;
         this.stage.dispose();
     }
 
