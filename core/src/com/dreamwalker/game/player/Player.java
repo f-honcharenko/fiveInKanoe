@@ -106,7 +106,7 @@ public class Player extends Sprite implements Disposable {
 
         // Физические границы игрока
         CircleShape shape = new CircleShape();
-        shape.setRadius(15 / DreamWalker.PPM);
+        shape.setRadius(9 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
         this.playersBody.createFixture(fixtureDef);
@@ -159,7 +159,7 @@ public class Player extends Sprite implements Disposable {
             this.definePlayer();
             this.roomChanged = false;
         }
-        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 0.04f - this.getHeight() / 2);
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 15/DreamWalker.PPM - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             // this.world.destroyBody(this.playersBody);
             // this.world.destroyBody(this.attackArea);

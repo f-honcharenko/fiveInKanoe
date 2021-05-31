@@ -38,8 +38,8 @@ public class Goblin extends Enemy {
     public Goblin(World world, float x, float y) {
         super(world, x, y);
 
-        this.enemysAnimations = new Animations(this, "template.atlas", "template");
-        this.setBoundsCustom(60f, 60f); // 54
+        this.enemysAnimations = new Animations(this, "goblin.atlas", "goblin");
+        this.setBoundsCustom(50f, 50f); // 54
         // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;
         this.spawnY = y;

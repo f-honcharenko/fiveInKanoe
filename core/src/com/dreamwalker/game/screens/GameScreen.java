@@ -45,7 +45,7 @@ public class GameScreen implements Screen {
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
-        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
+        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 7));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
         this.game = game;
@@ -86,7 +86,7 @@ public class GameScreen implements Screen {
      */
     public void update(float deltaTime) {
         if(!this.player.isAlive()){
-            ScreenSwitcher.ToMainMenu();
+            ScreenSwitcher.toMainMenu();
         }
         // Реализация "времени" в игровом мире
         this.location.getWorld().step(1 / 60f, 6, 2);
