@@ -39,9 +39,21 @@ public class Hud {
         private Texture BarTexture;
         private Texture ItemAreaTexture;
         private Texture SkillBarTexture;
+        private Texture HPPTexture;
+        private Texture MPPTexture;
+        private Texture HeadgeHogTexture;
+        private Texture SkillRageTexture;
+        private Texture KDTexture;
+        private Texture ManaWarningTexture;
+
         private Image BarImage;
         private Image ItemAreaImage;
         private Image SkillBarImage;
+        private Image HPPImage;
+        private Image MPPImage;
+        private Image HeadgeHogImage;
+        private Image SkillRageImage;
+        private Image KD1Image;
 
         private float BarsHeight;
         private float BarsWidth;
@@ -58,8 +70,8 @@ public class Hud {
                 this.player = player;
                 this.sb = sb;
 
-                this.BarsHeight = 40f;
-                this.BarsWidth = 246f;
+                this.BarsHeight = 60f;
+                this.BarsWidth = 370f;
 
                 this.defineHud();
         }
@@ -70,13 +82,24 @@ public class Hud {
         }
 
         public void defineHud() {
-                // Инициализация Бара
+                // TODO - можно сокартить
                 this.BarTexture = new Texture("Bar.png");
                 this.ItemAreaTexture = new Texture("ItemArea.png");
                 this.SkillBarTexture = new Texture("SkillBar.png");
+                this.HPPTexture = new Texture("HPpot_icon.png");
+                this.MPPTexture = new Texture("MPpot_icon.png");
+                this.HeadgeHogTexture = new Texture("hedgehog_icon.png");
+                this.SkillRageTexture = new Texture("skill_rage_icon.png");
+                this.KDTexture = new Texture("skill_icon_mask.png");
+                this.ManaWarningTexture = new Texture("skill_icon_mask_red.png");
+
                 this.BarImage = new Image(this.BarTexture);
                 this.ItemAreaImage = new Image(this.ItemAreaTexture);
                 this.SkillBarImage = new Image(this.SkillBarTexture);
+                this.HPPImage = new Image(this.HPPTexture);
+                this.MPPImage = new Image(this.MPPTexture);
+                this.SkillRageImage = new Image(this.SkillRageTexture);
+
                 this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
                                 new OrthographicCamera());
 
@@ -174,6 +197,11 @@ public class Hud {
         }
 
         public void createTableSkils() {
+
+                float MaxCoolDown1Skill = this.player.getSkillPanel().get(0).getCoolDown();
+                float CurrentCoolDown1Skill = MaxCoolDown1Skill
+                                - this.player.getSkillPanel().get(0).getCurrentCoolDown();
+
                 this.tableSkills = new Table();
                 this.tableSkills.setFillParent(true);
 
@@ -181,22 +209,70 @@ public class Hud {
 
                 Stack skillsContainer = new Stack();
                 Table containerSkills = new Table();
+                Table containerKDs = new Table();
+                Table containerManaWarning = new Table();
                 Table borderSkills = new Table();
 
                 containerSkills.setFillParent(true);
+                containerKDs.setFillParent(true);
+                containerManaWarning.setFillParent(true);
                 borderSkills.setFillParent(true);
 
                 containerSkills.top().left();
+                containerKDs.top().left();
+                containerManaWarning.top().left();
                 borderSkills.top().left();
-                // containerPotion.add(this.BarMP).padBottom(200).height((int)
-                // this.BarsHeight).width((int) tempPercentMP)
-                // .maxWidth((int) this.BarsWidth).align(Align.left)
-                // .padRight((int) (this.BarsWidth - tempPercentMP));
+                // Иконки
+                containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
+                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
+                // Gdx.graphics.getWidth()) / 1920)
+                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+
+                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
+                // Gdx.graphics.getWidth()) / 1920)
+                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+
+                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
+                // Gdx.graphics.getWidth()) / 1920)
+                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                // Мана
+                Image Mask1ManaWarning = new Image(this.ManaWarningTexture);
+                Mask1ManaWarning.setColor(1, 0, 0,
+                                (this.player.getCurrentMana() < this.player.getSkillPanel().get(0).getManaCost())
+                                                ? (0.5f)
+                                                : (0f));
+                containerManaWarning.add(Mask1ManaWarning).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                // КД
+                Image Mask1KD = new Image(this.KDTexture);
+                Mask1KD.setColor(1, 0, 0,
+                                ((CurrentCoolDown1Skill / MaxCoolDown1Skill) == 1f) ? (0f)
+                                                : (this.SkillRageImage.getColor().a
+                                                                - (1f - (CurrentCoolDown1Skill / MaxCoolDown1Skill))));
+
+                containerKDs.add(Mask1KD).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                // Бар
                 borderSkills.add(this.SkillBarImage).expandX().padTop(0).width(((800 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((100 * Gdx.graphics.getHeight()) / 1080));
-
+                // Компановка
                 skillsContainer.add(containerSkills);
+                skillsContainer.add(containerKDs);
+                skillsContainer.add(containerManaWarning);
                 skillsContainer.add(borderSkills);
 
                 this.tableSkills.row();
@@ -210,6 +286,7 @@ public class Hud {
                 // System.out.println(this.BarsWidth);
                 Pixmap pixmap = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 1, 0, 0);
                 Pixmap pixmap2 = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 0, 0, 1);
+                Pixmap pixmap3 = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 1, 1, 1);
                 this.TBarHP = new Texture(pixmap);
                 this.TBarMP = new Texture(pixmap2);
                 this.BarHP = new Image(this.TBarHP);
@@ -227,7 +304,6 @@ public class Hud {
 
                 pixmap.setColor(r, g, b, 1);
                 pixmap.fillRectangle(0, 0, width, height);
-
                 return pixmap;
         }
 
