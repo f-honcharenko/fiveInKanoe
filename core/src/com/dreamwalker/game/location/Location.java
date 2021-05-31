@@ -162,7 +162,7 @@ public class Location implements Disposable {
     private void initExits() {
         MapLayer objLayer = map.getLayers().get("exits");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> exitsObj = mapObjects.getByType(RectangleMapObject.class);
+        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
         if(exitsObj != null){
             for (RectangleMapObject object : exitsObj) {
                 // физические свойства для "областей" коллизий
