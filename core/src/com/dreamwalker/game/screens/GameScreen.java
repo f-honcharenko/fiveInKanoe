@@ -12,10 +12,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.generator.LevelGraph;
-import com.dreamwalker.game.items.AllItemsInWorld;
-import com.dreamwalker.game.items.ItemInWorld;
-import com.dreamwalker.game.items.PotionHP;
-import com.dreamwalker.game.items.PotionMP;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.scenes.Hud;
@@ -117,29 +113,31 @@ public class GameScreen implements Screen {
             this.player.getInventory().getInfoInConsole();
             // this.screenSwitcher.ToGameMenu();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            // this.pause();
-            PotionHP tempItem = new PotionHP(1);
-            ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(), this.player.getY(), tempItem,
-                    this.player.getWorld());
-            // this.items[this.items.length] = tempItmInWorld;
-            // this.items.add(tempItmInWorld);
-            // this.items.add(tempItmInWorld);
-            AllItemsInWorld.addItem(tempItmInWorld);
-            // this.player.getInventory().putItem(new PotionHP(1));
-            // this.screenSwitcher.ToGameMenu();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            PotionMP tempItem = new PotionMP(1);
-            ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(), this.player.getY(), tempItem,
-                    this.player.getWorld());
-            // this.items[this.items.length] = tempItmInWorld;
-            // this.items.add(tempItmInWorld);
-            AllItemsInWorld.addItem(tempItmInWorld);
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+        // // this.pause();
+        // PotionHP tempItem = new PotionHP(1);
+        // ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(),
+        // this.player.getY(), tempItem,
+        // this.player.getWorld());
+        // // this.items[this.items.length] = tempItmInWorld;
+        // // this.items.add(tempItmInWorld);
+        // // this.items.add(tempItmInWorld);
+        // AllItemsInWorld.addItem(tempItmInWorld);
+        // // this.player.getInventory().putItem(new PotionHP(1));
+        // // this.screenSwitcher.ToGameMenu();
+        // }
+        // if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        // PotionMP tempItem = new PotionMP(1);
+        // ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(),
+        // this.player.getY(), tempItem,
+        // this.player.getWorld());
+        // // this.items[this.items.length] = tempItmInWorld;
+        // // this.items.add(tempItmInWorld);
+        // AllItemsInWorld.addItem(tempItmInWorld);
 
-            // this.player.getInventory().putItem(new PotionMP(1));
+        // // this.player.getInventory().putItem(new PotionMP(1));
 
-        }
+        // }
 
         // dstr.destroyBody2D();
     }
@@ -170,16 +168,19 @@ public class GameScreen implements Screen {
         this.game.getBatch().begin();
         this.player.render(this.game.getBatch());
         // рендер вещей
-        if (AllItemsInWorld.getItemList() != null) {
-            for (int i = 0; i < AllItemsInWorld.getItemList().size(); i++) {
-                if (AllItemsInWorld.getItemList().get(i) != null) {
-                    ((ItemInWorld) AllItemsInWorld.getItemList().get(i)).draw(this.game.getBatch());
-                }
-            }
-        }
+        // if (AllItemsInWorld.getItemList() != null) {
+        // for (int i = 0; i < AllItemsInWorld.getItemList().size(); i++) {
+        // if (AllItemsInWorld.getItemList().get(i) != null) {
+        // ((ItemInWorld)
+        // AllItemsInWorld.getItemList().get(i)).draw(this.game.getBatch());
+        // }
+        // }
+        // }
 
         // рендер npc
         this.location.enemiesRender(this.game.getBatch());
+        // render
+        this.location.itemsRender(this.game.getBatch());
 
         this.game.getBatch().end();
 
@@ -238,7 +239,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         MapChanger.getLevelGraph().dispose();
-        AllItemsInWorld.clearItmes();
+        // AllItemsInWorld.clearItmes();
         this.player.dispose();
         this.ortMapRender.dispose();
         this.debugRenderer.dispose();

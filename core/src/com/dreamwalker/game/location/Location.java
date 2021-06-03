@@ -16,6 +16,8 @@ import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.entities.enemy.Goblin;
 import com.dreamwalker.game.entities.enemy.Robber;
 import com.dreamwalker.game.entities.player.Player;
+import com.dreamwalker.game.items.ItemInWorld;
+
 
 import java.util.ArrayList;
 
@@ -30,6 +32,7 @@ public class Location implements Disposable {
     private ArrayList<Body> exits;
     private ArrayList<Body> enemiesSP;
     private ArrayList<Enemy> enemies;
+    private ArrayList<ItemInWorld> items;
 
 
     /**
@@ -43,6 +46,7 @@ public class Location implements Disposable {
         this.exits = new ArrayList<>();
         this.enemiesSP = new ArrayList<>();
         this.enemies = new ArrayList<>();
+        this.items = new ArrayList<>();
         this.initCollisions();
         this.initSpawnPoint();
         this.initEnemiesSpawnPoint();
@@ -63,14 +67,13 @@ public class Location implements Disposable {
         this.map = map;
     }
 
-    private void initEnemies(){
-        for(int i = 0; i < this.enemiesSP.size(); i++){
+    private void initEnemies() {
+        for (int i = 0; i < this.enemiesSP.size(); i++) {
             Enemy newEnemy;
-            if(i % 2 == 0){
-                newEnemy = new Goblin(this.world, enemiesSP.get(i).getPosition());
-            }
-            else{
-                newEnemy = new Robber(this.world, enemiesSP.get(i).getPosition());
+            if (i % 2 == 0) {
+                newEnemy = new Goblin(this, enemiesSP.get(i).getPosition());
+            } else {
+                newEnemy = new Robber(this, enemiesSP.get(i).getPosition());
             }
             this.enemies.add(newEnemy);
         }
@@ -82,8 +85,9 @@ public class Location implements Disposable {
     private void initCollisions() {
         MapLayer objLayer = map.getLayers().get("collisions");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> collisionsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
-        if(collisionsObj != null){
+        Array<RectangleMapObject> collisionsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
+        if (collisionsObj != null) {
             for (RectangleMapObject object : collisionsObj) {
                 // физические свойства для "областей" коллизий
                 BodyDef bdef = new BodyDef();
@@ -95,17 +99,12 @@ public class Location implements Disposable {
                 Rectangle rect = (object).getRectangle();
                 bdef.type = BodyDef.BodyType.StaticBody;
                 // Размещение коллизий по крате
-                bdef.position.set(
-                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
-                );
+                bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
                 body = world.createBody(bdef);
 
                 // Задача областей коллизий
-                shape.setAsBox(
-                        (rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getHeight() / 2) / DreamWalker.PPM
-                );
+                shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
                 fdef.shape = shape;
                 body.createFixture(fdef);
                 // Удаляем фигуру, которая была создана для коллизии
@@ -118,7 +117,7 @@ public class Location implements Disposable {
         MapLayer objLayer = this.map.getLayers().get("spawnPoint");
         MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
         MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
-        if(object != null){
+        if (object != null) {
             // физические свойства для точки спавна
             BodyDef bodyDef = new BodyDef();
             // Границы точки спавна
@@ -129,10 +128,8 @@ public class Location implements Disposable {
             // Получение данных с самой карты
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             // Координаты точки спавна
-            this.spawnPoint = new Vector2(
-                    (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
-            );
+            this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
             // |
             // V
@@ -143,10 +140,7 @@ public class Location implements Disposable {
             fixtureDef.isSensor = true;
             body = this.world.createBody(bodyDef);
             // Задача области спавна
-            shape.setAsBox(
-                    (rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getHeight() / 2) / DreamWalker.PPM
-            );
+            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
             fixtureDef.shape = shape;
             body.createFixture(fixtureDef);
 
@@ -159,8 +153,9 @@ public class Location implements Disposable {
     private void initExits() {
         MapLayer objLayer = map.getLayers().get("exits");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
-        if(exitsObj != null){
+        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
+        if (exitsObj != null) {
             for (RectangleMapObject object : exitsObj) {
                 // физические свойства для "областей" коллизий
                 BodyDef bdef = new BodyDef();
@@ -172,16 +167,11 @@ public class Location implements Disposable {
                 Rectangle rect = object.getRectangle();
                 bdef.type = BodyDef.BodyType.StaticBody;
                 // Размещение коллизий по крате
-                bdef.position.set(
-                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
-                );
+                bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
                 body = world.createBody(bdef);
                 // Задача областей коллизий
-                shape.setAsBox(
-                        (rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getHeight() / 2) / DreamWalker.PPM)
-                ;
+                shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
                 fdef.shape = shape;
                 fdef.isSensor = true;
                 body.createFixture(fdef);
@@ -193,27 +183,23 @@ public class Location implements Disposable {
         }
     }
 
-    private void initEnemiesSpawnPoint(){
+    private void initEnemiesSpawnPoint() {
         MapLayer objLayer = map.getLayers().get("enemies");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
-        if(enemiesSPObj != null){
-            for(RectangleMapObject object : enemiesSPObj){
+        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
+        if (enemiesSPObj != null) {
+            for (RectangleMapObject object : enemiesSPObj) {
                 BodyDef bdef = new BodyDef();
                 PolygonShape shape = new PolygonShape();
                 FixtureDef fdef = new FixtureDef();
                 Body body;
                 Rectangle rect = object.getRectangle();
                 bdef.type = BodyDef.BodyType.StaticBody;
-                bdef.position.set(
-                        (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
-                );
+                bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
                 body = world.createBody(bdef);
-                shape.setAsBox(
-                        (rect.getWidth() / 2) / DreamWalker.PPM,
-                        (rect.getHeight() / 2) / DreamWalker.PPM
-                );
+                shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
                 fdef.shape = shape;
                 fdef.isSensor = true;
                 body.createFixture(fdef);
@@ -223,51 +209,56 @@ public class Location implements Disposable {
         }
     }
 
-    private void initFinalExit(){
+    private void initFinalExit() {
         MapLayer objLayer = this.map.getLayers().get("finalExit");
         MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
         MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
-        if(object != null){
+        if (object != null) {
             BodyDef bodyDef = new BodyDef();
             PolygonShape shape = new PolygonShape();
             FixtureDef fixtureDef = new FixtureDef();
             Body body;
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            this.spawnPoint = new Vector2(
-                    (rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM
-            );
+            this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                    (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
             bodyDef.type = BodyDef.BodyType.StaticBody;
             bodyDef.position.set(this.spawnPoint);
             fixtureDef.isSensor = true;
             body = this.world.createBody(bodyDef);
-            shape.setAsBox(
-                    (rect.getWidth() / 2) / DreamWalker.PPM,
-                    (rect.getHeight() / 2) / DreamWalker.PPM
-            );
+            shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
             fixtureDef.shape = shape;
             body.createFixture(fixtureDef);
-            body.getFixtureList().get(0).setUserData("Exit"); //Сомнения по поводу такого варианта
+            body.getFixtureList().get(0).setUserData("Exit"); // Сомнения по поводу такого варианта
             shape.dispose();
         }
     }
 
-
-    public void enemiesResp(){
+    public void enemiesResp() {
         for (Enemy enemy : this.enemies) {
             enemy.respawn();
         }
     }
 
-    public void enemiesUpdate(float deltaTime, Player player){
+    public void enemiesUpdate(float deltaTime, Player player) {
         for (Enemy enemy : this.enemies) {
             enemy.update(deltaTime, player);
         }
     }
 
-    public void enemiesRender(SpriteBatch spriteBatch){
-        for(Enemy enemy : this.enemies){
+    public void enemiesRender(SpriteBatch spriteBatch) {
+        for (Enemy enemy : this.enemies) {
             enemy.render(spriteBatch);
+        }
+    }
+
+    public void itemsRender(SpriteBatch spriteBatch) {
+        for (ItemInWorld item : this.items) {
+            item.render(spriteBatch);
+
+            System.out.println(item.haveToDestroy);
+            if (item.haveToDestroy) {
+                item.dispose();
+            }
         }
     }
 
@@ -282,6 +273,20 @@ public class Location implements Disposable {
 
     public ArrayList<Body> getExits() {
         return this.exits;
+    }
+
+    public ArrayList<ItemInWorld> addItem(ItemInWorld item) {
+        this.items.add(item);
+        return this.items;
+    }
+
+    public void disposeItems() {
+        this.items = new ArrayList<>();
+    }
+
+    public ArrayList<ItemInWorld> removeItem(ItemInWorld item) {
+        this.items.remove(item);
+        return this.items;
     }
 
     /**

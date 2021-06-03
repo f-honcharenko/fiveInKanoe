@@ -4,7 +4,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.generator.Edge;
 import com.dreamwalker.game.location.Location;
-import com.dreamwalker.game.items.AllItemsInWorld;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.skills.Sword;
@@ -19,10 +18,10 @@ public class ContactHandler implements ContactListener {
     public void beginContact(Contact contact) {
         this.enterPlayersMelee(contact);
         this.enterEnemiesMelee(contact);
-        this.enterFlyingSword(contact);
         this.enterExit(contact);
         this.enterItem(contact);
         this.enterFinalExit(contact);
+        this.enterFlyingSword(contact);
     }
 
     @Override
@@ -42,15 +41,15 @@ public class ContactHandler implements ContactListener {
 
     }
 
-    //Поставить более вменяемое условие
-    private void enterFinalExit(Contact contact){
+    // Поставить более вменяемое условие
+    private void enterFinalExit(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-        if(fixtureA.getUserData() != null && fixtureB.getUserData() != null){
+        if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof String;
             boolean variant2 = fixtureA.getUserData() instanceof String && fixtureB.getUserData() instanceof Player;
-            if((variant1 && fixtureB.getUserData().equals("Exit"))
-                    || (variant2 && fixtureA.getUserData().equals("Exit"))){
+            if ((variant1 && fixtureB.getUserData().equals("Exit"))
+                    || (variant2 && fixtureA.getUserData().equals("Exit"))) {
                 ScreenSwitcher.getGameScreen().nextFloor();
             }
         }
@@ -239,9 +238,8 @@ public class ContactHandler implements ContactListener {
                 Player player = (Player) fixtureB.getUserData();
                 if (fixtureA.isSensor()) {
                     if (player.getInventory().putItem(item.getItem())) {
-                        item.dispose();
-                        player.getInventory().getInfoInConsole();
-                        AllItemsInWorld.removeItem(item);
+                        item.haveToDestroy = true;
+                        // TODO: передлеать
                     }
                 }
             }
@@ -252,9 +250,8 @@ public class ContactHandler implements ContactListener {
                 ItemInWorld item = (ItemInWorld) fixtureB.getUserData();
                 if (fixtureB.isSensor()) {
                     if (player.getInventory().putItem(item.getItem())) {
-                        item.dispose();
-                        player.getInventory().getInfoInConsole();
-                        AllItemsInWorld.removeItem(item);
+                        item.haveToDestroy = true;
+                        // TODO: передлеать
                     }
                 }
             }

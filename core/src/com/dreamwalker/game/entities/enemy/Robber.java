@@ -1,10 +1,10 @@
 package com.dreamwalker.game.entities.enemy;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
 import com.dreamwalker.game.entities.player.Player;
+import com.dreamwalker.game.location.Location;
 
 public class Robber extends Enemy{
 
@@ -16,8 +16,8 @@ public class Robber extends Enemy{
      * @param x      - стартовая позиция врага по х
      * @param y      - стартовая позиция врага по у
      */
-    public Robber (World world, float x, float y) {
-        super(world, x, y);
+    public Robber (Location location, float x, float y) {
+        super(location, x, y);
 
         this.animationController = new MeeleAnimationController(this, "Robber.atlas", "Robber");
         this.setBoundsCustom(60f, 60f); // 54
@@ -42,8 +42,8 @@ public class Robber extends Enemy{
      *
      * @param enemySpawnPoint - позиция врага
      */
-    public Robber (World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Robber (Location location, Vector2 enemySpawnPoint) {
+        this(location, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override
