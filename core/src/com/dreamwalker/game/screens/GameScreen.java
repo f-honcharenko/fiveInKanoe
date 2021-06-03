@@ -12,11 +12,16 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.generator.LevelGraph;
-import com.dreamwalker.game.items.*;
+import com.dreamwalker.game.items.AllItemsInWorld;
+import com.dreamwalker.game.items.ItemInWorld;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
 import com.dreamwalker.game.location.Location;
-import com.dreamwalker.game.player.Player;
+import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.scenes.Hud;
-import com.dreamwalker.game.tools.*;
+import com.dreamwalker.game.tools.Destroyer;
+import com.dreamwalker.game.tools.MapChanger;
+import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class GameScreen implements Screen {
 
@@ -45,7 +50,7 @@ public class GameScreen implements Screen {
      * @param game - экземпляр основного класса игры
      */
     public GameScreen(DreamWalker game) {
-        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 7));
+        MapChanger.setLevelGraph(new LevelGraph("Maps/", 6));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
         this.game = game;
@@ -193,7 +198,7 @@ public class GameScreen implements Screen {
     }
 
     public void nextFloor() {
-        MapChanger.setLevelGraph(new LevelGraph("MapPool/", 6));
+        MapChanger.setLevelGraph(new LevelGraph("Maps/", 6));
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
         this.location = MapChanger.getCurrentVertex().getLocation(); // !!!

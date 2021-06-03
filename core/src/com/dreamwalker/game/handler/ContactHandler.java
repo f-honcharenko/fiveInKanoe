@@ -1,13 +1,12 @@
 package com.dreamwalker.game.handler;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.generator.Edge;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.items.AllItemsInWorld;
 import com.dreamwalker.game.items.ItemInWorld;
-import com.dreamwalker.game.player.Player;
-import com.dreamwalker.game.screens.GameScreen;
+import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.skills.Sword;
 import com.dreamwalker.game.tools.MapChanger;
 import com.dreamwalker.game.tools.ScreenSwitcher;

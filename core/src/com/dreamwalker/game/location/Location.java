@@ -11,19 +11,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-// import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.enemy.Enemy;
-import com.dreamwalker.game.enemy.Goblin;
-import com.dreamwalker.game.enemy.Robber;
-import com.dreamwalker.game.player.Player;
-import com.dreamwalker.game.tools.ScreenSwitcher;
+import com.dreamwalker.game.entities.enemy.Enemy;
+import com.dreamwalker.game.entities.enemy.Goblin;
+import com.dreamwalker.game.entities.enemy.Robber;
+import com.dreamwalker.game.entities.player.Player;
 
 import java.util.ArrayList;
+
+// import com.badlogic.gdx.maps.MapObject;
 
 public class Location implements Disposable {
     // Тайловая карта
@@ -34,6 +30,7 @@ public class Location implements Disposable {
     private ArrayList<Body> exits;
     private ArrayList<Body> enemiesSP;
     private ArrayList<Enemy> enemies;
+
 
     /**
      * Конструктор

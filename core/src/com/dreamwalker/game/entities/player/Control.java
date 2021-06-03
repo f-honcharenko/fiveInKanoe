@@ -1,16 +1,20 @@
-package com.dreamwalker.game.player;
+package com.dreamwalker.game.entities.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.dreamwalker.game.enemy.Enemy;
+import com.dreamwalker.game.entities.enemy.Enemy;
 
 public class Control {
     private final Player player;
+    private Sound stepSound;
+    private int soundDelayC = 0;
 
     Control(Player player) {
+        this.soundDelayC = 0;
+        this.stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step.mp3"));
         this.player = player;
     }
 
@@ -47,7 +51,7 @@ public class Control {
      */
     private void move(Vector2 mousePosition) {
         float speed = this.player.getSpeed();
-        Body playersBody = this.player.getPlayersBody();
+        Body playersBody = this.player.getBody();
         // Вычитаем позицию игрока из позиции мыши
         Vector2 playersViewPoint = mousePosition.sub(playersBody.getPosition());
         float angle = playersViewPoint.angleRad();
@@ -104,6 +108,17 @@ public class Control {
         boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
         boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
 
+        if(isMoving){
+            if(this.soundDelayC == 22){
+                this.soundDelayC = 0;
+                this.stepSound.play(0.37f);
+            }
+            else{
+                this.soundDelayC++;
+            }
+        }
+
+
         // Остановить персонажа, если ни одна из клавиш не нажата, или нажаты
         // конфликтующие сочетания
         if (!isMoving || conflictX || conflictY || player.isAttacking()) {
@@ -114,5 +129,6 @@ public class Control {
     private void useSkills(Vector2 mousePosition) {
         this.player.getSkillPanel().get(0).setMousePosition(mousePosition);
         this.player.getSkillPanel().get(0).usage(this.player);
+
     }
 }

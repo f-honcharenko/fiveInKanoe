@@ -2,9 +2,7 @@ package com.dreamwalker.game.skills;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.dreamwalker.game.player.Player;
+import com.dreamwalker.game.entities.player.Player;
 
 import java.util.ArrayList;
 
@@ -15,6 +13,7 @@ public class FlyingSword extends ActiveSkill {
     private float damage;
     private float lifeTime;
     private int maxSwordsCount;
+
 
     public FlyingSword(int hotKey) {
         super(hotKey);
