@@ -246,8 +246,8 @@ public abstract class Enemy extends Entity implements Disposable {
 
     public void update(float deltaTime, Player player) {
         if (haveToDropped) {
-            this.dropItem(new PotionHP(1), 1, 50d);
-            this.dropItem(new PotionMP(1), 1, 50d);
+            this.dropItem(new PotionHP(1), 1, 100d);
+            this.dropItem(new PotionMP(1), 1, 100d);
             haveToDropped = false;
         }
         if (this.isAlive()) {

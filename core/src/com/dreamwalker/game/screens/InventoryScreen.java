@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.player.Inventory;
 import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class InventoryScreen implements Screen, Disposable {
@@ -109,8 +110,8 @@ public class InventoryScreen implements Screen, Disposable {
         inventoryPattern.add(new Image(this.inventoreyPattern)).width(((1520 * Gdx.graphics.getWidth()) / 1920))
                 .height(((1000 * Gdx.graphics.getHeight()) / 1080));
 
-        // inventory.putItem(new PotionHP(1));
-        // inventory.putItem(new PotionMP(1));
+        inventory.putItem(new PotionHP(1));
+        inventory.putItem(new PotionMP(1));
         if (inventory.getTypesSize() > 1) {
             for (int i = 0; i < inventory.getTypesSize(); i++) {
                 final int index = i;
@@ -135,7 +136,19 @@ public class InventoryScreen implements Screen, Disposable {
                         .padTop((-220 * Gdx.graphics.getHeight()) / 1080)
                         .height(((70 * Gdx.graphics.getHeight()) / 1080))
                         .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
-                        .padRight((1006 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+                        .padRight((270 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+                // itemIcon.row();
+                itemIcon.add(new Label(inventory.getItem(i).getName(), this.labelStyle))
+                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((370 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+                // itemIcon.row();
+                itemIcon.add(new Label("x" + inventory.getItem(i).getCount(), this.labelStyle))
+                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080).align(Align.right)
+                        .padRight((500 * Gdx.graphics.getWidth()) / 1920);
 
                 itemContainer.add(itemPattern);
                 itemContainer.add(itemIcon);
@@ -160,6 +173,18 @@ public class InventoryScreen implements Screen, Disposable {
                         .height(((70 * Gdx.graphics.getHeight()) / 1080))
                         .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
                         .padRight((1006 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+                itemIcon.row();
+                itemIcon.add(new Label(inventory.getItem(0).getName(), this.labelStyle))
+                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-350 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080).align(Align.left)
+                        .padLeft((100 * Gdx.graphics.getWidth()) / 1920);
+                itemIcon.row();
+                itemIcon.add(new Label("x" + inventory.getItem(0).getCount(), this.labelStyle))
+                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-350 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080).align(Align.right)
+                        .padRight((500 * Gdx.graphics.getWidth()) / 1920);
 
                 itemContainer.add(itemPattern);
                 itemContainer.add(itemIcon);
