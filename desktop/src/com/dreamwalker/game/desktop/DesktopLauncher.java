@@ -1,4 +1,4 @@
-package com.dreamwalker.game;
+package com.dreamwalker.game.desktop;
 
 import com.badlogic.gdx.Files.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
