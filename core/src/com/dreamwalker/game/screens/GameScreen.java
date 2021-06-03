@@ -72,6 +72,7 @@ public class GameScreen implements Screen {
 
         // this.dstr = new Destroyer(this.location.getWorld());
         // this.items = new ItemInWorld[10];
+
     }
 
     @Override
@@ -113,7 +114,6 @@ public class GameScreen implements Screen {
             this.player.getInventory().getInfoInConsole();
             // this.screenSwitcher.ToGameMenu();
         }
-        // if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
         // // this.pause();
         // PotionHP tempItem = new PotionHP(1);
         // ItemInWorld tempItmInWorld = new ItemInWorld(this.player.getX(),

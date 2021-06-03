@@ -16,7 +16,6 @@ import com.dreamwalker.game.items.PotionMP;
 import java.util.Random;
 import com.dreamwalker.game.location.Location;
 
-
 public abstract class Enemy extends Entity implements Disposable {
     protected int attackSpeedMax;
     protected int attackSpeedCounter;
@@ -70,7 +69,6 @@ public abstract class Enemy extends Entity implements Disposable {
         this.spawnPoint = new Vector2(x, y);
         this.defineEnemy(this.spawnPoint);
 
-
         this.haveToDropped = false;
         // Изменяемые параметры
         this.speed = 1.5f;
@@ -101,9 +99,9 @@ public abstract class Enemy extends Entity implements Disposable {
         if (!this.isAlive) {
             this.respawnCounter++;
             this.entityBody.getFixtureList().get(0).setSensor(true);
-            if(this.respawnCounter == this.respawnTime){
+            if (this.respawnCounter == this.respawnTime) {
                 this.entityBody.getFixtureList().get(0).setSensor(false);
-                this.entityBody.setTransform(this.spawnPoint.x, this.spawnPoint.y, (float)this.viewAngle);
+                this.entityBody.setTransform(this.spawnPoint.x, this.spawnPoint.y, (float) this.viewAngle);
                 this.health = this.healthMax;
                 this.isAlive = true;
                 this.respawnCounter = 0;
@@ -112,7 +110,7 @@ public abstract class Enemy extends Entity implements Disposable {
     }
 
     @Override
-    public void render(SpriteBatch batch){
+    public void render(SpriteBatch batch) {
         if (this.isAlive()) {
             this.draw(batch);
             this.drawBar(batch);
@@ -246,9 +244,8 @@ public abstract class Enemy extends Entity implements Disposable {
 
     public void update(float deltaTime, Player player) {
         if (haveToDropped) {
-            // ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item,
-            // this.location);
-            this.dropItem(new PotionHP(1), 1, 100d);
+            this.dropItem(new PotionHP(1), 1, 50d);
+            this.dropItem(new PotionMP(1), 1, 50d);
             haveToDropped = false;
         }
         if (this.isAlive()) {
