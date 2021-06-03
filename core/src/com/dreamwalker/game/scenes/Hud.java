@@ -192,13 +192,19 @@ public class Hud {
                 }
 
                 containerPotion.add(tempHP).width(((100 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((100 * Gdx.graphics.getHeight()) / 1080)).padLeft(70).padTop(10);
+                                .height((100 * Gdx.graphics.getHeight()) / 1080)
+                                .padLeft((105 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((15 * Gdx.graphics.getHeight()) / 1080);
                 containerPotion.row();
                 containerPotion.add(tempHedgehog).width(((50 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((50 * Gdx.graphics.getHeight()) / 1080)).padLeft(-70).padTop(-15);
+                                .height(((50 * Gdx.graphics.getHeight()) / 1080))
+                                .padLeft((-105 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((-15 * Gdx.graphics.getHeight()) / 1080);
                 containerPotion.row();
                 containerPotion.add(tempMP).width(((70 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((70 * Gdx.graphics.getHeight()) / 1080)).padLeft(45).padTop(5);
+                                .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                                .padLeft((65 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((5 * Gdx.graphics.getHeight()) / 1080);
 
                 borderPotion.add(this.ItemAreaImage).expandX().padTop(0).width(((250 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((250 * Gdx.graphics.getHeight()) / 1080));
