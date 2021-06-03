@@ -18,7 +18,6 @@ import com.dreamwalker.game.entities.enemy.Robber;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.items.ItemInWorld;
 
-
 import java.util.ArrayList;
 
 // import com.badlogic.gdx.maps.MapObject;
@@ -33,7 +32,6 @@ public class Location implements Disposable {
     private ArrayList<Body> enemiesSP;
     private ArrayList<Enemy> enemies;
     private ArrayList<ItemInWorld> items;
-
 
     /**
      * Конструктор
