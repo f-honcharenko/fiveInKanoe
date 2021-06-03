@@ -63,7 +63,6 @@ public abstract class Enemy extends Sprite implements Disposable {
     protected int respawnTime;
     protected int respawnCounter;
 
-    private Destroyer dstr;
     private boolean roomChanged;
 
     private Vector2 standSpawnPoint;
@@ -183,17 +182,9 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.attackArea.getFixtureList().get(0).setUserData(this);
 
         dmgSectorShape.dispose();
-        this.dstr = new Destroyer(this.world);
 
         this.rnd = new Random();
     };
-
-    /**
-     * Метод, отвечающий за наложение эффектов на врага
-     */
-    public void setBuff() {
-        throw new NotImplementedException();
-    }
 
     public void receiveDamage(double damage) {
         if (this.isAlive) {
@@ -224,19 +215,6 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public Boolean isAlive() {
         return this.isAlive;
-    }
-
-    public void setWorld(World world) {
-        if (world == null) {
-            throw new IllegalArgumentException();
-        }
-        if (this.world != world) {
-            this.world.destroyBody(this.enemysBody);
-            this.world.destroyBody(this.attackArea);
-            this.world = world;
-            this.roomChanged = true;
-        }
-
     }
 
     public World getWorld() {
@@ -299,9 +277,6 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void setViewAngle(double viewAngle) {
         this.viewAngle = viewAngle;
-        // this.getBox2DBody().setTransform(this.getBox2DBody().getPosition(), (float)
-        // viewAngle);
-
     }
 
     public boolean isAttacking() {
@@ -314,15 +289,14 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     public void update(float deltaTime, Player player) {
         if (haveToDropped) {
-            // ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item,
-            // this.location);
-            this.dropItem(new PotionHP(1), 1, 100d);
+            this.dropItem(new PotionHP(1), 1, 50d);
+            this.dropItem(new PotionMP(1), 1, 50d);
             haveToDropped = false;
         }
-        if (roomChanged) {
-            this.defineEnemy(this.standSpawnPoint);
-            this.roomChanged = false;
-        }
+        // if (roomChanged) {
+        // this.defineEnemy(this.standSpawnPoint);
+        // this.roomChanged = false;
+        // }
         if (this.isAlive()) {
             if (this.attackedFilterTimer < this.attackedFilterTimerMax) {
                 this.attackedFilterTimer++;

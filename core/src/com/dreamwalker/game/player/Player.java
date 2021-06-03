@@ -123,7 +123,8 @@ public class Player extends Sprite implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -155,11 +156,11 @@ public class Player extends Sprite implements Disposable {
     }
 
     public void update(float deltaTime, Vector2 mousePosition) {
-        if(this.roomChanged){
+        if (this.roomChanged) {
             this.definePlayer();
             this.roomChanged = false;
         }
-        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 15/DreamWalker.PPM - this.getHeight() / 2);
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 15 / DreamWalker.PPM - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             // this.world.destroyBody(this.playersBody);
             // this.world.destroyBody(this.attackArea);
@@ -190,47 +191,8 @@ public class Player extends Sprite implements Disposable {
         this.health -= damage;
     }
 
-    /**
-     * Нанести урон игроку
-     *
-     * @param damage     - Урон
-     * @param damageType - Тип урона (0 - чистый, 1 - физ, 2 - маг)
-     * @return Нанесенный урон
-     */
-    public float damaged(float damage, int damageType) {
-        damage = Math.abs(damage);
-        switch (damageType) {
-            case 1:
-                // Будем считать что 1 брона = 1хп.
-                if (this.getArmor() < damage) {
-                    this.health = this.getCurrentHealth() - (damage - this.getArmor());
-                    return (float) (damage - this.getArmor());
-                } else {
-                    return 0;
-                }
-            case 2:
-                // Будем считать что 1 брона = 1хп.
-                if (this.getArmor() < damage) {
-                    this.health = this.getCurrentHealth() - (damage - this.getMagArmor());
-                    return (float) (damage - this.getMagArmor());
-                } else {
-                    return 0;
-                }
-            default:
-                this.health = this.getCurrentHealth() - (damage);
-                return damage;
-        }
-    }
-
-    /**
-     * Метод, отвечающий за наложение эффектов на игрока
-     */
-    public void setBuff() {
-        throw new NotImplementedException();
-    }
-
     public void setWorld(World world) {
-        if(this.world != world){
+        if (this.world != world) {
             this.world.destroyBody(this.playersBody);
             this.world.destroyBody(this.attackArea);
             this.world = world;

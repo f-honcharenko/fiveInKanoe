@@ -13,23 +13,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
 import com.dreamwalker.game.player.Inventory;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
@@ -53,7 +58,7 @@ public class InventoryScreen implements Screen, Disposable {
     private Sprite background;
 
     private Inventory inventory;
-
+    private int selectedItemList;
     private Label.LabelStyle labelStyle;
 
     public InventoryScreen(DreamWalker game, Texture bg, Inventory inv) {
@@ -79,31 +84,8 @@ public class InventoryScreen implements Screen, Disposable {
         this.inventoreyPattern = new Sprite(new Texture("InventoryFrame.png"));
         this.inventoreyActiveItemPattern = new Sprite(new Texture("ItemPanel_default.png"));
         this.inventoreyDefaultItemPattern = new Sprite(new Texture("ItemPanel_active.png"));
-
-        // Действия для кнопок
-        this.resumeEvent = new ClickListener() {
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // this.game.getScreen().dispose();
-                ScreenSwitcher.toGame();
-                ScreenSwitcher.disposeGameMenu();
-                // this.game.setScreen(new GameScreen(this.game));
-
-            };
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleresumeButton(new Image(new Texture("buttons/button_resume_active.png")));
-                updateTable();
-            };
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                toggleresumeButton(new Image(new Texture("buttons/button_resume_unactive.png")));
-                updateTable();
-            };
-        };
+        //
+        this.selectedItemList = 0;
         // Установка взаимодействий
         this.updateTable();
 
@@ -121,36 +103,92 @@ public class InventoryScreen implements Screen, Disposable {
 
         // Установка таблицы
         this.table = new Table();
+        Stack inventoryContainer = new Stack();
+        Table inventoryPattern = new Table();
+        Table inventoryList = new Table();
+        Table invenotryLogo = new Table();
 
         // Включить масштабирование под таблицу
         this.table.setFillParent(true);
+        inventoryPattern.setFillParent(true);
+        inventoryList.setFillParent(true);
 
         this.table.center();
-        // this.table.add(this.inventoreyPattern).width(1200f).height(800f);
-        for (int i = 0; i < inventory.getTypesSize(); i++) {
-            this.table.add(new Image(this.inventoreyDefaultItemPattern)).width(300f).height(100f).padBottom(10f);
-            this.table.add(new Image(inventory.getItem(i).getTexture())).width(50).height(50).padBottom(10f);
-            this.table.add(new Label(inventory.getItem(i).getName(), this.labelStyle)).width(50).height(50)
-                    .padBottom(10f).padRight(100f);
-            ;
-            this.table.add(new Label("(" + inventory.getItem(i).getCount() + ")", this.labelStyle)).width(50).height(50)
-                    .padBottom(10f);
-            this.table.row();
+        inventoryPattern.add(new Image(this.inventoreyPattern)).width(((1520 * Gdx.graphics.getWidth()) / 1920))
+                .height(((1000 * Gdx.graphics.getHeight()) / 1080));
+
+        inventory.putItem(new PotionHP(1));
+        // inventory.putItem(new PotionMP(1));
+        if (inventory.getTypesSize() > 1) {
+            for (int i = 0; i < inventory.getTypesSize(); i++) {
+                final int index = i;
+                Stack itemContainer = new Stack();
+                Table itemPattern = new Table();
+                Table itemIcon = new Table();
+                Image frame = (i == this.selectedItemList) ? (new Image(this.inventoreyDefaultItemPattern))
+                        : (new Image(this.inventoreyActiveItemPattern));
+                frame.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        setSelectedItemList(index);
+                        updateTable();
+                    };
+                });
+                itemPattern.add(frame).width((600 * Gdx.graphics.getWidth()) / 1920)
+                        .padTop((-220 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((123 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((520 * Gdx.graphics.getWidth()) / 1920).align(Align.left).top();
+                itemIcon.add(new Image(inventory.getItem(i).getTexture())).width((70 * Gdx.graphics.getWidth()) / 1920)
+                        .padTop((-220 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((1006 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+
+                itemContainer.add(itemPattern);
+                itemContainer.add(itemIcon);
+
+                inventoryList.add(itemContainer);
+                inventoryList.row();
+            }
+        } else {
+            if (inventory.getTypesSize() > 0) {
+                Stack itemContainer = new Stack();
+                Table itemPattern = new Table();
+                Table itemIcon = new Table();
+                Image frame = new Image(this.inventoreyActiveItemPattern);
+
+                itemPattern.add(frame).width((600 * Gdx.graphics.getWidth()) / 1920)
+                        .padTop((-350 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((123 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((520 * Gdx.graphics.getWidth()) / 1920).align(Align.left).top();
+                itemIcon.add(new Image(inventory.getItem(0).getTexture())).width((70 * Gdx.graphics.getWidth()) / 1920)
+                        .padTop((-350 * Gdx.graphics.getHeight()) / 1080)
+                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((1006 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
+
+                itemContainer.add(itemPattern);
+                itemContainer.add(itemIcon);
+
+                inventoryList.add(itemContainer);
+                inventoryList.row();
+            }
         }
-        // this.table.add(this.inventoreyDefaultItemPattern).width(300f).height(100f).padBottom(50f).padTop(50f);
-        // this.table.add(this.inventoreyDefaultItemPattern).width(300f).height(100f).padBottom(50f).padTop(50f);
-        // this.table.add(this.inventoreyDefaultItemPattern).width(300f).height(100f).padBottom(50f).padTop(50f);
 
-        // this.table.add(this.inventoreyPattern).width(1200f).height(800f);
+        invenotryLogo.add(new Image(inventory.getItem(this.selectedItemList).getTexture()))
+                .width(((400 * Gdx.graphics.getWidth()) / 1920)).height(((400 * Gdx.graphics.getHeight()) / 1080))
+                .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-420 * Gdx.graphics.getHeight()) / 1080);
 
-        // this.table.add(this.inventoreyPattern).padLeft(50).width(310f).height(144f);
-        // this.table.row();
-        // this.table.add(this.startButton).padLeft(50).width(310f).height(144f);
-        // this.table.row();
-        // this.table.add(this.exitButton).padLeft(50).width(310f).height(144f);
-        // BG
-        // this.table.Background(new SpriteDrawable(new Sprite()));
         this.table.setBackground(new SpriteDrawable(this.background));
+
+        inventoryContainer.add(inventoryPattern);
+        inventoryContainer.add(invenotryLogo);
+        inventoryContainer.add(inventoryList);
+
+        this.table.add(inventoryContainer);
+
         // Отладка таблицы
         // this.table.debugAll();
 
@@ -179,6 +217,10 @@ public class InventoryScreen implements Screen, Disposable {
 
     public void toggleStartButton(Image newImage) {
         // this.startButton = newImage;
+    }
+
+    public void setSelectedItemList(int num) {
+        this.selectedItemList = num;
     }
 
     @Override
