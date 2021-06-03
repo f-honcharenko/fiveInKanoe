@@ -37,6 +37,8 @@ public class Hud {
         private Texture MPPTexture;
         private Texture HeadgeHogTexture;
         private Texture SkillRageTexture;
+        private Texture SkillTeleportTexture;
+        private Texture SkillFlyingSwordTexture;
         private Texture KDTexture;
         private Texture ManaWarningTexture;
 
@@ -84,6 +86,9 @@ public class Hud {
                 this.MPPTexture = new Texture("MPpot_icon.png");
                 this.HeadgeHogTexture = new Texture("hedgehog_icon.png");
                 this.SkillRageTexture = new Texture("skill_rage_icon.png");
+                this.SkillTeleportTexture = new Texture("skill_teleport_icon.png");
+                this.SkillFlyingSwordTexture = new Texture("skill_flyingSword_icon.png");
+
                 this.KDTexture = new Texture("skill_icon_mask.png");
                 this.ManaWarningTexture = new Texture("skill_icon_mask_red.png");
 
@@ -237,22 +242,21 @@ public class Hud {
                 containerManaWarning.top().left();
                 borderSkills.top().left();
                 // Иконки
-                containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                containerSkills.add(new Image(this.SkillFlyingSwordTexture))
+                                .padTop((10 * Gdx.graphics.getWidth()) / 1920)
                                 .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
-                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
-                // Gdx.graphics.getWidth()) / 1920)
-                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
-                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
-                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
-                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
-                // Gdx.graphics.getWidth()) / 1920)
-                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
-                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
-                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                containerSkills.add(new Image(this.SkillTeleportTexture)).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
                 // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
                 // Gdx.graphics.getWidth()) / 1920)
