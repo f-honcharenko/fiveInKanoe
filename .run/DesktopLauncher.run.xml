@@ -1,7 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="DesktopLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="com.dreamwalker.game.desktop.DesktopLauncher" />
-    <module name="fiveInKanoe.desktop.main" />
+  <configuration default="false" name="main" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="openjdk-16" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="fiveInKanoe.desctop.main" />
+    <module name="fiveInKanoe" />
+    <option name="PROGRAM_PARAMETERS" value="com.dreamwalker.game.desktop.DesktopLauncher" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.dreamwalker.game.desktop.*" />
