@@ -148,10 +148,10 @@ public class Hud {
                                 .padRight(((float) (this.BarsWidth - tempPercentMP) * ((float) Gdx.graphics.getWidth())
                                                 / 1920f));
 
-                // containerBorder.add(this.BarImage).expandX().padTop(0)
-                // .maxWidth(((tempPercentHP * Gdx.graphics.getWidth()) / 1920))
-                // .width(((900 * Gdx.graphics.getWidth()) / 1920))
-                // .height(((150 * Gdx.graphics.getHeight()) / 1080)).colspan(2);
+                containerBorder.add(this.BarImage).expandX().padTop(0)
+                                .maxWidth(((tempPercentHP * Gdx.graphics.getWidth()) / 1920))
+                                .width(((900 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((150 * Gdx.graphics.getHeight()) / 1080)).colspan(2);
 
                 // System.out.println(this.BarsWidth + "-" + tempPercentHP + "=" +
                 // (this.BarsWidth - tempPercentHP));
