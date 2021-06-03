@@ -12,8 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dreamwalker.game.entities.player.Player;
-import com.dreamwalker.game.items.PotionHP;
-import com.dreamwalker.game.items.PotionMP;
+import com.dreamwalker.game.items.*;
 
 public class Hud {
         // 2д сцена, на которой распологаются элементы интерфейса
@@ -188,8 +187,7 @@ public class Hud {
                 if (this.player.getInventory().getItem(PotionMP.class) == null) {
                         tempMP.setColor(new Color(1, 1, 1, 0.2f));
                 }
-                if (true) {
-                        // if (this.player.getInventory().getItem(PotionMP.class) == null) {
+                if (this.player.getInventory().getItem(Hedgehog.class) == null) {
                         tempHedgehog.setColor(new Color(1, 1, 1, 0.2f));
                 }
 
