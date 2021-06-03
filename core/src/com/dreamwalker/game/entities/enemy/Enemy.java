@@ -4,7 +4,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.Entity;
@@ -13,8 +16,9 @@ import com.dreamwalker.game.items.Item;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.items.PotionHP;
 import com.dreamwalker.game.items.PotionMP;
-import java.util.Random;
 import com.dreamwalker.game.location.Location;
+
+import java.util.Random;
 
 public abstract class Enemy extends Entity implements Disposable {
     protected int attackSpeedMax;
@@ -92,8 +96,6 @@ public abstract class Enemy extends Entity implements Disposable {
 
         this.idleTimer = 0;
     }
-
-    abstract public void attack(Player player);
 
     public void respawn() {
         if (!this.isAlive) {
@@ -178,7 +180,7 @@ public abstract class Enemy extends Entity implements Disposable {
             super.entityBody.setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
                     (player.getY() - super.getY()) * this.speed));
         }
-        if ((this.status == "agro") && (this.idleTimer == this.agroTimerMax)) {
+        if ((this.status.equals("agro")) && (this.idleTimer == this.agroTimerMax)) {
             this.status = "waiting";
             super.entityBody.setLinearVelocity(new Vector2(0, 0));
         }
@@ -190,7 +192,7 @@ public abstract class Enemy extends Entity implements Disposable {
             this.idleTimer = 0;
 
         }
-        if ((this.status == "waiting") && (this.idleTimer == this.waitingTimerMax)) {
+        if ((this.status.equals("waiting")) && (this.idleTimer == this.waitingTimerMax)) {
             // Если непись постоял на месте н-ое еол-во секунд,
             // запускаем его на случаную коордианту и меняем статус
             this.tempX = rnd(Math.round(this.spawnX - this.idleRadius), Math.round(this.spawnX + this.idleRadius));
@@ -198,7 +200,7 @@ public abstract class Enemy extends Entity implements Disposable {
             this.idleTimer = 0;
             this.status = "idleGo";
         }
-        if (this.status == "idleGo") {
+        if (this.status.equals("idleGo")) {
             // Повернуть непися
             Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.entityBody.getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
@@ -303,6 +305,21 @@ public abstract class Enemy extends Entity implements Disposable {
             ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.location);
         }
 
+    }
+
+    public void attack(Player player) {
+        if (this.isPlayerInArea()) {
+            this.soundController.playAttackSound(0.27f);
+            this.setIsAttacking(true);
+            if (attackSpeedCounter < attackSpeedMax) {
+                attackSpeedCounter++;
+            } else {
+                attackSpeedCounter = 0;
+                player.receiveDamage(this.damage);
+            }
+        } else {
+            this.setIsAttacking(false);
+        }
     }
 
     public Location getLocation() {

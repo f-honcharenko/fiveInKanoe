@@ -3,7 +3,6 @@ package com.dreamwalker.game.entities.enemy;
 import com.badlogic.gdx.math.Vector2;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
-import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.location.Location;
 
 public class Robber extends Enemy{
@@ -46,23 +45,6 @@ public class Robber extends Enemy{
         this(location, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
-    @Override
-    public void attack(Player player) {
-        // Передлать перезарядку
-        // System.out.println(this.isPlayerInArea());
-        if (this.isPlayerInArea()) {
-            this.setIsAttacking(true);
-            if (attackSpeedCounter < attackSpeedMax) {
-                attackSpeedCounter++;
-            } else {
-                attackSpeedCounter = 0;
-                System.out.println("DAMAGED!" + this.damage);
-                player.receiveDamage(this.damage);
-            }
-        } else {
-            this.setIsAttacking(false);
-        }
-    }
 
 
     public static int rnd(int min, int max) {
