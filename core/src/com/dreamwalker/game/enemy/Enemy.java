@@ -22,12 +22,12 @@ import com.dreamwalker.game.items.Item;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.items.PotionHP;
 import com.dreamwalker.game.items.PotionMP;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import com.dreamwalker.game.location.Location;
 
 public abstract class Enemy extends Sprite implements Disposable {
     // Физический мир, в котором находится враг
     private World world;
+    private Location location;
     // Физическое "тело" врага
     private Body enemysBody;
     private Body attackArea;
@@ -70,6 +70,8 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     private Random rnd;
 
+    public boolean haveToDropped;
+
     /**
      * Конструктор
      *
@@ -77,11 +79,13 @@ public abstract class Enemy extends Sprite implements Disposable {
      * @param x - стартовая позиция врага по х
      * @param y - стартовая позиция врага по у
      */
-    public Enemy(World world, float x, float y) {
-        this.world = world;
+    public Enemy(Location location, float x, float y) {
+        this.location = location;
+        this.world = location.getWorld();
         this.standSpawnPoint = new Vector2(x, y);
         this.defineEnemy(this.standSpawnPoint);
 
+        this.haveToDropped = false;
         // Изменяемые параметры
         this.speed = 1.5f;
         this.isAlive = true;
@@ -109,8 +113,8 @@ public abstract class Enemy extends Sprite implements Disposable {
      *
      * @param enemySpawnPoint - стартовая позиция игрока
      */
-    public Enemy(World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Enemy(Location location, Vector2 enemySpawnPoint) {
+        this(location, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     abstract public void attack(Player player);
@@ -118,12 +122,12 @@ public abstract class Enemy extends Sprite implements Disposable {
     abstract public void idle(Player player);
 
     public void respawn() {
-        if(!this.isAlive){
+        if (!this.isAlive) {
             this.respawnCounter++;
             this.enemysBody.getFixtureList().get(0).setSensor(true);
-            if(this.respawnCounter == this.respawnTime){
+            if (this.respawnCounter == this.respawnTime) {
                 this.enemysBody.getFixtureList().get(0).setSensor(false);
-                this.enemysBody.setTransform(this.standSpawnPoint.x, this.standSpawnPoint.y, (float)this.viewAngle);
+                this.enemysBody.setTransform(this.standSpawnPoint.x, this.standSpawnPoint.y, (float) this.viewAngle);
                 this.health = this.healthMax;
                 this.isAlive = true;
                 this.respawnCounter = 0;
@@ -199,8 +203,8 @@ public abstract class Enemy extends Sprite implements Disposable {
             if (this.health <= 0) {
                 this.isAlive = false;
                 // dstr.addToDestroyList();
-                this.dropItem(new PotionHP(1), 1, 50d);
-                this.dropItem(new PotionMP(1), 1, 10d);
+                this.haveToDropped = true;
+                // this.dropItem(new PotionMP(1), 1, 10d);
                 // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
                 // this.dispose();
             }
@@ -309,6 +313,12 @@ public abstract class Enemy extends Sprite implements Disposable {
     }
 
     public void update(float deltaTime, Player player) {
+        if (haveToDropped) {
+            // ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item,
+            // this.location);
+            this.dropItem(new PotionHP(1), 1, 100d);
+            haveToDropped = false;
+        }
         if (roomChanged) {
             this.defineEnemy(this.standSpawnPoint);
             this.roomChanged = false;
@@ -364,10 +374,15 @@ public abstract class Enemy extends Sprite implements Disposable {
             chance = 0d;
         }
         if (trigerChance < chance) {
-            ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.world);
+            // this.haveToDropped = true;
+            ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.location);
         }
 
     };
+
+    public Location getLocation() {
+        return this.location;
+    }
 
     @Override
     public void dispose() {

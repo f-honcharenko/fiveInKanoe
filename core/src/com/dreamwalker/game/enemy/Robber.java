@@ -1,13 +1,15 @@
 package com.dreamwalker.game.enemy;
+
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 
-public class Robber extends Enemy{
+public class Robber extends Enemy {
 
     private int attackSpeedMax;
     private int attackSpeedCounter;
@@ -33,11 +35,11 @@ public class Robber extends Enemy{
     /**
      * Конструктор
      *
-     * @param x      - стартовая позиция врага по х
-     * @param y      - стартовая позиция врага по у
+     * @param x - стартовая позиция врага по х
+     * @param y - стартовая позиция врага по у
      */
-    public Robber (World world, float x, float y) {
-        super(world, x, y);
+    public Robber(Location location, float x, float y) {
+        super(location, x, y);
 
         this.enemysAnimations = new Animations(this, "Robber.atlas", "Robber");
         this.setBoundsCustom(60f, 60f); // 54
@@ -45,11 +47,12 @@ public class Robber extends Enemy{
         this.spawnX = x;
         this.spawnY = y;
 
-        this.speed = 0.3f;          //пускай они будут быстрее но наносить меньший урон
-        this.damage = 20;           //я еще подумаю на счет скорости, сначала хочеться глянуть как оно будет выглядеть с такой
+        this.speed = 0.3f; // пускай они будут быстрее но наносить меньший урон
+        this.damage = 20; // я еще подумаю на счет скорости, сначала хочеться глянуть как оно будет
+                          // выглядеть с такой
         this.health = 100;
 
-        this.attackSpeedMax = 130; //возможно нужно будет еще поменять
+        this.attackSpeedMax = 130; // возможно нужно будет еще поменять
         this.attackSpeedCounter = 0;
         this.idleTimer = 0;
         this.idleTimerMax = rnd(20, 150);
@@ -57,7 +60,7 @@ public class Robber extends Enemy{
         this.agroTimerMax = 200;
         this.idleRadius = 200 / DreamWalker.PPM;
         this.agroRadius = 150 / DreamWalker.PPM;
-        this.attackRadius = 50 / DreamWalker.PPM;//не менять
+        this.attackRadius = 50 / DreamWalker.PPM;// не менять
     }
 
     /**
@@ -65,8 +68,8 @@ public class Robber extends Enemy{
      *
      * @param enemySpawnPoint - позиция врага
      */
-    public Robber (World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Robber(Location location, Vector2 enemySpawnPoint) {
+        this(location, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override

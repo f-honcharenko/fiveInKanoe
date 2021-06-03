@@ -2,8 +2,8 @@ package com.dreamwalker.game.enemy;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.player.Player;
 
 public class Goblin extends Enemy {
@@ -32,11 +32,11 @@ public class Goblin extends Enemy {
     /**
      * Конструктор
      *
-     * @param x      - стартовая позиция врага по х
-     * @param y      - стартовая позиция врага по у
+     * @param x - стартовая позиция врага по х
+     * @param y - стартовая позиция врага по у
      */
-    public Goblin(World world, float x, float y) {
-        super(world, x, y);
+    public Goblin(Location location, float x, float y) {
+        super(location, x, y);
 
         this.enemysAnimations = new Animations(this, "goblin.atlas", "goblin");
         this.setBoundsCustom(50f, 50f); // 54
@@ -66,8 +66,8 @@ public class Goblin extends Enemy {
      *
      * @param enemySpawnPoint - позиция врага
      */
-    public Goblin(World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+    public Goblin(Location location, Vector2 enemySpawnPoint) {
+        this(location, enemySpawnPoint.x, enemySpawnPoint.y);
     }
 
     @Override

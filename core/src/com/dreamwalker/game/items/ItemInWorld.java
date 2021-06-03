@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.location.Location;
 
 public class ItemInWorld implements Disposable {
     private float x;
@@ -17,14 +17,19 @@ public class ItemInWorld implements Disposable {
     private Item item;
     private Texture texture;
     private World world;
+    private Location location;
+
+    public boolean haveToDestroy;
 
     private Body box2DBody;
 
-    public ItemInWorld(float x, float y, Item item, World world) {
+    public ItemInWorld(float x, float y, Item item, Location loc) {
         this.x = x;
         this.y = y;
         this.item = item;
-        this.world = world;
+        this.location = loc;
+        this.world = location.getWorld();
+        this.haveToDestroy = false;
 
         this.defineItemInWorld();
     }
@@ -49,10 +54,11 @@ public class ItemInWorld implements Disposable {
         this.box2DBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" предмета
         shape.dispose();
-        this.texture = item.getTexture();
+        this.texture = new Texture(item.getTexture().getTextureData());
 
         // Добавить в список предметов отрисовки
-        this.AddToAllItemList();
+        // this.AddToAllItemList();
+        this.location.addItem(this);
     }
 
     public float getX() {
@@ -68,22 +74,31 @@ public class ItemInWorld implements Disposable {
                 30 / DreamWalker.PPM, 30 / DreamWalker.PPM);
     }
 
-    private void AddToAllItemList() {
-        AllItemsInWorld.addItem(this);
-    }
-
     public Item getItem() {
         return this.item;
     }
 
+    public void render(SpriteBatch sb) {
+
+        this.draw(sb);
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
+
+    public Body getBody() {
+        return this.box2DBody;
+    }
+
     @Override
     public void dispose() {
-        // this.
-        // world.destroyBody(this.box2DBody);
-        // ItemInWorld temp = this;
-        // this.box2DBody.destroyFixture(this.box2DBody.getFixtureList().get(0));
+        this.location.getWorld().destroyBody(this.box2DBody);
+        this.location.disposeItems();
+
+        // this.box2DBody.getFixtureList().get(0).setUserData(null);
         // this.item.getTexture().dispose();
-        AllItemsInWorld.removeItem(this);
-        this.box2DBody.getFixtureList().get(0).setUserData(null);
+        this.texture.dispose();
+
     }
 }
