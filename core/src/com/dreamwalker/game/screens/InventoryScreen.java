@@ -58,14 +58,9 @@ public class InventoryScreen implements Screen, Disposable {
         this.labelStyle = new Label.LabelStyle();
         // BitmapFont myFont = new
         // BitmapFont(Gdx.files.internal("./arcade/skin/arcade-ui.json"));
-        BitmapFont font;
-        final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
-        font = TrueTypeFontFactory.createBitmapFont(Gdx.files.internal("font.ttf"), FONT_CHARACTERS, 12.5f, 7.5f, 1.0f,
-                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        font.setColor(1f, 0f, 0f, 1f);
         BitmapFont myFont = new BitmapFont();
         this.labelStyle.font = myFont;
-        this.labelStyle.fontColor = Color.WHITE;
+        this.labelStyle.fontColor = Color.YELLOW;
 
         this.inventory = inv;
         this.background = new Sprite(bg);
