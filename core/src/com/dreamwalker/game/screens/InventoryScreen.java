@@ -109,7 +109,7 @@ public class InventoryScreen implements Screen, Disposable {
         inventoryPattern.add(new Image(this.inventoreyPattern)).width(((1520 * Gdx.graphics.getWidth()) / 1920))
                 .height(((1000 * Gdx.graphics.getHeight()) / 1080));
 
-        inventory.putItem(new PotionHP(1));
+        // inventory.putItem(new PotionHP(1));
         // inventory.putItem(new PotionMP(1));
         if (inventory.getTypesSize() > 1) {
             for (int i = 0; i < inventory.getTypesSize(); i++) {
@@ -168,11 +168,11 @@ public class InventoryScreen implements Screen, Disposable {
                 inventoryList.row();
             }
         }
-
-        invenotryLogo.add(new Image(inventory.getItem(this.selectedItemList).getTexture()))
-                .width(((400 * Gdx.graphics.getWidth()) / 1920)).height(((400 * Gdx.graphics.getHeight()) / 1080))
-                .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-420 * Gdx.graphics.getHeight()) / 1080);
-
+        if (inventory.getTypesSize() > 0) {
+            invenotryLogo.add(new Image(inventory.getItem(this.selectedItemList).getTexture()))
+                    .width(((400 * Gdx.graphics.getWidth()) / 1920)).height(((400 * Gdx.graphics.getHeight()) / 1080))
+                    .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-420 * Gdx.graphics.getHeight()) / 1080);
+        }
         this.table.setBackground(new SpriteDrawable(this.background));
 
         inventoryContainer.add(inventoryPattern);

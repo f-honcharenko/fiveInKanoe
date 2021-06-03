@@ -5,12 +5,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dreamwalker.game.entities.player.Player;
+import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.items.PotionMP;
 
 public class Hud {
         // 2д сцена, на которой распологаются элементы интерфейса
@@ -151,7 +154,7 @@ public class Hud {
                 this.tableHP.add(bar).expandX().padTop(0).colspan(2);
 
                 this.tableHP.pack();
-                this.tableHP.debug();
+                // this.tableHP.debug();
                 this.stage.addActor(this.tableHP);
         }
 
@@ -170,21 +173,40 @@ public class Hud {
 
                 containerPotion.top().left();
                 borderPotion.top().left();
-                // containerPotion.add(this.BarMP).padBottom(200).height((int)
-                // this.BarsHeight).width((int) tempPercentMP)
-                // .maxWidth((int) this.BarsWidth).align(Align.left)
-                // .padRight((int) (this.BarsWidth - tempPercentMP));
+
+                Image tempHP = new Image(this.HPPTexture);
+                Image tempMP = new Image(this.MPPTexture);
+                Image tempHedgehog = new Image(this.HeadgeHogTexture);
+                if (this.player.getInventory().getItem(PotionHP.class) == null) {
+                        tempHP.setColor(new Color(1, 1, 1, 0.2f));
+                }
+                if (this.player.getInventory().getItem(PotionMP.class) == null) {
+                        tempMP.setColor(new Color(1, 1, 1, 0.2f));
+                }
+                if (true) {
+                        // if (this.player.getInventory().getItem(PotionMP.class) == null) {
+                        tempHedgehog.setColor(new Color(1, 1, 1, 0.2f));
+                }
+
+                containerPotion.add(tempHP).width(((100 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((100 * Gdx.graphics.getHeight()) / 1080)).padLeft(70).padTop(10);
+                containerPotion.row();
+                containerPotion.add(tempHedgehog).width(((50 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((50 * Gdx.graphics.getHeight()) / 1080)).padLeft(-70).padTop(-15);
+                containerPotion.row();
+                containerPotion.add(tempMP).width(((70 * Gdx.graphics.getWidth()) / 1920))
+                                .height(((70 * Gdx.graphics.getHeight()) / 1080)).padLeft(45).padTop(5);
 
                 borderPotion.add(this.ItemAreaImage).expandX().padTop(0).width(((250 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((250 * Gdx.graphics.getHeight()) / 1080));
 
-                itemsContainer.add(containerPotion);
                 itemsContainer.add(borderPotion);
+                itemsContainer.add(containerPotion);
 
                 this.tableItems.row();
                 this.tableItems.add(itemsContainer);
                 this.tableItems.pack();
-                this.tableItems.debug();
+                // this.tableItems.debug();
                 this.stage.addActor(this.tableItems);
         }
 
@@ -270,7 +292,7 @@ public class Hud {
                 this.tableSkills.row();
                 this.tableSkills.add(skillsContainer);
                 this.tableSkills.pack();
-                this.tableSkills.debug();
+                // this.tableSkills.debug();
                 this.stage.addActor(this.tableSkills);
         }
 

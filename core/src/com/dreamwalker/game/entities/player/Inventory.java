@@ -68,6 +68,17 @@ public class Inventory {
         }
     }
 
+    public Item getItem(Class<?> myClass) {
+        Item returnable = null;
+        for (Item item : inventory) {
+            if (myClass.isInstance(item)) {
+                System.out.println(item);
+                returnable = item;
+            }
+        }
+        return returnable;
+    }
+
     /**
      * Метод удаления элемента из списка с получением его ссылки (Возможно стоит
      * переделать, чтоб ссылку не возвращал)
