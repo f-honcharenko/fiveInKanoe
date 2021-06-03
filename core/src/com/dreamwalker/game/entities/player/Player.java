@@ -90,7 +90,7 @@ public class Player extends Entity implements Disposable {
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
-        float scalar = shape.getRadius() * 2;
+        float scalar = shape.getRadius() * 3.5f;
         this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
         PolygonShape dmgSectorShape = new PolygonShape();

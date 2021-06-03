@@ -47,7 +47,7 @@ public class Inventory {
             boolean isAdded = false;
             for (int i = 0; i < this.inventory.length; i++) {
                 if (this.inventory[i] != null) {
-                    if (this.inventory[i].getID() == item.getID()) {
+                    if (this.inventory[i].getId() == item.getId()) {
                         isAdded = true;
                         this.itemsCount++;
                         System.out.println(this.inventory[i].getCount() + "+" + item.getCount() + "="
@@ -158,7 +158,7 @@ public class Inventory {
     public void getInfoInConsole() {
         for (Item item : inventory) {
             if (item != null) {
-                System.out.println(item.getName() + "[" + item.getID() + "] (" + item.getCount() + ")");
+                System.out.println(item.getName() + "[" + item.getId() + "] (" + item.getCount() + ")");
             } else {
                 System.out.println("-");
 

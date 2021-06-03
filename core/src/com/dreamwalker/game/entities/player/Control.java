@@ -102,7 +102,7 @@ public class Control {
             playersBody.setLinearVelocity(0, 0);
         }
         else{
-            this.player.getSoundController().playStepSound(0.37f);
+            this.player.getSoundController().playStepSound(0.3f);
         }
     }
 

@@ -16,8 +16,8 @@ import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.entities.enemy.Goblin;
 import com.dreamwalker.game.entities.enemy.Robber;
 import com.dreamwalker.game.entities.player.Player;
+import com.dreamwalker.game.items.Hedgehog;
 import com.dreamwalker.game.items.ItemInWorld;
-
 
 import java.util.ArrayList;
 
@@ -118,6 +118,7 @@ public class Location implements Disposable {
         MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
         MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
         if (object != null) {
+
             // физические свойства для точки спавна
             BodyDef bodyDef = new BodyDef();
             // Границы точки спавна
@@ -130,6 +131,8 @@ public class Location implements Disposable {
             // Координаты точки спавна
             this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
                     (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+
+            new ItemInWorld(this.spawnPoint.x, this.spawnPoint.y, new Hedgehog(1), this);
             // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
             // |
             // V
