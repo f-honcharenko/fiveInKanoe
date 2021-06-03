@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.entities.enemy.Archer;
 import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.entities.enemy.Goblin;
 import com.dreamwalker.game.entities.enemy.Robber;
@@ -71,7 +72,7 @@ public class Location implements Disposable {
         for (int i = 0; i < this.enemiesSP.size(); i++) {
             Enemy newEnemy;
             if (i % 2 == 0) {
-                newEnemy = new Goblin(this, enemiesSP.get(i).getPosition());
+                newEnemy = new Archer(this, enemiesSP.get(i).getPosition());
             } else {
                 newEnemy = new Robber(this, enemiesSP.get(i).getPosition());
             }
