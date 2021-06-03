@@ -1,5 +1,6 @@
 package com.dreamwalker.game.entities.player;
 
+import com.dreamwalker.game.entities.Entity;
 import com.dreamwalker.game.items.*;
 
 /* TODO
@@ -165,5 +166,13 @@ public class Inventory {
             }
         }
         System.out.println("=========");
+    }
+
+    public void update(Entity entity){
+        for(Item item : this.inventory){
+            if(item != null){
+                item.usage(entity);
+            }
+        }
     }
 }

@@ -9,9 +9,8 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.Entity;
 import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
 import com.dreamwalker.game.entities.enemy.Enemy;
-import com.dreamwalker.game.skills.ActiveSkill;
+import com.dreamwalker.game.skills.Skill;
 import com.dreamwalker.game.skills.FlyingSword;
-import com.dreamwalker.game.skills.PassiveSkill;
 
 import java.util.ArrayList;
 
@@ -28,8 +27,7 @@ public class Player extends Entity implements Disposable {
     private boolean enemyInArea;
     public boolean roomChanged;
 
-    private ArrayList<PassiveSkill> passiveSkills;
-    private ArrayList<ActiveSkill> skillPanel;
+    private ArrayList<Skill> skillPanel;
 
     /**
      * Конструктор
@@ -45,7 +43,6 @@ public class Player extends Entity implements Disposable {
         this.spawnPoint = new Vector2(x, y);
         this.definePlayer();
 
-        this.passiveSkills = new ArrayList<>();
         this.skillPanel = new ArrayList<>();
         this.skillPanel.add(new FlyingSword(Input.Keys.E));
 
@@ -126,7 +123,7 @@ public class Player extends Entity implements Disposable {
     @Override
     public void render(SpriteBatch batch) {
         this.draw(batch);
-        for (ActiveSkill skill : this.skillPanel) {
+        for (Skill skill : this.skillPanel) {
             skill.render(batch);
         }
     }
@@ -145,6 +142,7 @@ public class Player extends Entity implements Disposable {
             this.isAlive = false;
         }
         this.regeneration();
+        this.inventory.update(this);
         this.setRegion(this.animationController.getFrame(deltaTime));
         this.playerControl.handle(mousePosition);
     }
@@ -200,7 +198,7 @@ public class Player extends Entity implements Disposable {
         return this.enemyInArea;
     }
 
-    public ArrayList<ActiveSkill> getSkillPanel() {
+    public ArrayList<Skill> getSkillPanel() {
         return this.skillPanel;
     }
 

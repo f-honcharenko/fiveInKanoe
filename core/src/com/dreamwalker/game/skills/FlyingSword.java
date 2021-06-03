@@ -7,7 +7,7 @@ import com.dreamwalker.game.entities.player.Player;
 
 import java.util.ArrayList;
 
-public class FlyingSword extends ActiveSkill {
+public class FlyingSword extends Skill {
 
     private final ArrayList<Sword> swordsOnScreen;
 

@@ -33,7 +33,7 @@ public class Hedgehog extends Item {
             BodyDef hedgehogBD = new BodyDef();
             hedgehogBD.angle = entity.getBody().getAngle();
             hedgehogBD.position.set(entity.getX(), entity.getY());
-            hedgehogBD.type = BodyDef.BodyType.KinematicBody;
+            hedgehogBD.type = BodyDef.BodyType.DynamicBody;
             Body hedgehogBody = entity.getWorld().createBody(hedgehogBD);
 
             FixtureDef hedgehogFD = new FixtureDef();
