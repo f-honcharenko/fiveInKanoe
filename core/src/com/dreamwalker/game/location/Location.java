@@ -114,7 +114,7 @@ public class Location implements Disposable {
     }
 
     private void initSpawnPoint() {
-        MapLayer objLayer = this.map.getLayers().get("spawnPoint");
+        MapLayer objLayer = this.map.getLayers().get("spawnpoint");
         MapObjects mpaObjects = (objLayer != null) ? objLayer.getObjects() : null;
         MapObject object = (mpaObjects != null) ? mpaObjects.get(0) : null;
         if (object != null) {
