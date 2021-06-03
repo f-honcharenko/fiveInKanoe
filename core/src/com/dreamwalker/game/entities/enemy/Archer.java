@@ -3,6 +3,7 @@ package com.dreamwalker.game.entities.enemy;
 import com.badlogic.gdx.math.Vector2;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
+import com.dreamwalker.game.entities.controllers.RangeAnimationController;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.location.Location;
 
@@ -20,7 +21,7 @@ public class Archer extends Enemy {
     public Archer(Location location, float x, float y) {
         super(location, x, y);
 
-        this.animationController = new MeeleAnimationController(this, "archer.atlas", "archer");
+        this.animationController = new RangeAnimationController(this, "archer.atlas", "archer");
         this.setBoundsCustom(50f, 50f); // 54
         // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;

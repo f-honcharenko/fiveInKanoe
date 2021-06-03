@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.dreamwalker.game.entities.Entity;
 
-public class MeeleAnimationController extends AnimationController {
+public class RangeAnimationController extends AnimationController {
     private enum State {
         STANDING_NORTH, STANDING_EAST, STANDING_SOUTH, STANDING_WEST, RUNNING_NORTH, RUNNING_EAST, RUNNING_SOUTH,
         RUNNING_WEST, MELEE_ATTACKING_NORTH, MELEE_ATTACKING_EAST, MELEE_ATTACKING_SOUTH, MELEE_ATTACKING_WEST
@@ -36,7 +36,7 @@ public class MeeleAnimationController extends AnimationController {
 
     private float stateTimer;
 
-    public MeeleAnimationController(Entity entity, String atlasName, String regionName) {
+    public RangeAnimationController(Entity entity, String atlasName, String regionName) {
 
         this.entity = entity;
 
@@ -57,10 +57,10 @@ public class MeeleAnimationController extends AnimationController {
         this.runSouth = initAnimation(22, 8);
         this.runEast = initAnimation(24, 8);
 
-        this.meleeNorth = initAnimation(26, 6);
-        this.meleeWest = initAnimation(28, 6);
-        this.meleeSouth = initAnimation(30, 6);
-        this.meleeEast = initAnimation(32, 6);
+        this.meleeNorth = initAnimation(34, 13);
+        this.meleeWest = initAnimation(36, 13);
+        this.meleeSouth = initAnimation(38, 13);
+        this.meleeEast = initAnimation(40, 13);
 
         this.entity.setRegion(this.standSouth);
     }
