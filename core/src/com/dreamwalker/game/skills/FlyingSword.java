@@ -1,6 +1,7 @@
 package com.dreamwalker.game.skills;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dreamwalker.game.entities.player.Player;
 
@@ -13,10 +14,12 @@ public class FlyingSword extends ActiveSkill {
     private float damage;
     private float lifeTime;
     private int maxSwordsCount;
+    private Sound flyingSwordSound;
 
 
     public FlyingSword(int hotKey) {
         super(hotKey);
+        this.flyingSwordSound = Gdx.audio.newSound(Gdx.files.internal("sounds/flyingSword.mp3"));
         this.swordsOnScreen = new ArrayList<>();
 
         this.coolDown = 100;
@@ -45,6 +48,7 @@ public class FlyingSword extends ActiveSkill {
                 if (player.getCurrentMana() >= this.manaCost) {
                     player.manaSpend(this.manaCost);
                     if (this.swordsOnScreen.size() <= this.maxSwordsCount) {
+                        this.flyingSwordSound.play(0.4f);
                         Sword newSword = new Sword(player, this.damage, this.lifeTime);
                         this.swordsOnScreen.add(newSword);
                     }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
+import com.dreamwalker.game.entities.controllers.SoundController;
 
 public abstract class Entity extends Sprite {
     protected World world;
@@ -13,6 +14,7 @@ public abstract class Entity extends Sprite {
     protected Body attackArea;
 
     protected MeeleAnimationController animationController;
+    protected SoundController soundController;
 
     protected double health;
     protected double healthMax;
@@ -28,6 +30,10 @@ public abstract class Entity extends Sprite {
     protected boolean isDamageDealt;
 
     protected Vector2 spawnPoint;
+
+    protected Entity(){
+        this.soundController = new SoundController("sounds/");
+    }
 
     protected abstract void render(SpriteBatch batch);
 
@@ -103,5 +109,9 @@ public abstract class Entity extends Sprite {
 
     public boolean isAlive() {
         return this.isAlive;
+    }
+
+    public SoundController getSoundController() {
+        return this.soundController;
     }
 }

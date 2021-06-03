@@ -15,7 +15,6 @@ import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.scenes.Hud;
-import com.dreamwalker.game.tools.Destroyer;
 import com.dreamwalker.game.tools.MapChanger;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
@@ -37,8 +36,6 @@ public class GameScreen implements Screen {
     private Location location;
     // Временный "прогрузчик" для отладки
     private Box2DDebugRenderer debugRenderer;
-
-    public Destroyer dstr;
 
     /**
      * Конструктор экрана игры

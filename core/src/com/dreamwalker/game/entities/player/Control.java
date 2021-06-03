@@ -2,19 +2,15 @@ package com.dreamwalker.game.entities.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.dreamwalker.game.entities.enemy.Enemy;
 
 public class Control {
+
     private final Player player;
-    private Sound stepSound;
-    private int soundDelayC = 0;
 
     Control(Player player) {
-        this.soundDelayC = 0;
-        this.stepSound = Gdx.audio.newSound(Gdx.files.internal("sounds/step.mp3"));
         this.player = player;
     }
 
@@ -40,6 +36,7 @@ public class Control {
             this.player.setDamageDealt(false);
         }
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            this.player.getSoundController().playAttackSound(0.37f);
             this.player.setIsAttacking(true);
         }
     }
@@ -66,23 +63,15 @@ public class Control {
 
         // Обработка нажатий клавиш WASD
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, this.speed),
-            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(0, speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(0, -this.speed),
-            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(0, -speed);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(-this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(-speed, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            // this.box2DBody.applyLinearImpulse(new Vector2(this.speed, 0),
-            // this.box2DBody.getWorldCenter(), true);
             playersBody.setLinearVelocity(speed, 0);
         }
 
@@ -107,22 +96,13 @@ public class Control {
         // Проверка конфликтующих сочитаний WS AD
         boolean conflictX = Gdx.input.isKeyPressed(Input.Keys.A) && Gdx.input.isKeyPressed(Input.Keys.D);
         boolean conflictY = Gdx.input.isKeyPressed(Input.Keys.W) && Gdx.input.isKeyPressed(Input.Keys.S);
-
-        if(isMoving){
-            if(this.soundDelayC == 22){
-                this.soundDelayC = 0;
-                this.stepSound.play(0.37f);
-            }
-            else{
-                this.soundDelayC++;
-            }
-        }
-
-
         // Остановить персонажа, если ни одна из клавиш не нажата, или нажаты
         // конфликтующие сочетания
         if (!isMoving || conflictX || conflictY || player.isAttacking()) {
             playersBody.setLinearVelocity(0, 0);
+        }
+        else{
+            this.player.getSoundController().playStepSound(0.37f);
         }
     }
 
