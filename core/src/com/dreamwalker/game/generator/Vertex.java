@@ -1,11 +1,9 @@
 package com.dreamwalker.game.generator;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.dreamwalker.game.handler.ContactHandler;
 import com.dreamwalker.game.location.Location;
-
 import java.util.ArrayList;
-import java.util.Random;
+
 
 public class Vertex {
     public String name;

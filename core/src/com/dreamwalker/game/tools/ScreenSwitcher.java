@@ -1,13 +1,11 @@
 package com.dreamwalker.game.tools;
 
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.player.Inventory;
+import com.dreamwalker.game.entities.player.Inventory;
 import com.dreamwalker.game.screens.*;
 
 public class ScreenSwitcher {

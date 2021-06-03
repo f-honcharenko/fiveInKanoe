@@ -1,59 +1,36 @@
-package com.dreamwalker.game.player;
+package com.dreamwalker.game.entities.player;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.enemy.Enemy;
-import com.dreamwalker.game.items.PotionHP;
+import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.controllers.MeeleAnimationController;
+import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.skills.ActiveSkill;
 import com.dreamwalker.game.skills.FlyingSword;
 import com.dreamwalker.game.skills.PassiveSkill;
-import com.dreamwalker.game.skills.Skill;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class Player extends Sprite implements Disposable {
-    // Физический мир, в котором находится игрок
-    private World world;
-    // Физическое "тело" игрока
-    private Body playersBody;
-    private Body attackArea;
+public class Player extends Entity implements Disposable {
 
-    private Animations playersAnimations;
     private Control playerControl;
 
-    private double health;
-    private double healthMax;
     private double mana;
     private double manaMax;
-    private double damage;
-    private double armor;
+
 
     private Inventory inventory;
 
-    private float speed;
-    private float attackSpeedCoefficient;
-
-    private double viewAngle;
-
-    private boolean isAlive;
-
     private ArrayList<Enemy> enemiesInRange;
     private boolean enemyInArea;
-    private boolean isAttacking;
-    private boolean isDamageDealt;
     public boolean roomChanged;
 
     private ArrayList<PassiveSkill> passiveSkills;
     private ArrayList<ActiveSkill> skillPanel;
-    private Vector2 spawnPoint;
 
     /**
      * Конструктор
@@ -64,7 +41,7 @@ public class Player extends Sprite implements Disposable {
      */
     public Player(World world, float x, float y) {
         this.world = world;
-        this.playersAnimations = new Animations(this, "player.atlas");
+        this.animationController = new MeeleAnimationController(this, "player.atlas", "player");
         this.playerControl = new Control(this);
         this.spawnPoint = new Vector2(x, y);
         this.definePlayer();
@@ -86,7 +63,6 @@ public class Player extends Sprite implements Disposable {
         this.speed = 1.5f;
         this.health = 100;
         this.mana = 50;
-        this.armor = 4;
         this.healthMax = 100;
         this.manaMax = 100;
         this.attackSpeedCoefficient = 1.5f;
@@ -101,7 +77,7 @@ public class Player extends Sprite implements Disposable {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" игрока в игровом мире на основе свойств
-        this.playersBody = this.world.createBody(bodyDef);
+        this.entityBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
 
         // Физические границы игрока
@@ -109,8 +85,8 @@ public class Player extends Sprite implements Disposable {
         shape.setRadius(9 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
-        this.playersBody.createFixture(fixtureDef);
-        this.playersBody.getFixtureList().get(0).setUserData(this);
+        this.entityBody.createFixture(fixtureDef);
+        this.entityBody.getFixtureList().get(0).setUserData(this);
 
         // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
@@ -147,6 +123,7 @@ public class Player extends Sprite implements Disposable {
         this(world, spawnPoint.x, spawnPoint.y);
     }
 
+    @Override
     public void render(SpriteBatch batch) {
         this.draw(batch);
         for (ActiveSkill skill : this.skillPanel) {
@@ -159,7 +136,7 @@ public class Player extends Sprite implements Disposable {
             this.definePlayer();
             this.roomChanged = false;
         }
-        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 15/DreamWalker.PPM - this.getHeight() / 2);
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 13/DreamWalker.PPM - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
             // this.world.destroyBody(this.playersBody);
             // this.world.destroyBody(this.attackArea);
@@ -168,7 +145,7 @@ public class Player extends Sprite implements Disposable {
             this.isAlive = false;
         }
         this.regeneration();
-        this.setRegion(this.playersAnimations.getFrame(deltaTime));
+        this.setRegion(this.animationController.getFrame(deltaTime));
         this.playerControl.handle(mousePosition);
     }
 
@@ -190,64 +167,13 @@ public class Player extends Sprite implements Disposable {
         this.health -= damage;
     }
 
-    /**
-     * Нанести урон игроку
-     *
-     * @param damage     - Урон
-     * @param damageType - Тип урона (0 - чистый, 1 - физ, 2 - маг)
-     * @return Нанесенный урон
-     */
-    public float damaged(float damage, int damageType) {
-        damage = Math.abs(damage);
-        switch (damageType) {
-            case 1:
-                // Будем считать что 1 брона = 1хп.
-                if (this.getArmor() < damage) {
-                    this.health = this.getCurrentHealth() - (damage - this.getArmor());
-                    return (float) (damage - this.getArmor());
-                } else {
-                    return 0;
-                }
-            case 2:
-                // Будем считать что 1 брона = 1хп.
-                if (this.getArmor() < damage) {
-                    this.health = this.getCurrentHealth() - (damage - this.getMagArmor());
-                    return (float) (damage - this.getMagArmor());
-                } else {
-                    return 0;
-                }
-            default:
-                this.health = this.getCurrentHealth() - (damage);
-                return damage;
-        }
-    }
-
-    /**
-     * Метод, отвечающий за наложение эффектов на игрока
-     */
-    public void setBuff() {
-        throw new NotImplementedException();
-    }
-
     public void setWorld(World world) {
         if(this.world != world){
-            this.world.destroyBody(this.playersBody);
+            this.world.destroyBody(this.entityBody);
             this.world.destroyBody(this.attackArea);
             this.world = world;
             this.roomChanged = true;
         }
-    }
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public double getCurrentHealth() {
-        return this.health;
-    }
-
-    public double getMaxHealth() {
-        return this.healthMax;
     }
 
     public double getCurrentMana() {
@@ -256,22 +182,6 @@ public class Player extends Sprite implements Disposable {
 
     public double getMaxMana() {
         return this.manaMax;
-    }
-
-    public double getDamage() {
-        return this.damage;
-    }
-
-    public double getMagArmor() {
-        return this.damage;
-    }
-
-    public double getArmor() {
-        return this.armor;
-    }
-
-    public float getSpeed() {
-        return this.speed;
     }
 
     public ArrayList<Enemy> getEnemiesInRange() {
@@ -286,38 +196,6 @@ public class Player extends Sprite implements Disposable {
         return this.isDamageDealt;
     }
 
-    public void setDamageDealt(boolean damageDealt) {
-        this.isDamageDealt = damageDealt;
-    }
-
-    public Body getPlayersBody() {
-        return this.playersBody;
-    }
-
-    boolean isAttacking() {
-        return this.isAttacking;
-    }
-
-    void setIsAttacking(boolean isAttacking) {
-        this.isAttacking = isAttacking;
-    }
-
-    float getAttackSpeedCoefficient() {
-        return this.attackSpeedCoefficient;
-    }
-
-    double getViewAngle() {
-        return this.viewAngle;
-    }
-
-    void setViewAngle(double viewAngle) {
-        this.viewAngle = viewAngle;
-    }
-
-    public Body getAttackArea() {
-        return this.attackArea;
-    }
-
     boolean isEnemyInArea() {
         return this.enemyInArea;
     }
@@ -328,26 +206,6 @@ public class Player extends Sprite implements Disposable {
 
     public void setSpawnPoint(Vector2 spawnPoint) {
         this.spawnPoint = spawnPoint;
-    }
-
-    public boolean isAlive() {
-        return this.isAlive;
-    }
-
-    /**
-     *
-     * @return - позиция игрока по х
-     */
-    public float getX() {
-        return this.playersBody.getPosition().x;
-    }
-
-    /**
-     *
-     * @return - позиция игрока по у
-     */
-    public float getY() {
-        return this.playersBody.getPosition().y;
     }
 
     public double manaSpend(int count) {
@@ -361,7 +219,6 @@ public class Player extends Sprite implements Disposable {
 
     @Override
     public void dispose() {
-
         this.getTexture().dispose();
     }
 }

@@ -1,4 +1,4 @@
-package com.dreamwalker.game.player;
+package com.dreamwalker.game.entities.player;
 
 import com.dreamwalker.game.items.*;
 

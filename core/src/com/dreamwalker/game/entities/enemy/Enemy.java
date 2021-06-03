@@ -1,43 +1,24 @@
-package com.dreamwalker.game.enemy;
+package com.dreamwalker.game.entities.enemy;
 
-import java.util.Random;
-
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Disposable;
-import com.dreamwalker.game.player.Player;
-import com.dreamwalker.game.tools.Destroyer;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.items.Item;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.items.PotionHP;
 import com.dreamwalker.game.items.PotionMP;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.Random;
 
-public abstract class Enemy extends Sprite implements Disposable {
-    // Физический мир, в котором находится враг
-    private World world;
-    // Физическое "тело" врага
-    private Body enemysBody;
-    private Body attackArea;
-
-    protected double health;
-    protected double healthMax;
-    protected double damage;
-    protected double armor;
-    protected float speed;
-    private float attackSpeedCoefficient;
+public abstract class Enemy extends Entity implements Disposable {
+    protected int attackSpeedMax;
+    protected int attackSpeedCounter;
 
     private int attackedFilterTimerMax;
     private int attackedFilterTimer;
@@ -49,26 +30,27 @@ public abstract class Enemy extends Sprite implements Disposable {
     private float BoundsWidth;
     private float BoundsHeight;
 
-    private boolean isAttacking;
-    private boolean isDamageDealt;
-    private boolean isAlive;
-
     private boolean playerInArea;
 
-    private double viewAngle;
     private Texture HPTexture;
     private Texture HPBarTexture;
-    protected Animations enemysAnimations;
 
     protected int respawnTime;
     protected int respawnCounter;
 
-    private Destroyer dstr;
-    private boolean roomChanged;
-
-    private Vector2 standSpawnPoint;
-
     private Random rnd;
+    private String status = "waiting";
+
+    private float tempX;
+    private float tempY;
+    private int idleTimer;
+    protected float spawnX;
+    protected float spawnY;
+    protected float idleRadius;
+    protected float agroRadius;
+    protected int waitingTimerMax;
+    protected int agroTimerMax;
+    protected int idleTimerMax;
 
     /**
      * Конструктор
@@ -79,8 +61,8 @@ public abstract class Enemy extends Sprite implements Disposable {
      */
     public Enemy(World world, float x, float y) {
         this.world = world;
-        this.standSpawnPoint = new Vector2(x, y);
-        this.defineEnemy(this.standSpawnPoint);
+        this.spawnPoint = new Vector2(x, y);
+        this.defineEnemy(this.spawnPoint);
 
         // Изменяемые параметры
         this.speed = 1.5f;
@@ -96,34 +78,24 @@ public abstract class Enemy extends Sprite implements Disposable {
 
         this.attackedFilterTimerMax = 15;
         this.attackedFilterTimer = 0;
+        this.attackSpeedCounter = 0;
 
         this.playerInArea = false;
         this.attackSpeedCoefficient = 1.5f;
-        this.roomChanged = false;
         this.respawnCounter = 0;
-    }
 
-    /**
-     * Конструктор
-     * 
-     *
-     * @param enemySpawnPoint - стартовая позиция игрока
-     */
-    public Enemy(World world, Vector2 enemySpawnPoint) {
-        this(world, enemySpawnPoint.x, enemySpawnPoint.y);
+        this.idleTimer = 0;
     }
 
     abstract public void attack(Player player);
 
-    abstract public void idle(Player player);
-
     public void respawn() {
         if(!this.isAlive){
             this.respawnCounter++;
-            this.enemysBody.getFixtureList().get(0).setSensor(true);
+            this.entityBody.getFixtureList().get(0).setSensor(true);
             if(this.respawnCounter == this.respawnTime){
-                this.enemysBody.getFixtureList().get(0).setSensor(false);
-                this.enemysBody.setTransform(this.standSpawnPoint.x, this.standSpawnPoint.y, (float)this.viewAngle);
+                this.entityBody.getFixtureList().get(0).setSensor(false);
+                this.entityBody.setTransform(this.spawnPoint.x, this.spawnPoint.y, (float)this.viewAngle);
                 this.health = this.healthMax;
                 this.isAlive = true;
                 this.respawnCounter = 0;
@@ -131,7 +103,13 @@ public abstract class Enemy extends Sprite implements Disposable {
         }
     }
 
-    public abstract void render(SpriteBatch batch);
+    @Override
+    public void render(SpriteBatch batch){
+        if (this.isAlive()) {
+            this.draw(batch);
+            this.drawBar(batch);
+        }
+    }
 
     private void defineEnemy(Vector2 spawnPoint) {
         // Задача физических свойств для "тела" врага
@@ -140,16 +118,16 @@ public abstract class Enemy extends Sprite implements Disposable {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
         // Создаем физическое "тело" врага в игровом мире на основе свойств
-        this.enemysBody = this.world.createBody(bodyDef);
+        this.entityBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
         // Физические границы врага
         CircleShape shape = new CircleShape();
         shape.setRadius(15 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
-        this.enemysBody.createFixture(fixtureDef);
+        this.entityBody.createFixture(fixtureDef);
 
-        this.enemysBody.getFixtureList().get(0).setUserData(this);
+        this.entityBody.getFixtureList().get(0).setUserData(this);
         // Удаляем фигуру, которая была создана для "тела" врага
         shape.dispose();
         this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
@@ -179,16 +157,56 @@ public abstract class Enemy extends Sprite implements Disposable {
         this.attackArea.getFixtureList().get(0).setUserData(this);
 
         dmgSectorShape.dispose();
-        this.dstr = new Destroyer(this.world);
-
         this.rnd = new Random();
-    };
+    }
 
-    /**
-     * Метод, отвечающий за наложение эффектов на врага
-     */
-    public void setBuff() {
-        throw new NotImplementedException();
+    public void idle(Player player) {
+        this.idleTimer++;
+        // Создать временные точки для перемещения
+        if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
+            this.status = "agro";
+            Vector2 playerPosition = new Vector2(player.getX(), player.getY());
+            Vector2 goblinViewPoint = playerPosition.sub(super.entityBody.getPosition());
+            this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
+            super.entityBody.setTransform(super.entityBody.getPosition(), goblinViewPoint.angleRad());
+            super.entityBody.setLinearVelocity(new Vector2((player.getX() - super.getX()) * this.speed,
+                    (player.getY() - super.getY()) * this.speed));
+        }
+        if ((this.status == "agro") && (this.idleTimer == this.agroTimerMax)) {
+            this.status = "waiting";
+            super.entityBody.setLinearVelocity(new Vector2(0, 0));
+        }
+        if ((this.idleTimer == this.idleTimerMax) || ((this.tempX == super.getX()) && (this.tempY == super.getY()))) {
+            // Если таймер(время ожидания) истек, или непись уже на месте.
+            // Меняем статус и обнулялем таймер
+            super.entityBody.setLinearVelocity(new Vector2(0, 0));
+            this.status = "waiting";
+            this.idleTimer = 0;
+
+        }
+        if ((this.status == "waiting") && (this.idleTimer == this.waitingTimerMax)) {
+            // Если непись постоял на месте н-ое еол-во секунд,
+            // запускаем его на случаную коордианту и меняем статус
+            this.tempX = rnd(Math.round(this.spawnX - this.idleRadius), Math.round(this.spawnX + this.idleRadius));
+            this.tempY = rnd(Math.round(this.spawnY - this.idleRadius), Math.round(this.spawnY + this.idleRadius));
+            this.idleTimer = 0;
+            this.status = "idleGo";
+        }
+        if (this.status == "idleGo") {
+            // Повернуть непися
+            Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.entityBody.getPosition());
+            this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
+            super.entityBody.setTransform(super.entityBody.getPosition(), goblinViewPoint.angleRad());
+            // Задать ему скорость
+            super.entityBody.setLinearVelocity(
+                    new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
+        }
+        this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
+    }
+
+    protected static int rnd(int min, int max) {
+        max -= min;
+        return (int) (Math.random() * ++max) + min;
     }
 
     public void receiveDamage(double damage) {
@@ -218,101 +236,7 @@ public abstract class Enemy extends Sprite implements Disposable {
 
     }
 
-    public Boolean isAlive() {
-        return this.isAlive;
-    }
-
-    public void setWorld(World world) {
-        if (world == null) {
-            throw new IllegalArgumentException();
-        }
-        if (this.world != world) {
-            this.world.destroyBody(this.enemysBody);
-            this.world.destroyBody(this.attackArea);
-            this.world = world;
-            this.roomChanged = true;
-        }
-
-    }
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public double getCurrentHealth() {
-        return this.health;
-    }
-
-    public double getMaxHealth() {
-        return this.healthMax;
-    }
-
-    public double getDamage() {
-        return this.damage;
-    }
-
-    public Body getAttackArea() {
-        return this.attackArea;
-    }
-
-    public double getArmor() {
-        return this.armor;
-    }
-
-    public float getSpeed() {
-        return this.speed;
-    }
-
-    public Body getEnemysBody() {
-        return this.enemysBody;
-    }
-
-    /**
-     * @return - позиция врага по х
-     */
-    public float getX() {
-        return this.enemysBody.getPosition().x;
-    }
-
-    /**
-     * @return - позиция врага по х
-     */
-    public float getY() {
-        return this.enemysBody.getPosition().y;
-    }
-
-    public float getAttackSpeedCoefficient() {
-        return this.attackSpeedCoefficient;
-    }
-
-    public void setDamageDealt(boolean damageDealt) {
-        this.isDamageDealt = damageDealt;
-    }
-
-    public double getViewAngle() {
-        return this.viewAngle;
-    }
-
-    public void setViewAngle(double viewAngle) {
-        this.viewAngle = viewAngle;
-        // this.getBox2DBody().setTransform(this.getBox2DBody().getPosition(), (float)
-        // viewAngle);
-
-    }
-
-    public boolean isAttacking() {
-        return this.isAttacking;
-    }
-
-    public void setIsAttacking(boolean isAttacking) {
-        this.isAttacking = isAttacking;
-    }
-
     public void update(float deltaTime, Player player) {
-        if (roomChanged) {
-            this.defineEnemy(this.standSpawnPoint);
-            this.roomChanged = false;
-        }
         if (this.isAlive()) {
             if (this.attackedFilterTimer < this.attackedFilterTimerMax) {
                 this.attackedFilterTimer++;
@@ -325,8 +249,8 @@ public abstract class Enemy extends Sprite implements Disposable {
             this.idle(player);
             this.attack(player);
         }
-        this.setRegion(this.enemysAnimations.getFrame(deltaTime));
-        this.attackArea.setTransform(this.enemysBody.getPosition(), this.enemysBody.getAngle());
+        this.setRegion(this.animationController.getFrame(deltaTime));
+        this.attackArea.setTransform(this.entityBody.getPosition(), this.entityBody.getAngle());
     }
 
     private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {
@@ -367,7 +291,7 @@ public abstract class Enemy extends Sprite implements Disposable {
             ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.world);
         }
 
-    };
+    }
 
     @Override
     public void dispose() {
