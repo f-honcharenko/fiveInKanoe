@@ -70,4 +70,12 @@ public class Sword extends Sprite implements Disposable {
     public void dispose() {
         this.getTexture().dispose();
     }
+
+    public Body getBody() {
+        return this.swordBody;
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
 }
