@@ -35,7 +35,6 @@ public class Location implements Disposable {
     private ArrayList<Enemy> enemies;
     private ArrayList<ItemInWorld> items;
 
-
     /**
      * Конструктор
      */
