@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -79,8 +80,6 @@ public class MainMenuScreen implements Screen, Disposable {
     public void updateTable() {
         // Установка взаимодействий
         this.startButton.addListener(this.StartEvent);
-        this.continueButton.addListener(this.ContinueEvent);
-        this.optionsButton.addListener(this.OptionEvent);
         this.exitButton.addListener(this.ExitEvent);
 
         // Установка таблицы
@@ -157,12 +156,10 @@ public class MainMenuScreen implements Screen, Disposable {
         this.newGame_hover = new Image(new Sprite(new Texture("./buttons/NewGameBtn_hover.png")));
 
         this.continue_default = new Image(new Sprite(new Texture("./buttons/ContinueBtn_default.png")));
-        this.continue_pressed = new Image(new Sprite(new Texture("./buttons/ContinueBtn_pressed.png")));
-        this.continue_hover = new Image(new Sprite(new Texture("./buttons/ContinueBtn_hover.png")));
+        this.continue_default.setColor(new Color(1, 1, 1, 0.4f));
 
         this.options_default = new Image(new Sprite(new Texture("./buttons/OptionsBtn_default.png")));
-        this.options_pressed = new Image(new Sprite(new Texture("./buttons/OptionsBtn_pressed.png")));
-        this.options_hover = new Image(new Sprite(new Texture("./buttons/OptionsBtn_hover.png")));
+        this.options_default.setColor(new Color(1, 1, 1, 0.4f));
 
         this.exitGame_default = new Image(new Sprite(new Texture("./buttons/ExitBtn_default.png")));
         this.exitGame_pressed = new Image(new Sprite(new Texture("./buttons/ExitBtn_pressed.png")));
@@ -179,7 +176,8 @@ public class MainMenuScreen implements Screen, Disposable {
             public void clicked(InputEvent event, float x, float y) {
                 startButton = newGame_pressed;
                 updateTable();
-                ScreenSwitcher.toGame();
+                // ScreenSwitcher.toGame();
+                ScreenSwitcher.toNewGameMenu();
                 ScreenSwitcher.disposeMainMenu();
 
             };
@@ -215,51 +213,10 @@ public class MainMenuScreen implements Screen, Disposable {
                 updateTable();
             };
         };
-        this.OptionEvent = new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                optionsButton = options_pressed;
-                Gdx.app.exit();
-                updateTable();
-            };
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                optionsButton = options_hover;
-                updateTable();
-            };
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                optionsButton = options_default;
-                updateTable();
-            };
-        };
-        this.ContinueEvent = new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                continueButton = continue_pressed;
-                Gdx.app.exit();
-                updateTable();
-            };
-
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                continueButton = continue_hover;
-                updateTable();
-            };
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-                continueButton = continue_default;
-                updateTable();
-            };
-        };
 
         // Установка взаимодействий
         this.startButton.addListener(StartEvent);
-        this.continueButton.addListener(ContinueEvent);
-        this.optionsButton.addListener(OptionEvent);
+
         this.exitButton.addListener(ExitEvent);
 
         this.updateTable();

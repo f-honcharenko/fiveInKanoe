@@ -15,6 +15,7 @@ public class ScreenSwitcher {
     private static GameScreen gameScreen;
     private static GameMenuScreen gameMenuScreen;
     private static InventoryScreen inventoryScreen;
+    private static NewGameScreen newGameScreen;
 
     public static void setGame(DreamWalker _game) {
         game = _game;
@@ -25,7 +26,7 @@ public class ScreenSwitcher {
             mainMenuScreen = new MainMenuScreen(game);
         }
         game.setScreen(mainMenuScreen);
-        gameScreen = null; //!!!
+        gameScreen = null; // !!!
     }
 
     public static void disposeMainMenu() {
@@ -40,6 +41,20 @@ public class ScreenSwitcher {
         gameMenuScreen = new GameMenuScreen(game, new Texture(flipPixmap(pixmap)));
 
         game.setScreen(gameMenuScreen);
+    }
+
+    public static void toNewGameMenu() {
+        Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        newGameScreen = new NewGameScreen(game, new Texture(flipPixmap(pixmap)));
+
+        game.setScreen(newGameScreen);
+    }
+
+    public static void disposeNewGameMenu() {
+        if (newGameScreen != null) {
+            newGameScreen.dispose();
+            newGameScreen = null;
+        }
     }
 
     public static void toInventory(Inventory inv) {

@@ -277,15 +277,27 @@ public class Hud {
                                 .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+
                 // КД
                 Image Mask1KD = new Image(this.KDTexture);
+                Image Mask21 = new Image(this.KDTexture);
+                Image Mask22 = new Image(this.KDTexture);
                 Mask1KD.setColor(1, 0, 0,
                                 ((CurrentCoolDown1Skill / MaxCoolDown1Skill) == 1f) ? (0f)
                                                 : (this.SkillRageImage.getColor().a
                                                                 - (1f - (CurrentCoolDown1Skill / MaxCoolDown1Skill))));
-
+                Mask21.setColor(1, 1, 1, 0.8f);
+                Mask22.setColor(1, 1, 1, 0.8f);
                 containerKDs.add(Mask1KD).padTop((10 * Gdx.graphics.getWidth()) / 1920)
                                 .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                containerKDs.add(Mask21).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
+                                .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
+                                .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
+                containerKDs.add(Mask22).padTop((10 * Gdx.graphics.getWidth()) / 1920)
+                                .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
                 // Бар
