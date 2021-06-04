@@ -44,6 +44,7 @@ project(":desktop") {
 
     dependencies {
         implementation project(":core")
+        implementation group: 'com.badlogicgames.gdx', name: 'gdx-freetype', version: '1.10.0'
         api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
