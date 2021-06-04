@@ -156,8 +156,14 @@ public class Player extends Entity implements Disposable {
             if (this.mana < this.manaMax) {
                 this.mana += 0.1;
             }
+            if(this.mana > this.manaMax){
+                this.mana = this.manaMax;
+            }
             if (this.health < this.healthMax) {
                 this.health += 0.1;
+            }
+            if(this.health > this.healthMax){
+                this.health = this.healthMax;
             }
         }
     }
@@ -214,6 +220,14 @@ public class Player extends Entity implements Disposable {
 
     public Inventory getInventory() {
         return this.inventory;
+    }
+
+    public void addHealth(float health){
+            this.health += health;
+    }
+
+    public void addMana(float mana){
+        this.mana += mana;
     }
 
     @Override

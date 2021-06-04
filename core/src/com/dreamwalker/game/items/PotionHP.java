@@ -1,10 +1,15 @@
 package com.dreamwalker.game.items;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 
 public class PotionHP extends Item {
+    private float regenHealth;
+
     public PotionHP(int count) {
+        this.regenHealth = 8.2f;
         this.id = 0;
         this.name = "HP Potion";
         this.description = "Regenerate health points.";
@@ -18,7 +23,10 @@ public class PotionHP extends Item {
     }
 
     @Override
-    public void usage(Entity entity) {
-
+    public void usage(Player player) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.H) && this.count != 0) {
+            player.addHealth(this.regenHealth);
+            this.count--;
+        }
     }
 }

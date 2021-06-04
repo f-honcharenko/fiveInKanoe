@@ -25,9 +25,9 @@ public class Robber extends Enemy{
         this.spawnY = y;
 
         this.speed = 0.3f;          //пускай они будут быстрее но наносить меньший урон
-        this.damage = 20;           //я еще подумаю на счет скорости, сначала хочеться глянуть как оно будет выглядеть с такой
+        this.damage = 35;           //я еще подумаю на счет скорости, сначала хочеться глянуть как оно будет выглядеть с такой
         this.health = 100;
-        this.attackSpeedMax = 130; //возможно нужно будет еще поменять
+        this.attackSpeedMax = 60; //возможно нужно будет еще поменять
 
         this.idleTimerMax = rnd(20, 150);
         this.waitingTimerMax = rnd(20, 120);

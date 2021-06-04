@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.DreamWalker;
-import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 
 public class HedgehogAmmo extends Sprite{
     private float lifeTime;
@@ -16,19 +16,19 @@ public class HedgehogAmmo extends Sprite{
     private float speed;
     private Vector2 direction;
 
-    public HedgehogAmmo(Entity entity, float damage, Texture texture){
+    public HedgehogAmmo(Player player, float damage, Texture texture){
         super(texture);
-        this.world = entity.getWorld();
+        this.world = player.getWorld();
         this.damage = damage;
         this.lifeTime = 15;
         this.speed = 3.5f;
-        this.direction = entity.getBody().getPosition();
+        this.direction = player.getBody().getPosition();
 
         BodyDef hedgehogBD = new BodyDef();
-        hedgehogBD.angle = entity.getBody().getAngle();
-        hedgehogBD.position.set(entity.getX(), entity.getY());
+        hedgehogBD.angle = player.getBody().getAngle();
+        hedgehogBD.position.set(player.getX(), player.getY());
         hedgehogBD.type = BodyDef.BodyType.DynamicBody;
-        this.hedgehogBody = entity.getWorld().createBody(hedgehogBD);
+        this.hedgehogBody = player.getWorld().createBody(hedgehogBD);
 
         FixtureDef hedgehogFD = new FixtureDef();
         hedgehogFD.isSensor = true;

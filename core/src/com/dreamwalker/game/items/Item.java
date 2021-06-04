@@ -2,7 +2,7 @@ package com.dreamwalker.game.items;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
-import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 
 public abstract class Item implements Disposable {
     protected int id;
@@ -11,7 +11,7 @@ public abstract class Item implements Disposable {
     protected String description;
     private Texture texture;
 
-    public abstract void usage(Entity entity);
+    public abstract void usage(Player player);
 
     public int getCount() {
         return this.count;
