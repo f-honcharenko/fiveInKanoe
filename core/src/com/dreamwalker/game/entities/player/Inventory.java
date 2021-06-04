@@ -1,8 +1,8 @@
 package com.dreamwalker.game.entities.player;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dreamwalker.game.entities.Entity;
-import com.dreamwalker.game.items.*;
+import com.dreamwalker.game.items.Hedgehog;
+import com.dreamwalker.game.items.Item;
 
 /* TODO
     - Попытаться реализовать сортировку
@@ -169,10 +169,10 @@ public class Inventory {
         System.out.println("=========");
     }
 
-    public void update(Entity entity){
+    public void update(Player player){
         for(Item item : this.inventory){
             if(item != null){
-                item.usage(entity);
+                item.usage(player);
             }
         }
     }

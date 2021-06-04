@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 
 import java.util.ArrayList;
 
@@ -28,10 +28,10 @@ public class Hedgehog extends Item {
     }
 
     @Override
-    public void usage(Entity entity) {
+    public void usage(Player player) {
         System.out.println(this.count);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && this.count != 0){
-            HedgehogAmmo ammo = new HedgehogAmmo(entity, this.damage, this.getTexture());
+        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && this.count != 0){
+            HedgehogAmmo ammo = new HedgehogAmmo(player, this.damage, this.getTexture());
             this.ammoList.add(ammo);
             this.count--;
         }

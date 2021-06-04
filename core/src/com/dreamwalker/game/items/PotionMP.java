@@ -1,11 +1,15 @@
 package com.dreamwalker.game.items;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.dreamwalker.game.entities.Entity;
+import com.dreamwalker.game.entities.player.Player;
 
 public class PotionMP extends Item {
+    private float regenMana;
 
     public PotionMP(int count) {
+        this.regenMana = 8.2f;
         this.id = 1;
         this.name = "MP Potion";
         this.description = "Regenerate mana points.";
@@ -19,7 +23,10 @@ public class PotionMP extends Item {
     }
 
     @Override
-    public void usage(Entity entity) {
-
+    public void usage(Player player) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.M) && this.count != 0) {
+            player.addMana(this.regenMana);
+            this.count--;
+        }
     }
 }
