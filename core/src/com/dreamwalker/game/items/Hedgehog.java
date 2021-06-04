@@ -3,15 +3,14 @@ package com.dreamwalker.game.items;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.dreamwalker.game.DreamWalker;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dreamwalker.game.entities.Entity;
+
+import java.util.ArrayList;
 
 public class Hedgehog extends Item {
     private float damage;
+    private ArrayList<HedgehogAmmo> ammoList;
 
     public Hedgehog(int count){
         this.damage = 13.5f;
@@ -20,31 +19,39 @@ public class Hedgehog extends Item {
         this.description = "Deals " + this.damage + " to the enemy";
         this.count = count;
         this.setTexture(new Texture("hedgehog_icon.png"));
+        this.ammoList = new ArrayList<>();
     }
 
     @Override
     public void dispose() {
-
+        this.getTexture().dispose();
     }
 
     @Override
     public void usage(Entity entity) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.X)){
-            BodyDef hedgehogBD = new BodyDef();
-            hedgehogBD.angle = entity.getBody().getAngle();
-            hedgehogBD.position.set(entity.getX(), entity.getY());
-            hedgehogBD.type = BodyDef.BodyType.DynamicBody;
-            Body hedgehogBody = entity.getWorld().createBody(hedgehogBD);
+        System.out.println(this.count);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.X) && this.count != 0){
+            HedgehogAmmo ammo = new HedgehogAmmo(entity, this.damage, this.getTexture());
+            this.ammoList.add(ammo);
+            this.count--;
+        }
 
-            FixtureDef hedgehogFD = new FixtureDef();
-            hedgehogFD.isSensor = true;
+        for(int i = 0; i < this.ammoList.size(); i++){
+            HedgehogAmmo ammo = this.ammoList.get(i);
+            if(ammo.getLifeTime() <= 0){
+                this.ammoList.remove(i);
+                ammo.getWorld().destroyBody(ammo.getHedgehogBody());
+            }
+            else {
+                ammo.move();
+                ammo.decreaseLifeTime();
+            }
+        }
+    }
 
-            CircleShape shape = new CircleShape();
-            shape.setRadius(7 / DreamWalker.PPM);
-            hedgehogFD.shape = shape;
-            hedgehogBody.createFixture(hedgehogFD);
-            hedgehogBody.getFixtureList().get(0).setUserData(this);
-            shape.dispose();
+    public void render(SpriteBatch batch){
+        for (HedgehogAmmo ammo : this.ammoList){
+            ammo.draw(batch);
         }
     }
 }

@@ -123,6 +123,7 @@ public class Player extends Entity implements Disposable {
     @Override
     public void render(SpriteBatch batch) {
         this.draw(batch);
+        this.inventory.renderHedgehogs(batch);
         for (Skill skill : this.skillPanel) {
             skill.render(batch);
         }

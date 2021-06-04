@@ -10,7 +10,6 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.player.Player;
 
 public class Sword extends Sprite implements Disposable {
-    private final Player player;
     private final World world;
     private final Body swordBody;
     private final float damage;
@@ -20,16 +19,15 @@ public class Sword extends Sprite implements Disposable {
 
     Sword(Player player, float damage, float lifeTime) {
         super(new Texture("flying_sword.png"));
-        this.player = player;
         this.world = player.getWorld();
         this.damage = damage;
         this.lifeTime = lifeTime;
-        this.direction = this.player.getBody().getPosition();
+        this.direction = player.getBody().getPosition();
         this.speed = 3.5f;
 
         BodyDef swordBodyDef = new BodyDef();
-        swordBodyDef.angle = this.player.getBody().getAngle();
-        swordBodyDef.position.set(this.player.getX(), this.player.getY());
+        swordBodyDef.angle = player.getBody().getAngle();
+        swordBodyDef.position.set(player.getX(), player.getY());
         swordBodyDef.type = BodyDef.BodyType.DynamicBody;
         this.swordBody = this.world.createBody(swordBodyDef);
 

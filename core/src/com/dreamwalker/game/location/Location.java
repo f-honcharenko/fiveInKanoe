@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.enemy.Archer;
 import com.dreamwalker.game.entities.enemy.Enemy;
-import com.dreamwalker.game.entities.enemy.Goblin;
 import com.dreamwalker.game.entities.enemy.Robber;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.items.Hedgehog;
@@ -156,8 +155,7 @@ public class Location implements Disposable {
     private void initExits() {
         MapLayer objLayer = map.getLayers().get("exits");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
-                : null;
+        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
         if (exitsObj != null) {
             for (RectangleMapObject object : exitsObj) {
                 // физические свойства для "областей" коллизий

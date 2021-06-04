@@ -1,5 +1,6 @@
 package com.dreamwalker.game.entities.player;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dreamwalker.game.entities.Entity;
 import com.dreamwalker.game.items.*;
 
@@ -172,6 +173,16 @@ public class Inventory {
         for(Item item : this.inventory){
             if(item != null){
                 item.usage(entity);
+            }
+        }
+    }
+
+    public void renderHedgehogs(SpriteBatch spriteBatch){
+        for(Item item : this.inventory){
+            if(item != null){
+                if(item instanceof Hedgehog){
+                   ((Hedgehog)item).render(spriteBatch);
+                }
             }
         }
     }
