@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="29" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="128">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="29" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="131">
  <tileset firstgid="1" source="klipartz.com.tsx"/>
  <layer id="1" name="background" width="29" height="30">
   <data encoding="csv">
@@ -238,7 +238,7 @@
   <object id="60" x="228" y="884" width="0.5" height="1"/>
   <object id="61" x="50" y="882" width="183.333" height="55.3333"/>
   <object id="62" x="52" y="29" width="26.3333" height="147.667"/>
-  <object id="63" x="53" y="22" width="145.333" height="51.3333"/>
+  <object id="63" x="53" y="22" width="171.833" height="72.3333"/>
   <object id="66" x="212.625" y="779.938" width="21.625" height="7.375"/>
   <object id="67" x="216.636" y="777.818" width="14.0909" height="3.36364"/>
   <object id="68" x="245.545" y="782.909" width="14.4545" height="5"/>
@@ -295,6 +295,9 @@
   <object id="124" x="780.545" y="535.636" width="3.09091" height="15.0909"/>
   <object id="125" x="357" y="822.25" width="36.25" height="3"/>
   <object id="126" x="226" y="903.5" width="260.5" height="38"/>
+  <object id="128" x="220.5" y="36" width="36.5" height="91.5"/>
+  <object id="129" x="93.5" y="220.5" width="35.5" height="34"/>
+  <object id="130" x="55.5" y="90" width="39" height="164"/>
  </objectgroup>
  <layer id="5" name="foreground" width="29" height="30">
   <data encoding="csv">
