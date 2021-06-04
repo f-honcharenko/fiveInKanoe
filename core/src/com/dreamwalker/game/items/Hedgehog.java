@@ -13,7 +13,7 @@ public class Hedgehog extends Item {
     private ArrayList<HedgehogAmmo> ammoList;
 
     public Hedgehog(int count){
-        this.damage = 13.5f;
+        this.damage = 20.5f;
         this.id = 2;
         this.name = "Hedgehog";
         this.description = "Deals " + this.damage + " to the enemy";

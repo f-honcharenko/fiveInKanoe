@@ -65,6 +65,14 @@ public class HedgehogAmmo extends Sprite{
         return this.hedgehogBody;
     }
 
+    public float getDamage() {
+        return this.damage;
+    }
+
+    public void setLifeTime(float lifeTime) {
+        this.lifeTime = lifeTime;
+    }
+
     public void decreaseLifeTime() {
         this.lifeTime -= 0.3;
     }

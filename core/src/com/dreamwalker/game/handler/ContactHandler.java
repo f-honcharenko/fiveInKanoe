@@ -3,6 +3,7 @@ package com.dreamwalker.game.handler;
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.entities.enemy.Enemy;
 import com.dreamwalker.game.generator.Edge;
+import com.dreamwalker.game.items.HedgehogAmmo;
 import com.dreamwalker.game.location.Location;
 import com.dreamwalker.game.items.ItemInWorld;
 import com.dreamwalker.game.entities.player.Player;
@@ -12,8 +13,6 @@ import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class ContactHandler implements ContactListener {
 
-    private static boolean isTriggered = false;
-
     @Override
     public void beginContact(Contact contact) {
         this.enterPlayersMelee(contact);
@@ -22,13 +21,13 @@ public class ContactHandler implements ContactListener {
         this.enterItem(contact);
         this.enterFinalExit(contact);
         this.enterFlyingSword(contact);
+        this.enterHedgehog(contact);
     }
 
     @Override
     public void endContact(Contact contact) {
         this.quitPlayersMelee(contact);
         this.quitEnemiesMelee(contact);
-        this.quitExit(contact);
     }
 
     @Override
@@ -78,29 +77,9 @@ public class ContactHandler implements ContactListener {
                 for (Edge edge : MapChanger.getCurrentVertex().getEdges()) {
                     if (playersExit == edge.getExitFirst() || playersExit == edge.getExitSecond()) {
                         MapChanger.changeLocation(MapChanger.getCurrentVertex().getEdges().indexOf(edge));
-                        isTriggered = true;
                         break;
                     }
                 }
-            }
-        }
-    }
-
-    private void quitExit(Contact contact) {
-        Fixture fixtureA = contact.getFixtureA();
-        Fixture fixtureB = contact.getFixtureB();
-        if (fixtureA.getUserData() != null && fixtureB != null) {
-            Location location = null;
-            boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Location;
-            if (variant1) {
-                location = (Location) fixtureB.getUserData();
-            }
-            boolean variant2 = fixtureA.getUserData() instanceof Location && fixtureB.getUserData() instanceof Player;
-            if (variant2) {
-                location = (Location) fixtureA.getUserData();
-            }
-            if (location != null) {
-                isTriggered = false;
             }
         }
     }
@@ -210,8 +189,8 @@ public class ContactHandler implements ContactListener {
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
             boolean variant1 = fixtureA.getUserData() instanceof Sword && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
-                Sword sword = (Sword) fixtureA.getUserData();
-                Enemy enemy = (Enemy) fixtureB.getUserData();
+                Sword sword = (Sword)fixtureA.getUserData();
+                Enemy enemy = (Enemy)fixtureB.getUserData();
                 if (!fixtureB.isSensor()) {
                     enemy.receiveDamage(sword.getDamage());
                 }
@@ -222,6 +201,31 @@ public class ContactHandler implements ContactListener {
                 Sword sword = (Sword) fixtureB.getUserData();
                 if (!fixtureA.isSensor()) {
                     enemy.receiveDamage(sword.getDamage());
+                }
+            }
+        }
+    }
+
+    private void enterHedgehog(Contact contact){
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
+        if(fixtureA.getUserData() != null &&  fixtureB.getUserData() != null){
+            boolean variant1 = fixtureA.getUserData() instanceof HedgehogAmmo && fixtureB.getUserData() instanceof Enemy;
+            if(variant1){
+                HedgehogAmmo hedgehogAmmo = (HedgehogAmmo)fixtureA.getUserData();
+                Enemy enemy = (Enemy)fixtureB.getUserData();
+                if(!fixtureB.isSensor()){
+                    enemy.receiveDamage(hedgehogAmmo.getDamage());
+                    hedgehogAmmo.setLifeTime(0);
+                }
+            }
+            boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof HedgehogAmmo;
+            if(variant2){
+                Enemy enemy = (Enemy)fixtureA.getUserData();
+                HedgehogAmmo hedgehogAmmo = (HedgehogAmmo)fixtureB.getUserData();
+                if(!fixtureA.isSensor()){
+                    enemy.receiveDamage(hedgehogAmmo.getDamage());
+                    hedgehogAmmo.setLifeTime(0);
                 }
             }
         }
