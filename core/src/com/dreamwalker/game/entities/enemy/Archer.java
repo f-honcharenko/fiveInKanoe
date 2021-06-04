@@ -22,7 +22,7 @@ public class Archer extends Enemy {
         super(location, x, y);
 
         this.animationController = new RangeAnimationController(this, "archer.atlas", "archer");
-        this.setBoundsCustom(50f, 50f); // 54
+        this.setBoundsCustom(60f, 60f); // 54
         // this.setBounds(0, 0, 54, 54);
         this.spawnX = x;
         this.spawnY = y;
