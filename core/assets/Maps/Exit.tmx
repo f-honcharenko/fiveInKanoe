@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="37" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="13" nextobjectid="147">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="37" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="14" nextobjectid="152">
  <tileset firstgid="1" source="klipartz.com.tsx"/>
  <layer id="1" name="background" width="37" height="25">
   <data encoding="csv">
@@ -234,7 +234,7 @@
 </data>
  </layer>
  <objectgroup id="10" name="exits">
-  <object id="1" x="58.3333" y="303" width="23" height="128.333"/>
+  <object id="1" x="63" y="303.667" width="23" height="128.333"/>
  </objectgroup>
  <objectgroup id="11" name="collisions">
   <object id="2" x="122" y="217.818" width="11.0909" height="30"/>
@@ -376,10 +376,17 @@
   <object id="142" x="815" y="289.333" width="16" height="160"/>
   <object id="143" x="703.333" y="289.667" width="117.333" height="31"/>
   <object id="144" x="703.333" y="414.667" width="128.333" height="35.3333"/>
-  <object id="146" x="38.6667" y="277.333" width="29.3333" height="195.333"/>
+  <object id="146" x="42.6667" y="283.333" width="30" height="172.667"/>
  </objectgroup>
  <objectgroup id="12" name="finalExit">
   <object id="145" x="735.25" y="321" width="80.25" height="93.5"/>
+ </objectgroup>
+ <objectgroup id="13" name="itemSpawnPoint">
+  <object id="147" x="225" y="150.333" width="17.6667" height="14"/>
+  <object id="148" x="227" y="634.5" width="17.5" height="18.5"/>
+  <object id="149" x="705.5" y="601.5" width="17" height="18"/>
+  <object id="150" x="993" y="629.5" width="15" height="14.5"/>
+  <object id="151" x="1050.5" y="313" width="20" height="16.5"/>
  </objectgroup>
  <layer id="9" name="foreground" width="37" height="25">
   <data encoding="csv">

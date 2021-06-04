@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="29" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="127">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="29" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="128">
  <tileset firstgid="1" source="klipartz.com.tsx"/>
  <layer id="1" name="background" width="29" height="30">
   <data encoding="csv">
@@ -171,6 +171,12 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="7" name="spawnpoint">
+  <object id="64" x="93.75" y="86.5" width="55.75" height="48"/>
+ </objectgroup>
+ <objectgroup id="8" name="exits">
+  <object id="65" x="244.833" y="890" width="212.333" height="23"/>
+ </objectgroup>
  <objectgroup id="6" name="collisions">
   <object id="1" x="403" y="78" width="57.3333" height="64.8485"/>
   <object id="2" x="274.667" y="236.333" width="57.3333" height="67.0606"/>
@@ -288,13 +294,7 @@
   <object id="123" x="783.636" y="522.727" width="4.72727" height="12.9091"/>
   <object id="124" x="780.545" y="535.636" width="3.09091" height="15.0909"/>
   <object id="125" x="357" y="822.25" width="36.25" height="3"/>
-  <object id="126" x="215" y="902" width="281" height="44"/>
- </objectgroup>
- <objectgroup id="7" name="spawnpoint">
-  <object id="64" x="95.75" y="76.5" width="55.75" height="48"/>
- </objectgroup>
- <objectgroup id="8" name="exits">
-  <object id="65" x="247.333" y="889" width="212.333" height="23"/>
+  <object id="126" x="226" y="903.5" width="260.5" height="38"/>
  </objectgroup>
  <layer id="5" name="foreground" width="29" height="30">
   <data encoding="csv">
