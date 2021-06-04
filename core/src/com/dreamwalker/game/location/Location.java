@@ -285,12 +285,12 @@ public class Location implements Disposable {
     }
 
     public void itemsRender(SpriteBatch spriteBatch) {
-        for (ItemInWorld item : this.items) {
-            item.render(spriteBatch);
+        for (int i = 0; i < this.items.size(); i++) {
+            items.get(i).render(spriteBatch);
 
-            System.out.println(item.haveToDestroy);
-            if (item.haveToDestroy) {
-                item.dispose();
+            System.out.println(items.get(i).haveToDestroy);
+            if (items.get(i).haveToDestroy) {
+                items.get(i).dispose();
             }
         }
     }
