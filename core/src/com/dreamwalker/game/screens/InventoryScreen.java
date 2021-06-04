@@ -110,8 +110,6 @@ public class InventoryScreen implements Screen, Disposable {
         inventoryPattern.add(new Image(this.inventoreyPattern)).width(((1520 * Gdx.graphics.getWidth()) / 1920))
                 .height(((1000 * Gdx.graphics.getHeight()) / 1080));
 
-        inventory.putItem(new PotionHP(1));
-        inventory.putItem(new PotionMP(1));
         if (inventory.getTypesSize() > 1) {
             for (int i = 0; i < inventory.getTypesSize(); i++) {
                 final int index = i;

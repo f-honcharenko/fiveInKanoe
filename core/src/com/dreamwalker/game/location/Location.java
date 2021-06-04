@@ -73,11 +73,9 @@ public class Location implements Disposable {
             Enemy newEnemy;
             if (i % 2 == 0) {
                 newEnemy = new Goblin(this, enemiesSP.get(i).getPosition());
-            }
-            else if(i % 3 == 0){
+            } else if (i % 3 == 0) {
                 newEnemy = new Archer(this, enemiesSP.get(i).getPosition());
-            }
-            else {
+            } else {
                 newEnemy = new Robber(this, enemiesSP.get(i).getPosition());
             }
             this.enemies.add(newEnemy);
@@ -137,7 +135,6 @@ public class Location implements Disposable {
             this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
                     (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
 
-
             // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
             // |
             // V
@@ -161,7 +158,8 @@ public class Location implements Disposable {
     private void initExits() {
         MapLayer objLayer = map.getLayers().get("exits");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        Array<RectangleMapObject> exitsObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
         if (exitsObj != null) {
             for (RectangleMapObject object : exitsObj) {
                 // физические свойства для "областей" коллизий
@@ -193,7 +191,8 @@ public class Location implements Disposable {
     private void initEnemiesSpawnPoint() {
         MapLayer objLayer = map.getLayers().get("enemies");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
         if (enemiesSPObj != null) {
             for (RectangleMapObject object : enemiesSPObj) {
                 BodyDef bdef = new BodyDef();
@@ -239,10 +238,11 @@ public class Location implements Disposable {
         }
     }
 
-    private void initLoot(){
+    private void initLoot() {
         MapLayer objLayer = map.getLayers().get("itemSpawnPoint");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> itemSpawnPoint = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        Array<RectangleMapObject> itemSpawnPoint = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
+                : null;
         if (itemSpawnPoint != null) {
             for (RectangleMapObject object : itemSpawnPoint) {
                 BodyDef bdef = new BodyDef();
@@ -286,11 +286,12 @@ public class Location implements Disposable {
 
     public void itemsRender(SpriteBatch spriteBatch) {
         for (ItemInWorld item : this.items) {
-            item.render(spriteBatch);
-
-            System.out.println(item.haveToDestroy);
-            if (item.haveToDestroy) {
-                item.dispose();
+            if (item != null) {
+                item.render(spriteBatch);
+                System.out.println(item.haveToDestroy);
+                if (item.haveToDestroy) {
+                    item.dispose();
+                }
             }
         }
     }
