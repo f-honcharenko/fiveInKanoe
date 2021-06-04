@@ -25,6 +25,10 @@ public abstract class Item implements Disposable {
         return this.name;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
     public int getId() {
         return this.id;
     }

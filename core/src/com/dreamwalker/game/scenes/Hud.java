@@ -12,8 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dreamwalker.game.entities.player.Player;
-import com.dreamwalker.game.items.PotionHP;
-import com.dreamwalker.game.items.PotionMP;
+import com.dreamwalker.game.items.*;
 
 public class Hud {
         // 2д сцена, на которой распологаются элементы интерфейса
@@ -188,19 +187,24 @@ public class Hud {
                 if (this.player.getInventory().getItem(PotionMP.class) == null) {
                         tempMP.setColor(new Color(1, 1, 1, 0.2f));
                 }
-                if (true) {
-                        // if (this.player.getInventory().getItem(PotionMP.class) == null) {
+                if (this.player.getInventory().getItem(Hedgehog.class) == null) {
                         tempHedgehog.setColor(new Color(1, 1, 1, 0.2f));
                 }
 
                 containerPotion.add(tempHP).width(((100 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((100 * Gdx.graphics.getHeight()) / 1080)).padLeft(70).padTop(10);
+                                .height((100 * Gdx.graphics.getHeight()) / 1080)
+                                .padLeft((105 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((15 * Gdx.graphics.getHeight()) / 1080);
                 containerPotion.row();
                 containerPotion.add(tempHedgehog).width(((50 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((50 * Gdx.graphics.getHeight()) / 1080)).padLeft(-70).padTop(-15);
+                                .height(((50 * Gdx.graphics.getHeight()) / 1080))
+                                .padLeft((-105 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((-15 * Gdx.graphics.getHeight()) / 1080);
                 containerPotion.row();
                 containerPotion.add(tempMP).width(((70 * Gdx.graphics.getWidth()) / 1920))
-                                .height(((70 * Gdx.graphics.getHeight()) / 1080)).padLeft(45).padTop(5);
+                                .height(((70 * Gdx.graphics.getHeight()) / 1080))
+                                .padLeft((65 * Gdx.graphics.getWidth()) / 1920)
+                                .padTop((5 * Gdx.graphics.getHeight()) / 1080);
 
                 borderPotion.add(this.ItemAreaImage).expandX().padTop(0).width(((250 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((250 * Gdx.graphics.getHeight()) / 1080));

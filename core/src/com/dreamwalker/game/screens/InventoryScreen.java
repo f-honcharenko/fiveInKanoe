@@ -118,6 +118,10 @@ public class InventoryScreen implements Screen, Disposable {
                 Stack itemContainer = new Stack();
                 Table itemPattern = new Table();
                 Table itemIcon = new Table();
+                itemPattern.setFillParent(true);
+                itemIcon.setFillParent(true);
+                itemPattern.top();
+                itemIcon.top();
                 Image frame = (i == this.selectedItemList) ? (new Image(this.inventoreyDefaultItemPattern))
                         : (new Image(this.inventoreyActiveItemPattern));
                 frame.addListener(new ClickListener() {
@@ -128,27 +132,26 @@ public class InventoryScreen implements Screen, Disposable {
                     };
                 });
                 itemPattern.add(frame).width((600 * Gdx.graphics.getWidth()) / 1920)
-                        .padTop((-220 * Gdx.graphics.getHeight()) / 1080)
                         .height(((123 * Gdx.graphics.getHeight()) / 1080))
-                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
-                        .padRight((520 * Gdx.graphics.getWidth()) / 1920).align(Align.left).top();
+                        .padBottom((10 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((520 * Gdx.graphics.getWidth()) / 1920);
+                itemPattern.row();
                 itemIcon.add(new Image(inventory.getItem(i).getTexture())).width((70 * Gdx.graphics.getWidth()) / 1920)
-                        .padTop((-220 * Gdx.graphics.getHeight()) / 1080)
                         .height(((70 * Gdx.graphics.getHeight()) / 1080))
-                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
-                        .padRight((270 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
-                // itemIcon.row();
+                        .padBottom((10 * Gdx.graphics.getHeight()) / 1080)
+                        .padRight((1010 * Gdx.graphics.getWidth()) / 1920)
+                        .padTop((30 * Gdx.graphics.getHeight()) / 1080).align(Align.left);
+                itemIcon.row();
                 itemIcon.add(new Label(inventory.getItem(i).getName(), this.labelStyle))
-                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080)
-                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
-                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
-                        .padRight((370 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
-                // itemIcon.row();
+                        .padBottom((10 * Gdx.graphics.getHeight()) / 1080)
+                        .padLeft((100 * Gdx.graphics.getWidth()) / 1920).padTop((-90 * Gdx.graphics.getHeight()) / 1080)
+                        .align(Align.left);
+                itemIcon.row();
                 itemIcon.add(new Label("x" + inventory.getItem(i).getCount(), this.labelStyle))
-                        .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080)
-                        .height(((70 * Gdx.graphics.getHeight()) / 1080))
-                        .padBottom((230 * Gdx.graphics.getHeight()) / 1080).align(Align.right)
-                        .padRight((500 * Gdx.graphics.getWidth()) / 1920);
+                        .padBottom((10 * Gdx.graphics.getHeight()) / 1080)
+                        .padLeft((500 * Gdx.graphics.getWidth()) / 1920).padTop((-90 * Gdx.graphics.getHeight()) / 1080)
+                        .align(Align.left);
+                itemIcon.row();
 
                 itemContainer.add(itemPattern);
                 itemContainer.add(itemIcon);
@@ -196,7 +199,13 @@ public class InventoryScreen implements Screen, Disposable {
         if (inventory.getTypesSize() > 0) {
             invenotryLogo.add(new Image(inventory.getItem(this.selectedItemList).getTexture()))
                     .width(((400 * Gdx.graphics.getWidth()) / 1920)).height(((400 * Gdx.graphics.getHeight()) / 1080))
-                    .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-420 * Gdx.graphics.getHeight()) / 1080);
+                    .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080);
+            invenotryLogo.row();
+            invenotryLogo.add(new Label(inventory.getItem(this.selectedItemList).getName(), this.labelStyle))
+                    .padLeft((740 * Gdx.graphics.getWidth()) / 1920).padTop((-50 * Gdx.graphics.getHeight()) / 1080);
+            invenotryLogo.row();
+            invenotryLogo.add(new Label(inventory.getItem(this.selectedItemList).getDescription(), this.labelStyle))
+                    .padLeft((740 * Gdx.graphics.getWidth()) / 1920).padTop((150 * Gdx.graphics.getHeight()) / 1080);
         }
         this.table.setBackground(new SpriteDrawable(this.background));
 
