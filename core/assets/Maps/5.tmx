@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="34" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="21" nextobjectid="156">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="34" height="40" tilewidth="32" tileheight="32" infinite="0" nextlayerid="21" nextobjectid="157">
  <tileset firstgid="1" source="klipartz.com.tsx"/>
  <layer id="7" name="background" width="34" height="40">
   <data encoding="csv">
@@ -491,7 +491,7 @@
   <object id="93" x="334.667" y="650.667" width="60.6667" height="59.3333"/>
   <object id="94" x="308.667" y="694.667" width="92" height="62"/>
   <object id="95" x="336" y="758.667" width="66" height="50.6667"/>
-  <object id="96" x="340" y="863.333" width="62.6667" height="54"/>
+  <object id="96" x="338" y="863.083" width="62.6667" height="44"/>
   <object id="97" x="373.333" y="906" width="54.6667" height="36.6667"/>
   <object id="98" x="400" y="935.333" width="55.3333" height="39.3333"/>
   <object id="99" x="432" y="964" width="31.3333" height="102.667"/>
@@ -501,11 +501,11 @@
   <object id="103" x="529.333" y="1167.33" width="28" height="50.6667"/>
   <object id="104" x="636.5" y="433" width="52" height="32"/>
   <object id="105" x="656.5" y="463" width="64" height="62"/>
-  <object id="106" x="692" y="586.5" width="60.5" height="65"/>
+  <object id="106" x="692" y="578.5" width="60.5" height="73"/>
   <object id="107" x="757" y="622" width="58" height="102.5"/>
   <object id="108" x="786.5" y="722.5" width="60" height="106.5"/>
   <object id="110" x="847" y="785" width="33.5" height="180.5"/>
-  <object id="111" x="802.5" y="1036.5" width="47.5" height="41.5"/>
+  <object id="111" x="811.5" y="1022.75" width="50.5" height="23.5"/>
   <object id="112" x="787" y="1046" width="18" height="59"/>
   <object id="113" x="757.5" y="1074.5" width="25.5" height="56"/>
   <object id="114" x="723.5" y="1106" width="32.5" height="61"/>
@@ -514,8 +514,8 @@
   <object id="117" x="633.5" y="1167.5" width="22" height="45.5"/>
   <object id="118" x="335.333" y="807.333" width="68" height="22"/>
   <object id="119" x="823.5" y="972" width="64" height="17"/>
-  <object id="120" x="835.5" y="1033" width="42.5" height="10.5"/>
-  <object id="121" x="679" y="523" width="42" height="22"/>
+  <object id="120" x="838.5" y="1024.5" width="42.5" height="10.5"/>
+  <object id="121" x="679" y="523" width="42" height="19.6667"/>
   <object id="122" x="55" y="17" width="970" height="56"/>
   <object id="123" x="42.6667" y="14.6667" width="38.6667" height="1240"/>
   <object id="125" x="49.3333" y="1197.33" width="992" height="60"/>
@@ -532,6 +532,7 @@
   <object id="136" x="633" y="504" width="31" height="10.5"/>
   <object id="137" x="634.5" y="455.5" width="6.5" height="32"/>
   <object id="138" x="448" y="544" width="29" height="12"/>
+  <object id="156" x="800" y="1039.25" width="44.25" height="28.25"/>
  </objectgroup>
  <objectgroup id="20" name="enemies">
   <object id="147" x="241.14" y="349.653" width="24.114" height="22.6069"/>
