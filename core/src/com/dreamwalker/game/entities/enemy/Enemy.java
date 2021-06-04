@@ -140,7 +140,8 @@ public abstract class Enemy extends Entity implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -190,7 +191,8 @@ public abstract class Enemy extends Entity implements Disposable {
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
             super.entityBody.setTransform(super.entityBody.getPosition(), goblinViewPoint.angleRad());
 
-            super.entityBody.setLinearVelocity(new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
+            super.entityBody.setLinearVelocity(
+                    new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
     }
@@ -225,8 +227,8 @@ public abstract class Enemy extends Entity implements Disposable {
 
     public void update(float deltaTime, Player player) {
         if (haveToDropped) {
-            this.dropItem(new PotionHP(1), 100d);
-            this.dropItem(new PotionMP(1), 100d);
+            this.dropItem(new PotionHP(1), 50d);
+            this.dropItem(new PotionMP(1), 50d);
             haveToDropped = false;
         }
         if (this.isAlive()) {
