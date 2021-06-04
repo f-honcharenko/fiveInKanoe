@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.enemy.Archer;
 import com.dreamwalker.game.entities.enemy.Enemy;
+import com.dreamwalker.game.entities.enemy.Goblin;
 import com.dreamwalker.game.entities.enemy.Robber;
 import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.items.Hedgehog;
@@ -52,6 +53,7 @@ public class Location implements Disposable {
         this.initExits();
         this.initEnemies();
         this.initFinalExit();
+        this.initLoot();
     }
 
     public World getWorld() {
@@ -70,8 +72,12 @@ public class Location implements Disposable {
         for (int i = 0; i < this.enemiesSP.size(); i++) {
             Enemy newEnemy;
             if (i % 2 == 0) {
+                newEnemy = new Goblin(this, enemiesSP.get(i).getPosition());
+            }
+            else if(i % 3 == 0){
                 newEnemy = new Archer(this, enemiesSP.get(i).getPosition());
-            } else {
+            }
+            else {
                 newEnemy = new Robber(this, enemiesSP.get(i).getPosition());
             }
             this.enemies.add(newEnemy);
@@ -131,7 +137,7 @@ public class Location implements Disposable {
             this.spawnPoint = new Vector2((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
                     (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
 
-            new ItemInWorld(this.spawnPoint.x, this.spawnPoint.y, new Hedgehog(1), this);
+
             // МОЖНО БУДЕТ УДАЛИТЬ НА ФИНАЛЬНОЙ СТАДИИ ПРОКТА
             // |
             // V
@@ -187,8 +193,7 @@ public class Location implements Disposable {
     private void initEnemiesSpawnPoint() {
         MapLayer objLayer = map.getLayers().get("enemies");
         MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
-        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class)
-                : null;
+        Array<RectangleMapObject> enemiesSPObj = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
         if (enemiesSPObj != null) {
             for (RectangleMapObject object : enemiesSPObj) {
                 BodyDef bdef = new BodyDef();
@@ -231,6 +236,33 @@ public class Location implements Disposable {
             body.createFixture(fixtureDef);
             body.getFixtureList().get(0).setUserData("Exit"); // Сомнения по поводу такого варианта
             shape.dispose();
+        }
+    }
+
+    private void initLoot(){
+        MapLayer objLayer = map.getLayers().get("itemSpawnPoint");
+        MapObjects mapObjects = (objLayer != null) ? objLayer.getObjects() : null;
+        Array<RectangleMapObject> itemSpawnPoint = (mapObjects != null) ? mapObjects.getByType(RectangleMapObject.class) : null;
+        if (itemSpawnPoint != null) {
+            for (RectangleMapObject object : itemSpawnPoint) {
+                BodyDef bdef = new BodyDef();
+                PolygonShape shape = new PolygonShape();
+                FixtureDef fdef = new FixtureDef();
+                Body body;
+                Rectangle rect = object.getRectangle();
+                bdef.type = BodyDef.BodyType.StaticBody;
+                bdef.position.set((rect.getX() + rect.getWidth() / 2) / DreamWalker.PPM,
+                        (rect.getY() + rect.getHeight() / 2) / DreamWalker.PPM);
+                body = world.createBody(bdef);
+                shape.setAsBox((rect.getWidth() / 2) / DreamWalker.PPM, (rect.getHeight() / 2) / DreamWalker.PPM);
+                fdef.shape = shape;
+                fdef.isSensor = true;
+                body.createFixture(fdef);
+
+                new ItemInWorld(body.getPosition().x, body.getPosition().y, new Hedgehog(1), this);
+
+                shape.dispose();
+            }
         }
     }
 
