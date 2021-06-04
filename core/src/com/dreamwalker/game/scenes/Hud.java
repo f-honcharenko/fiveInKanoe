@@ -44,11 +44,7 @@ public class Hud {
         private Image BarImage;
         private Image ItemAreaImage;
         private Image SkillBarImage;
-        private Image HPPImage;
-        private Image MPPImage;
-        private Image HeadgeHogImage;
         private Image SkillRageImage;
-        private Image KD1Image;
 
         private float BarsHeight;
         private float BarsWidth;
@@ -77,7 +73,6 @@ public class Hud {
         }
 
         public void defineHud() {
-                // TODO - можно сокартить
                 this.BarTexture = new Texture("Bar.png");
                 this.ItemAreaTexture = new Texture("ItemArea.png");
                 this.SkillBarTexture = new Texture("SkillBar.png");
@@ -94,8 +89,8 @@ public class Hud {
                 this.BarImage = new Image(this.BarTexture);
                 this.ItemAreaImage = new Image(this.ItemAreaTexture);
                 this.SkillBarImage = new Image(this.SkillBarTexture);
-                this.HPPImage = new Image(this.HPPTexture);
-                this.MPPImage = new Image(this.MPPTexture);
+                new Image(this.HPPTexture);
+                new Image(this.MPPTexture);
                 this.SkillRageImage = new Image(this.SkillRageTexture);
 
                 this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
@@ -151,14 +146,12 @@ public class Hud {
                                 .width(((900 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((150 * Gdx.graphics.getHeight()) / 1080)).colspan(2);
 
-                // System.out.println(this.BarsWidth + "-" + tempPercentHP + "=" +
-                // (this.BarsWidth - tempPercentHP));
                 bar.add(containerHPMP);
                 bar.add(containerBorder);
                 this.tableHP.add(bar).expandX().padTop(0).colspan(2);
 
                 this.tableHP.pack();
-                // this.tableHP.debug();
+
                 this.stage.addActor(this.tableHP);
         }
 
@@ -215,7 +208,7 @@ public class Hud {
                 this.tableItems.row();
                 this.tableItems.add(itemsContainer);
                 this.tableItems.pack();
-                // this.tableItems.debug();
+
                 this.stage.addActor(this.tableItems);
         }
 
@@ -245,7 +238,7 @@ public class Hud {
                 containerKDs.top().left();
                 containerManaWarning.top().left();
                 borderSkills.top().left();
-                // Иконки
+
                 containerSkills.add(new Image(this.SkillFlyingSwordTexture))
                                 .padTop((10 * Gdx.graphics.getWidth()) / 1920)
                                 .padLeft((110 * Gdx.graphics.getWidth()) / 1920)
@@ -262,12 +255,6 @@ public class Hud {
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
-                // containerSkills.add(new Image(this.SkillRageTexture)).padTop((10 *
-                // Gdx.graphics.getWidth()) / 1920)
-                // .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
-                // .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
-                // .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
-                // Мана
                 Image Mask1ManaWarning = new Image(this.ManaWarningTexture);
                 Mask1ManaWarning.setColor(1, 0, 0,
                                 (this.player.getCurrentMana() < this.player.getSkillPanel().get(0).getManaCost())
@@ -278,7 +265,6 @@ public class Hud {
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
 
-                // КД
                 Image Mask1KD = new Image(this.KDTexture);
                 Image Mask21 = new Image(this.KDTexture);
                 Image Mask22 = new Image(this.KDTexture);
@@ -300,10 +286,10 @@ public class Hud {
                                 .padLeft((17.5f * Gdx.graphics.getWidth()) / 1920)
                                 .width(((263 / 2f * Gdx.graphics.getWidth()) / 1920))
                                 .height(((148 / 2f * Gdx.graphics.getHeight()) / 1080));
-                // Бар
+
                 borderSkills.add(this.SkillBarImage).expandX().padTop(0).width(((800 * Gdx.graphics.getWidth()) / 1920))
                                 .height(((100 * Gdx.graphics.getHeight()) / 1080));
-                // Компановка
+
                 skillsContainer.add(containerSkills);
                 skillsContainer.add(containerKDs);
                 skillsContainer.add(containerManaWarning);
@@ -312,15 +298,13 @@ public class Hud {
                 this.tableSkills.row();
                 this.tableSkills.add(skillsContainer);
                 this.tableSkills.pack();
-                // this.tableSkills.debug();
+
                 this.stage.addActor(this.tableSkills);
         }
 
         public void initBars() {
-                // System.out.println(this.BarsWidth);
                 Pixmap pixmap = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 1, 0, 0);
                 Pixmap pixmap2 = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 0, 0, 1);
-                Pixmap pixmap3 = createProceduralPixmap((int) this.BarsWidth, (int) this.BarsHeight, 1, 1, 1);
                 this.TBarHP = new Texture(pixmap);
                 this.TBarMP = new Texture(pixmap2);
                 this.BarHP = new Image(this.TBarHP);

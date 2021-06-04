@@ -112,13 +112,11 @@ public class MainMenuScreen implements Screen, Disposable {
         this.continueButton = this.continue_default;
         this.optionsButton = this.options_default;
 
-
         this.StartEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 startButton = newGame_hover;
                 updateTable();
-                // ScreenSwitcher.toGame();
                 ScreenSwitcher.toNewGameMenu();
                 ScreenSwitcher.disposeMainMenu();
 
@@ -201,7 +199,6 @@ public class MainMenuScreen implements Screen, Disposable {
         this.stage.addActor(table);
 
     }
-
 
     public DreamWalker getGame() {
         return this.game;

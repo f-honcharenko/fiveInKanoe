@@ -3,7 +3,6 @@ package com.dreamwalker.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -31,7 +30,7 @@ public class GameMenuScreen implements Screen, Disposable {
     private Image mainMenuButtonDef;
     private Image mainMenuButton;
     private Image mainMenuButtonHover;
-    // 2д сцена, на которой распологаются элементы интерфейса
+
     private Stage stage;
     private Viewport viewport;
     private Table table;
@@ -55,10 +54,10 @@ public class GameMenuScreen implements Screen, Disposable {
         this.paddingRight = 150f;
         this.paddingBottom = 20f;
         this.game = game;
-        // Задаём масштабируемый вьюпорт, с сохранением соотношения сторон
+
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera());
         this.stage = new Stage(this.viewport, game.getBatch());
-        // Штука для отслеживания нажатий
+
         Gdx.input.setInputProcessor(stage);
 
         // Текстуры
@@ -125,15 +124,11 @@ public class GameMenuScreen implements Screen, Disposable {
     }
 
     public void updateTable() {
-
-        // Установка взаимодействий
         this.resumeButton.addListener(this.resumeEvent);
         this.mainMenuButton.addListener(this.mainMenuEvent);
 
-        // Установка таблицы
         this.table = new Table();
 
-        // Включить масштабирование под таблицу
         this.table.setFillParent(true);
 
         this.table.bottom();
@@ -148,10 +143,9 @@ public class GameMenuScreen implements Screen, Disposable {
                 .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
                 .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
         this.table.row();
-        // BG
+
         this.table.setBackground(new SpriteDrawable(this.background));
 
-        // Добавить таблцу на "сцену"
         this.stage.addActor(this.table);
     }
 
@@ -166,14 +160,13 @@ public class GameMenuScreen implements Screen, Disposable {
     @Override
     public void render(float delta) {
         update(delta);
-        // Отрисовка UI
+
         this.stage.draw();
         this.stage.act();
     }
 
     @Override
     public void resize(int width, int height) {
-        // Обновление вьюпорта при изменении размеров окна
         this.viewport.update(width, height);
     }
 
@@ -191,8 +184,6 @@ public class GameMenuScreen implements Screen, Disposable {
 
     @Override
     public void dispose() {
-        this.resumeEvent = null;
-        this.mainMenuEvent = null;
         this.stage.dispose();
     }
 
