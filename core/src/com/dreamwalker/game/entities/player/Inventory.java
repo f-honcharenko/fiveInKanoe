@@ -12,7 +12,6 @@ public class Inventory {
         this.inventory = new Item[size];
     }
 
-
     public Item getItem(int index) {
         Item returnable = null;
         if (index < this.inventory.length) {
@@ -83,22 +82,25 @@ public class Inventory {
         System.out.println("=========");
     }
 
-    public void update(Player player){
+    public void update(Player player) {
         int globalSum = 0;
-        for(Item item : this.inventory){
-            if(item != null){
-                globalSum += item.getCount();
-                item.usage(player);
+        for (int i = 0; i < this.inventory.length; i++) {
+            if (this.inventory[i] != null) {
+                globalSum += this.inventory[i].getCount();
+                this.inventory[i].usage(player);
+                if (this.inventory[i].getCount() == 0) {
+                    this.inventory[i] = null;
+                }
             }
         }
         this.itemsCount = globalSum;
     }
 
-    public void renderHedgehogs(SpriteBatch spriteBatch){
-        for(Item item : this.inventory){
-            if(item != null){
-                if(item instanceof Hedgehog){
-                   ((Hedgehog)item).render(spriteBatch);
+    public void renderHedgehogs(SpriteBatch spriteBatch) {
+        for (Item item : this.inventory) {
+            if (item != null) {
+                if (item instanceof Hedgehog) {
+                    ((Hedgehog) item).render(spriteBatch);
                 }
             }
         }

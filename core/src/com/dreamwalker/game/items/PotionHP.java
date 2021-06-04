@@ -24,9 +24,12 @@ public class PotionHP extends Item {
 
     @Override
     public void usage(Player player) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.H) && this.count != 0) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H) && this.count != 0) {
             player.addHealth(this.regenHealth);
             this.count--;
+            if (this.count < 0) {
+                this.dispose();
+            }
         }
     }
 }

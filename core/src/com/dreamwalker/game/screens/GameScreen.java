@@ -8,12 +8,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.dreamwalker.game.DreamWalker;
+import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.generator.LevelGraph;
 import com.dreamwalker.game.location.Location;
-import com.dreamwalker.game.entities.player.Player;
 import com.dreamwalker.game.scenes.Hud;
 import com.dreamwalker.game.tools.MapChanger;
 import com.dreamwalker.game.tools.ScreenSwitcher;
@@ -22,20 +21,14 @@ public class GameScreen implements Screen {
 
     private DreamWalker game;
 
-    // "Прогрузчик" тайловых карт
     private OrthogonalTiledMapRenderer ortMapRender;
-    // Игровая камера
     private OrthographicCamera camera;
-    // Вьюпорт (область просмотра игрока)
     private ScreenViewport viewport;
 
-    // Интерфейс
     private Hud hud;
     private Player player;
-    // Игровая локация
+
     private Location location;
-    // Временный "прогрузчик" для отладки
-    private Box2DDebugRenderer debugRenderer;
 
     /**
      * Конструктор экрана игры
@@ -47,9 +40,9 @@ public class GameScreen implements Screen {
         MapChanger.getLevelGraph().print();
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
         this.game = game;
+
         // Загрузка карты и создание коллизий
         this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
-        this.debugRenderer = new Box2DDebugRenderer();
 
         this.player = new Player(location.getWorld(), this.location.getSpawnPoint());
 
@@ -106,10 +99,7 @@ public class GameScreen implements Screen {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            // this.pause();
             ScreenSwitcher.toInventory(player.getInventory());
-            this.player.getInventory().getInfoInConsole();
-            // this.screenSwitcher.ToGameMenu();
         }
         // // this.pause();
         // PotionHP tempItem = new PotionHP(1);
@@ -188,7 +178,7 @@ public class GameScreen implements Screen {
         this.ortMapRender.render(foregroundLayer2);
 
         // Рендер элементов отладки
-        //this.debugRenderer.render(this.location.getWorld(), this.camera.combined);
+        // this.debugRenderer.render(this.location.getWorld(), this.camera.combined);
 
         this.game.getBatch().setProjectionMatrix(this.hud.getStage().getCamera().combined);
         // Отрисовка интерфейса
@@ -235,10 +225,8 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         MapChanger.getLevelGraph().dispose();
-        // AllItemsInWorld.clearItmes();
         this.player.dispose();
         this.ortMapRender.dispose();
-        this.debugRenderer.dispose();
     }
 
     /*

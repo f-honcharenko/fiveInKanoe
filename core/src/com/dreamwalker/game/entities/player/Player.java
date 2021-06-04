@@ -45,7 +45,7 @@ public class Player extends Entity implements Disposable {
         this.isDamageDealt = false;
         this.roomChanged = false;
 
-        this.inventory = new Inventory(10);
+        this.inventory = new Inventory(14);
 
         this.isAlive = true;
         this.damage = 2;
@@ -84,7 +84,8 @@ public class Player extends Entity implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
+                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -132,13 +133,13 @@ public class Player extends Entity implements Disposable {
             if (this.mana < this.manaMax) {
                 this.mana += 0.1;
             }
-            if(this.mana > this.manaMax){
+            if (this.mana > this.manaMax) {
                 this.mana = this.manaMax;
             }
             if (this.health < this.healthMax) {
                 this.health += 0.1;
             }
-            if(this.health > this.healthMax){
+            if (this.health > this.healthMax) {
                 this.health = this.healthMax;
             }
         }
@@ -198,11 +199,11 @@ public class Player extends Entity implements Disposable {
         return this.inventory;
     }
 
-    public void addHealth(float health){
-            this.health += health;
+    public void addHealth(float health) {
+        this.health += health;
     }
 
-    public void addMana(float mana){
+    public void addMana(float mana) {
         this.mana += mana;
     }
 
