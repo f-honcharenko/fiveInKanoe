@@ -2,13 +2,14 @@ package com.dreamwalker.game.items;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.player.Player;
 
-public class HedgehogAmmo extends Sprite{
+public class HedgehogAmmo extends Sprite {
     private float lifeTime;
     private final World world;
     private final Body hedgehogBody;
@@ -16,8 +17,8 @@ public class HedgehogAmmo extends Sprite{
     private final float speed;
     private final Vector2 direction;
 
-    public HedgehogAmmo(Player player, float damage, Texture texture){
-        super(texture);
+    public HedgehogAmmo(Player player, float damage, String texturePath) {
+        super(new Texture(texturePath));
         this.world = player.getWorld();
         this.damage = damage;
         this.lifeTime = 15;
@@ -43,7 +44,11 @@ public class HedgehogAmmo extends Sprite{
         this.setBounds(0, 0, 30 / DreamWalker.PPM, 30 / DreamWalker.PPM);
     }
 
-    public void move(){
+    public void render(SpriteBatch sb) {
+        this.draw(sb);
+    }
+
+    public void move() {
         this.direction.x = MathUtils.cos(this.hedgehogBody.getAngle()) * this.speed;
         this.direction.y = MathUtils.sin(this.hedgehogBody.getAngle()) * this.speed;
         this.hedgehogBody.setLinearVelocity(this.direction.x, this.direction.y);

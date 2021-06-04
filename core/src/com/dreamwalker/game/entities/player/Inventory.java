@@ -2,6 +2,7 @@ package com.dreamwalker.game.entities.player;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.dreamwalker.game.items.Hedgehog;
+import com.dreamwalker.game.items.HedgehogAmmo;
 import com.dreamwalker.game.items.Item;
 
 public class Inventory {
@@ -73,7 +74,7 @@ public class Inventory {
     public void getInfoInConsole() {
         for (Item item : inventory) {
             if (item != null) {
-                System.out.println(item.getName() + "[" + item.getId() + "] (" + item.getCount() + ")");
+                System.out.println("*" + item.getName() + "[" + item.getId() + "] (" + item.getCount() + ")");
             } else {
                 System.out.println("-");
 
@@ -85,14 +86,29 @@ public class Inventory {
     public void update(Player player) {
         int globalSum = 0;
         for (int i = 0; i < this.inventory.length; i++) {
+
             if (this.inventory[i] != null) {
                 globalSum += this.inventory[i].getCount();
                 this.inventory[i].usage(player);
-                if (this.inventory[i].getCount() == 0) {
-                    this.inventory[i] = null;
+                if (this.inventory[i].getCount() < 1) {
+                    if (this.inventory[i] instanceof Hedgehog) {
+                        int count = ((Hedgehog) this.inventory[i]).getAmmoCount();
+                        if (count == 0) {
+                            this.inventory[i] = null;
+                        }
+                    } else {
+                        this.inventory[i] = null;
+                    }
                 }
             }
+
         }
+        // for (Item item : this.inventory) {
+        // if (item != null) {
+        // globalSum += item.getCount();
+        // item.usage(player);
+        // }
+        // }
         this.itemsCount = globalSum;
     }
 

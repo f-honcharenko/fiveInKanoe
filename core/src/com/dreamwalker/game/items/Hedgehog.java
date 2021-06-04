@@ -12,7 +12,7 @@ public class Hedgehog extends Item {
     private final float damage;
     private final ArrayList<HedgehogAmmo> ammoList;
 
-    public Hedgehog(int count){
+    public Hedgehog(int count) {
         this.damage = 20.5f;
         this.id = 2;
         this.name = "Hedgehog";
@@ -30,28 +30,31 @@ public class Hedgehog extends Item {
     @Override
     public void usage(Player player) {
         System.out.println(this.count);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.Q) && this.count != 0){
-            HedgehogAmmo ammo = new HedgehogAmmo(player, this.damage, this.getTexture());
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q) && this.count != 0) {
+            HedgehogAmmo ammo = new HedgehogAmmo(player, this.damage, "hedgehog_icon.png");
             this.ammoList.add(ammo);
             this.count--;
         }
 
-        for(int i = 0; i < this.ammoList.size(); i++){
+        for (int i = 0; i < this.ammoList.size(); i++) {
             HedgehogAmmo ammo = this.ammoList.get(i);
-            if(ammo.getLifeTime() <= 0){
+            if (ammo.getLifeTime() <= 0) {
                 this.ammoList.remove(i);
                 ammo.getWorld().destroyBody(ammo.getHedgehogBody());
-            }
-            else {
+            } else {
                 ammo.move();
                 ammo.decreaseLifeTime();
             }
         }
     }
 
-    public void render(SpriteBatch batch){
-        for (HedgehogAmmo ammo : this.ammoList){
+    public void render(SpriteBatch batch) {
+        for (HedgehogAmmo ammo : this.ammoList) {
             ammo.draw(batch);
         }
+    }
+
+    public int getAmmoCount() {
+        return this.ammoList.size();
     }
 }
