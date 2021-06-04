@@ -58,9 +58,14 @@ public class InventoryScreen implements Screen, Disposable {
         this.labelStyle = new Label.LabelStyle();
         // BitmapFont myFont = new
         // BitmapFont(Gdx.files.internal("./arcade/skin/arcade-ui.json"));
+        BitmapFont font;
+        final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789][_!$%#@|\\/?-+=()*&.;,{}\"´`'<>";
+        font = TrueTypeFontFactory.createBitmapFont(Gdx.files.internal("font.ttf"), FONT_CHARACTERS, 12.5f, 7.5f, 1.0f,
+                Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        font.setColor(1f, 0f, 0f, 1f);
         BitmapFont myFont = new BitmapFont();
         this.labelStyle.font = myFont;
-        this.labelStyle.fontColor = Color.YELLOW;
+        this.labelStyle.fontColor = Color.WHITE;
 
         this.inventory = inv;
         this.background = new Sprite(bg);
@@ -152,20 +157,6 @@ public class InventoryScreen implements Screen, Disposable {
                         .padLeft((500 * Gdx.graphics.getWidth()) / 1920).padTop((-90 * Gdx.graphics.getHeight()) / 1080)
                         .align(Align.left);
                 itemIcon.row();
-                // itemIcon.add(new Label(inventory.getItem(i).getName(), this.labelStyle))
-                // .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 *
-                // Gdx.graphics.getHeight()) / 1080)
-                // .height(((70 * Gdx.graphics.getHeight()) / 1080))
-                // .padBottom((230 * Gdx.graphics.getHeight()) / 1080)
-                // .padRight((370 * Gdx.graphics.getWidth()) / 1920).align(Align.left);
-                // itemIcon.row();
-                // itemIcon.add(new Label("x" + inventory.getItem(i).getCount(),
-                // this.labelStyle))
-                // .width((70 * Gdx.graphics.getWidth()) / 1920).padTop((-220 *
-                // Gdx.graphics.getHeight()) / 1080)
-                // .height(((70 * Gdx.graphics.getHeight()) / 1080))
-                // .padBottom((230 * Gdx.graphics.getHeight()) / 1080).align(Align.right)
-                // .padRight((500 * Gdx.graphics.getWidth()) / 1920);
 
                 itemContainer.add(itemPattern);
                 itemContainer.add(itemIcon);
@@ -213,7 +204,13 @@ public class InventoryScreen implements Screen, Disposable {
         if (inventory.getTypesSize() > 0) {
             invenotryLogo.add(new Image(inventory.getItem(this.selectedItemList).getTexture()))
                     .width(((400 * Gdx.graphics.getWidth()) / 1920)).height(((400 * Gdx.graphics.getHeight()) / 1080))
-                    .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-420 * Gdx.graphics.getHeight()) / 1080);
+                    .padLeft((750 * Gdx.graphics.getWidth()) / 1920).padTop((-220 * Gdx.graphics.getHeight()) / 1080);
+            invenotryLogo.row();
+            invenotryLogo.add(new Label(inventory.getItem(this.selectedItemList).getName(), this.labelStyle))
+                    .padLeft((740 * Gdx.graphics.getWidth()) / 1920).padTop((-50 * Gdx.graphics.getHeight()) / 1080);
+            invenotryLogo.row();
+            invenotryLogo.add(new Label(inventory.getItem(this.selectedItemList).getDescription(), this.labelStyle))
+                    .padLeft((740 * Gdx.graphics.getWidth()) / 1920).padTop((150 * Gdx.graphics.getHeight()) / 1080);
         }
         this.table.setBackground(new SpriteDrawable(this.background));
 
