@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.dreamwalker.game.entities.player.Player;
 
 public class PotionHP extends Item {
-    private float regenHealth;
+    private final float regenHealth;
 
     public PotionHP(int count) {
         this.regenHealth = 8.2f;
@@ -19,7 +19,7 @@ public class PotionHP extends Item {
 
     @Override
     public void dispose() {
-
+        this.getTexture().dispose();
     }
 
     @Override

@@ -2,8 +2,9 @@ package com.dreamwalker.game.entities.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Disposable;
 
-public class SoundController {
+public class SoundController implements Disposable {
 
     private Sound stepSound;
     private int stepSoundDelayCtr;
@@ -42,5 +43,11 @@ public class SoundController {
         else{
             this.attackSoundDelayCtr++;
         }
+    }
+
+    @Override
+    public void dispose() {
+        this.stepSound.dispose();
+        this.swordAttack.dispose();
     }
 }

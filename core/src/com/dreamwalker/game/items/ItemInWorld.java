@@ -12,12 +12,12 @@ import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.location.Location;
 
 public class ItemInWorld implements Disposable {
-    private float x;
-    private float y;
-    private Item item;
+    private final float x;
+    private final float y;
+    private final Item item;
     private Texture texture;
-    private World world;
-    private Location location;
+    private final World world;
+    private final Location location;
 
     public boolean haveToDestroy;
 
@@ -35,29 +35,23 @@ public class ItemInWorld implements Disposable {
     }
 
     private void defineItemInWorld() {
-        // Задача физических свойств для "тела" предмета
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(this.x, this.y);
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
-        // Создаем физическое "тело" предмета в игровом мире на основе свойств
         this.box2DBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.isSensor = true;
-        // Физические границы врага
+
         CircleShape shape = new CircleShape();
         shape.setRadius(8 / DreamWalker.PPM);
 
         fixtureDef.shape = shape;
         this.box2DBody.createFixture(fixtureDef);
-
         this.box2DBody.getFixtureList().get(0).setUserData(this);
-        // Удаляем фигуру, которая была создана для "тела" предмета
         shape.dispose();
         this.texture = new Texture(item.getTexture().getTextureData());
 
-        // Добавить в список предметов отрисовки
-        // this.AddToAllItemList();
         this.location.addItem(this);
     }
 
@@ -70,8 +64,13 @@ public class ItemInWorld implements Disposable {
     }
 
     public void draw(SpriteBatch sb) {
-        sb.draw(this.texture, this.getX() - 15 / DreamWalker.PPM, this.getY() - 15 / DreamWalker.PPM,
-                30 / DreamWalker.PPM, 30 / DreamWalker.PPM);
+        sb.draw(
+                this.texture,
+                this.getX() - 15 / DreamWalker.PPM,
+                this.getY() - 15 / DreamWalker.PPM,
+                30 / DreamWalker.PPM,
+                30 / DreamWalker.PPM
+        );
     }
 
     public Item getItem() {
@@ -83,10 +82,6 @@ public class ItemInWorld implements Disposable {
         this.draw(sb);
     }
 
-    public Location getLocation() {
-        return this.location;
-    }
-
     public Body getBody() {
         return this.box2DBody;
     }
@@ -94,11 +89,7 @@ public class ItemInWorld implements Disposable {
     @Override
     public void dispose() {
         this.location.getWorld().destroyBody(this.box2DBody);
-        //this.location.disposeItems();
         this.location.removeItem(this);
-        // this.box2DBody.getFixtureList().get(0).setUserData(null);
-        // this.item.getTexture().dispose();
         this.texture.dispose();
-
     }
 }

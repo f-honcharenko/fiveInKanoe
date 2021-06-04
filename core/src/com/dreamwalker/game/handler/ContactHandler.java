@@ -137,13 +137,11 @@ public class ContactHandler implements ContactListener {
         Fixture fixtureB = contact.getFixtureB();
         // contact
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
-            System.out.println(fixtureA.getUserData() + "|" + fixtureB.getUserData());
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
                 if ((fixtureB.isSensor()) && (!fixtureA.isSensor())) {
                     Enemy enemy = (Enemy) fixtureB.getUserData();
                     enemy.setPlayerInArea(true);
-                    System.out.println(enemy.isPlayerInArea());
                 }
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
@@ -151,7 +149,6 @@ public class ContactHandler implements ContactListener {
                 if ((fixtureA.isSensor()) && (!fixtureB.isSensor())) {
                     Enemy enemy = (Enemy) fixtureA.getUserData();
                     enemy.setPlayerInArea(true);
-                    System.out.println(enemy.isPlayerInArea());
                 }
             }
         }
@@ -163,20 +160,16 @@ public class ContactHandler implements ContactListener {
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
             boolean variant1 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof Enemy;
             if (variant1) {
-                System.out.println("PLayer exit Attack area1");
                 if ((fixtureB.isSensor()) && (!fixtureA.isSensor())) {
                     Enemy enemy = (Enemy) fixtureB.getUserData();
                     enemy.setPlayerInArea(false);
-                    System.out.println(enemy.isPlayerInArea());
                 }
             }
             boolean variant2 = fixtureA.getUserData() instanceof Enemy && fixtureB.getUserData() instanceof Player;
             if (variant2) {
-                System.out.println("PLayer exit Attack area2");
                 if ((fixtureA.isSensor()) && (!fixtureB.isSensor())) {
                     Enemy enemy = (Enemy) fixtureA.getUserData();
                     enemy.setPlayerInArea(false);
-                    System.out.println(enemy.isPlayerInArea());
                 }
 
             }
@@ -235,27 +228,23 @@ public class ContactHandler implements ContactListener {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
         if (fixtureA.getUserData() != null && fixtureB.getUserData() != null) {
-            boolean variant1 = fixtureA.getUserData() instanceof ItemInWorld
-                    && fixtureB.getUserData() instanceof Player;
+            boolean variant1 = fixtureA.getUserData() instanceof ItemInWorld && fixtureB.getUserData() instanceof Player;
             if (variant1) {
                 ItemInWorld item = (ItemInWorld) fixtureA.getUserData();
                 Player player = (Player) fixtureB.getUserData();
                 if (fixtureA.isSensor()) {
                     if (player.getInventory().putItem(item.getItem())) {
                         item.haveToDestroy = true;
-                        // TODO: передлеать
                     }
                 }
             }
-            boolean variant2 = fixtureA.getUserData() instanceof Player
-                    && fixtureB.getUserData() instanceof ItemInWorld;
+            boolean variant2 = fixtureA.getUserData() instanceof Player && fixtureB.getUserData() instanceof ItemInWorld;
             if (variant2) {
                 Player player = (Player) fixtureA.getUserData();
                 ItemInWorld item = (ItemInWorld) fixtureB.getUserData();
                 if (fixtureB.isSensor()) {
                     if (player.getInventory().putItem(item.getItem())) {
                         item.haveToDestroy = true;
-                        // TODO: передлеать
                     }
                 }
             }

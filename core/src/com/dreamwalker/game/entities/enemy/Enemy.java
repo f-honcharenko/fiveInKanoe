@@ -24,12 +24,11 @@ public abstract class Enemy extends Entity implements Disposable {
     protected int attackSpeedMax;
     protected int attackSpeedCounter;
 
-    private int attackedFilterTimerMax;
+    private final int attackedFilterTimerMax;
     private int attackedFilterTimer;
-    private Boolean attackedFilterFlag;
 
     private float BarWidth;
-    private float BarHeight;
+    private final float BarHeight;
 
     private float BoundsWidth;
     private float BoundsHeight;
@@ -60,13 +59,6 @@ public abstract class Enemy extends Entity implements Disposable {
 
     protected Location location;
 
-    /**
-     * Конструктор
-     *
-     *
-     * @param x - стартовая позиция врага по х
-     * @param y - стартовая позиция врага по у
-     */
     public Enemy(Location location, float x, float y) {
         this.location = location;
         this.world = location.getWorld();
@@ -74,7 +66,7 @@ public abstract class Enemy extends Entity implements Disposable {
         this.defineEnemy(this.spawnPoint);
 
         this.haveToDropped = false;
-        // Изменяемые параметры
+
         this.speed = 1.5f;
         this.isAlive = true;
         this.isAttacking = false;
@@ -82,7 +74,7 @@ public abstract class Enemy extends Entity implements Disposable {
         this.health = this.healthMax = 100;
         this.BarWidth = this.BoundsWidth;
         this.BarHeight = 10 / DreamWalker.PPM;
-        // this.BoundsWidth = 54 / DreamWalker.PPM;
+
         this.BoundsWidth = 54 / DreamWalker.PPM;
         this.BoundsHeight = 54 / DreamWalker.PPM;
 
@@ -120,15 +112,13 @@ public abstract class Enemy extends Entity implements Disposable {
     }
 
     private void defineEnemy(Vector2 spawnPoint) {
-        // Задача физических свойств для "тела" врага
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        // Создаем физическое "тело" врага в игровом мире на основе свойств
         this.entityBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
-        // Физические границы врага
+
         CircleShape shape = new CircleShape();
         shape.setRadius(15 / DreamWalker.PPM);
 
@@ -136,13 +126,12 @@ public abstract class Enemy extends Entity implements Disposable {
         this.entityBody.createFixture(fixtureDef);
 
         this.entityBody.getFixtureList().get(0).setUserData(this);
-        // Удаляем фигуру, которая была создана для "тела" врага
+
         shape.dispose();
-        this.HPTexture = new Texture(createProceduralPixmap(1, 1, 1, 0, 0));
+        this.HPTexture = new Texture(createProceduralPixmap());
         this.HPBarTexture = new Texture("EnemyHPBar.png");
         this.setBounds(0, 0, this.BoundsWidth, this.BoundsHeight);
 
-        // Сектор Атакаи врага
         float scalar = shape.getRadius() * 3;
         this.attackArea = this.world.createBody(bodyDef);
         FixtureDef attackFixture = new FixtureDef();
@@ -151,8 +140,7 @@ public abstract class Enemy extends Entity implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -170,7 +158,7 @@ public abstract class Enemy extends Entity implements Disposable {
 
     public void idle(Player player) {
         this.idleTimer++;
-        // Создать временные точки для перемещения
+
         if (Vector2.dst(super.getX(), super.getY(), player.getX(), player.getY()) < this.agroRadius) {
             this.status = "agro";
             Vector2 playerPosition = new Vector2(player.getX(), player.getY());
@@ -185,29 +173,24 @@ public abstract class Enemy extends Entity implements Disposable {
             super.entityBody.setLinearVelocity(new Vector2(0, 0));
         }
         if ((this.idleTimer == this.idleTimerMax) || ((this.tempX == super.getX()) && (this.tempY == super.getY()))) {
-            // Если таймер(время ожидания) истек, или непись уже на месте.
-            // Меняем статус и обнулялем таймер
             super.entityBody.setLinearVelocity(new Vector2(0, 0));
             this.status = "waiting";
             this.idleTimer = 0;
 
         }
         if ((this.status.equals("waiting")) && (this.idleTimer == this.waitingTimerMax)) {
-            // Если непись постоял на месте н-ое еол-во секунд,
-            // запускаем его на случаную коордианту и меняем статус
             this.tempX = rnd(Math.round(this.spawnX - this.idleRadius), Math.round(this.spawnX + this.idleRadius));
             this.tempY = rnd(Math.round(this.spawnY - this.idleRadius), Math.round(this.spawnY + this.idleRadius));
             this.idleTimer = 0;
             this.status = "idleGo";
         }
         if (this.status.equals("idleGo")) {
-            // Повернуть непися
+
             Vector2 goblinViewPoint = new Vector2(this.tempX, this.tempY).sub(super.entityBody.getPosition());
             this.setViewAngle(Math.toDegrees(goblinViewPoint.angleRad()));
             super.entityBody.setTransform(super.entityBody.getPosition(), goblinViewPoint.angleRad());
-            // Задать ему скорость
-            super.entityBody.setLinearVelocity(
-                    new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
+
+            super.entityBody.setLinearVelocity(new Vector2((this.tempX - super.getX()) * this.speed, (this.tempY - super.getY()) * this.speed));
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() - this.getHeight() / 2);
     }
@@ -224,18 +207,14 @@ public abstract class Enemy extends Entity implements Disposable {
             this.setColor(1f, 0f, 0f, 1.0f);
             if (this.health <= 0) {
                 this.isAlive = false;
-                // dstr.addToDestroyList();
                 this.haveToDropped = true;
-                // this.dropItem(new PotionMP(1), 1, 10d);
-                // this.box2DBody.setTransform(new Vector2(1000, 1000), 0);
-                // this.dispose();
             }
         }
 
     }
 
     public void drawBar(SpriteBatch sb) {
-        float tempHPwidth = (((float) this.health / (float) this.healthMax) * (float) this.BarWidth);
+        float tempHPwidth = (((float) this.health / (float) this.healthMax) * this.BarWidth);
         sb.draw(this.HPTexture, this.getX() - (this.BoundsWidth / 2),
                 this.getY() + ((this.BoundsHeight + 5 / DreamWalker.PPM) / 2) - 1 / DreamWalker.PPM, tempHPwidth,
                 this.BarHeight - 2 / DreamWalker.PPM);
@@ -246,15 +225,14 @@ public abstract class Enemy extends Entity implements Disposable {
 
     public void update(float deltaTime, Player player) {
         if (haveToDropped) {
-            this.dropItem(new PotionHP(1), 1, 100d);
-            this.dropItem(new PotionMP(1), 1, 100d);
+            this.dropItem(new PotionHP(1), 100d);
+            this.dropItem(new PotionMP(1), 100d);
             haveToDropped = false;
         }
         if (this.isAlive()) {
             if (this.attackedFilterTimer < this.attackedFilterTimerMax) {
                 this.attackedFilterTimer++;
                 if (this.attackedFilterTimer == this.attackedFilterTimerMax) {
-                    this.attackedFilterTimer = this.attackedFilterTimerMax;
                     this.setColor(1f, 1f, 1f, 1.0f);
 
                 }
@@ -266,11 +244,11 @@ public abstract class Enemy extends Entity implements Disposable {
         this.attackArea.setTransform(this.entityBody.getPosition(), this.entityBody.getAngle());
     }
 
-    private Pixmap createProceduralPixmap(int width, int height, int r, int g, int b) {
-        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+    private Pixmap createProceduralPixmap() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
 
-        pixmap.setColor(r, g, b, 1);
-        pixmap.fillRectangle(0, 0, width, height);
+        pixmap.setColor(1, 0, 0, 1);
+        pixmap.fillRectangle(0, 0, 1, 1);
 
         return pixmap;
     }
@@ -292,7 +270,7 @@ public abstract class Enemy extends Entity implements Disposable {
         return this.playerInArea;
     }
 
-    public void dropItem(Item item, int count, double chance) {
+    public void dropItem(Item item, double chance) {
         double trigerChance = rnd.nextDouble() * 100;
         if (chance >= 100d) {
             chance = 100d;
@@ -301,8 +279,7 @@ public abstract class Enemy extends Entity implements Disposable {
             chance = 0d;
         }
         if (trigerChance < chance) {
-            // this.haveToDropped = true;
-            ItemInWorld drop = new ItemInWorld(this.getX(), this.getY(), item, this.location);
+            new ItemInWorld(this.getX(), this.getY(), item, this.location);
         }
 
     }
@@ -322,19 +299,9 @@ public abstract class Enemy extends Entity implements Disposable {
         }
     }
 
-    public Location getLocation() {
-        return this.location;
-    }
-
     @Override
     public void dispose() {
         this.getTexture().dispose();
-        // this.box2DBody.set
-        // this.attackArea.setUserData(null);
-        // this.attackArea = null;
-        // this.world.destroyBody(this.attackArea);
-        // this.box2DBody.setUserData(null);
-        // this.box2DBody = null;
-        // this.world.destroyBody(this.box2DBody);
+        this.HPBarTexture.dispose();
     }
 }

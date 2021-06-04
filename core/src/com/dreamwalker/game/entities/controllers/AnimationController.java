@@ -55,7 +55,6 @@ abstract public class AnimationController {
         switch (this.currentState) {
             case RUNNING_NORTH:
                 region = (TextureRegion) this.runNorth.getKeyFrame(speed, true);
-                System.out.println(speed);
                 break;
             case RUNNING_EAST:
                 region = (TextureRegion) this.runEast.getKeyFrame(speed, true);

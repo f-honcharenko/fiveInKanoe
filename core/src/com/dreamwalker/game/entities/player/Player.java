@@ -29,13 +29,6 @@ public class Player extends Entity implements Disposable {
 
     private ArrayList<Skill> skillPanel;
 
-    /**
-     * Конструктор
-     *
-     * @param world - физический мир, в котором будет находится игрок
-     * @param x     - стартовая позиция игрока по х
-     * @param y     - стартовая позиция игрока по у
-     */
     public Player(World world, float x, float y) {
         this.world = world;
         this.animationController = new MeeleAnimationController(this, "player.atlas", "player");
@@ -67,16 +60,13 @@ public class Player extends Entity implements Disposable {
     }
 
     private void definePlayer() {
-        // Задача физических свойств для "тела" игрока
         BodyDef bodyDef = new BodyDef();
         bodyDef.position.set(this.spawnPoint);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        // Создаем физическое "тело" игрока в игровом мире на основе свойств
         this.entityBody = this.world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
 
-        // Физические границы игрока
         CircleShape shape = new CircleShape();
         shape.setRadius(9 / DreamWalker.PPM);
 
@@ -84,7 +74,6 @@ public class Player extends Entity implements Disposable {
         this.entityBody.createFixture(fixtureDef);
         this.entityBody.getFixtureList().get(0).setUserData(this);
 
-        // Удаляем фигуру, которая была создана для "тела" игрока
         shape.dispose();
 
         float scalar = shape.getRadius() * 3.5f;
@@ -95,8 +84,7 @@ public class Player extends Entity implements Disposable {
         Vector2[] vertices = { new Vector2(0, 0),
                 new Vector2(scalar * (float) (Math.cos(5 * Math.PI / 3)), scalar * (float) (Math.sin(5 * Math.PI / 3))),
                 new Vector2(scalar * (float) (Math.cos(7 * Math.PI / 4)), scalar * (float) (Math.sin(7 * Math.PI / 4))),
-                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)),
-                        scalar * (float) (Math.sin(11 * Math.PI / 6))),
+                new Vector2(scalar * (float) (Math.cos(11 * Math.PI / 6)), scalar * (float) (Math.sin(11 * Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(0)), scalar * (float) (Math.sin(0))), // -----Середина------
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 6)), scalar * (float) (Math.sin(Math.PI / 6))),
                 new Vector2(scalar * (float) (Math.cos(Math.PI / 4)), scalar * (float) (Math.sin(Math.PI / 4))),
@@ -110,12 +98,6 @@ public class Player extends Entity implements Disposable {
         dmgSectorShape.dispose();
     }
 
-    /**
-     * Конструктор
-     *
-     * @param world      - физический мир, в котором будет находится игрок
-     * @param spawnPoint - стартовая позиция игрока
-     */
     public Player(World world, Vector2 spawnPoint) {
         this(world, spawnPoint.x, spawnPoint.y);
     }
@@ -136,9 +118,6 @@ public class Player extends Entity implements Disposable {
         }
         this.setPosition(this.getX() - this.getWidth() / 2, this.getY() + 13 / DreamWalker.PPM - this.getHeight() / 2);
         if (this.getCurrentHealth() <= 0) {
-            // this.world.destroyBody(this.playersBody);
-            // this.world.destroyBody(this.attackArea);
-            // this
             this.health = 0;
             this.isAlive = false;
         }
@@ -148,9 +127,6 @@ public class Player extends Entity implements Disposable {
         this.playerControl.handle(mousePosition);
     }
 
-    /**
-     * метод, отвечающий регенерацию показателей персонажа
-     */
     public void regeneration() {
         if (isAlive) {
             if (this.mana < this.manaMax) {
@@ -232,6 +208,7 @@ public class Player extends Entity implements Disposable {
 
     @Override
     public void dispose() {
+        this.soundController.dispose();
         this.getTexture().dispose();
     }
 }

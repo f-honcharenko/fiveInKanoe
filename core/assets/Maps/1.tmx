@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="28" height="29" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="113">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="28" height="29" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="113">
  <tileset firstgid="1" source="klipartz.com.tsx"/>
  <layer id="1" name="grass" width="28" height="29">
   <data encoding="csv">
@@ -201,7 +201,6 @@
  </layer>
  <objectgroup id="8" name="exits">
   <object id="4" x="841" y="603.25" width="27.3333" height="68.5"/>
-  <object id="96" x="39" y="201.333" width="0.333333"/>
   <object id="97" x="42.5" y="192" width="25.5" height="97.5"/>
  </objectgroup>
  <objectgroup id="9" name="collisions">

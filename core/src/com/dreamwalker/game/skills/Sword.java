@@ -14,8 +14,8 @@ public class Sword extends Sprite implements Disposable {
     private final Body swordBody;
     private final float damage;
     private float lifeTime;
-    private Vector2 direction;
-    private float speed;
+    private final Vector2 direction;
+    private final float speed;
 
     Sword(Player player, float damage, float lifeTime) {
         super(new Texture("flying_sword.png"));

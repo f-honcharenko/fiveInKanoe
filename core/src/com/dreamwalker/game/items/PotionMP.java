@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.dreamwalker.game.entities.player.Player;
 
 public class PotionMP extends Item {
-    private float regenMana;
+    private final float regenMana;
 
     public PotionMP(int count) {
         this.regenMana = 8.2f;
@@ -19,7 +19,7 @@ public class PotionMP extends Item {
 
     @Override
     public void dispose() {
-
+        this.getTexture().dispose();
     }
 
     @Override

@@ -10,11 +10,11 @@ import com.dreamwalker.game.entities.player.Player;
 
 public class HedgehogAmmo extends Sprite{
     private float lifeTime;
-    private World world;
-    private Body hedgehogBody;
-    private float damage;
-    private float speed;
-    private Vector2 direction;
+    private final World world;
+    private final Body hedgehogBody;
+    private final float damage;
+    private final float speed;
+    private final Vector2 direction;
 
     public HedgehogAmmo(Player player, float damage, Texture texture){
         super(texture);

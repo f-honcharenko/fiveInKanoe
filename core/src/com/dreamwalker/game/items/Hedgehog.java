@@ -9,8 +9,8 @@ import com.dreamwalker.game.entities.player.Player;
 import java.util.ArrayList;
 
 public class Hedgehog extends Item {
-    private float damage;
-    private ArrayList<HedgehogAmmo> ammoList;
+    private final float damage;
+    private final ArrayList<HedgehogAmmo> ammoList;
 
     public Hedgehog(int count){
         this.damage = 20.5f;

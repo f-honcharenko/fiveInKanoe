@@ -3,18 +3,19 @@ package com.dreamwalker.game.skills;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Disposable;
 import com.dreamwalker.game.entities.player.Player;
 
 import java.util.ArrayList;
 
-public class FlyingSword extends Skill {
+public class FlyingSword extends Skill implements Disposable {
 
     private final ArrayList<Sword> swordsOnScreen;
 
-    private float damage;
-    private float lifeTime;
-    private int maxSwordsCount;
-    private Sound flyingSwordSound;
+    private final float damage;
+    private final float lifeTime;
+    private final int maxSwordsCount;
+    private final Sound flyingSwordSound;
 
 
     public FlyingSword(int hotKey) {
@@ -71,8 +72,8 @@ public class FlyingSword extends Skill {
         }
     }
 
-    public ArrayList<Sword> getSwordsOnScreen() {
-        return this.swordsOnScreen;
+    @Override
+    public void dispose() {
+        this.flyingSwordSound.dispose();
     }
-
 }

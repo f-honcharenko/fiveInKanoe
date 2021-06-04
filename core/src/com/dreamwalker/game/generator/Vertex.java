@@ -8,10 +8,10 @@ import java.util.ArrayList;
 public class Vertex {
     public String name;
 
-    private Location location;
-    private ArrayList<Edge> edges;
-    private ArrayList<Body> exits;
-    private int maxPower;
+    private final Location location;
+    private final ArrayList<Edge> edges;
+    private final ArrayList<Body> exits;
+    private final int maxPower;
     private int currentPower;
 
     public Vertex(Location location, String name, ContactHandler contactHandler){
@@ -20,7 +20,6 @@ public class Vertex {
         this.location.getWorld().setContactListener(contactHandler);
         this.edges = new ArrayList<>();
         this.exits = this.location.getExits();
-        //Переделать из вертекс в боди
         this.maxPower = this.exits.size();
         this.currentPower = 0;
     }

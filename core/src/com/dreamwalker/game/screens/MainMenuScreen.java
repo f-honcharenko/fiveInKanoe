@@ -1,20 +1,11 @@
 package com.dreamwalker.game.screens;
 
-import java.io.Console;
-
-import javax.management.monitor.Monitor;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,114 +13,66 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Null;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.tools.ScreenSwitcher;
 
 public class MainMenuScreen implements Screen, Disposable {
-    private DreamWalker game;
-    // Buttons
+    private final DreamWalker game;
+
     private Image startButton;
     private Image exitButton;
-    private Image continueButton;
-    private Image optionsButton;
-    // Icon
-    private Image gameIcon;
+    private final Image continueButton;
+    private final Image optionsButton;
 
-    private Image newGame_default;
-    private Image newGame_hover;
-    private Image newGame_pressed;
-    private Image continue_default;
-    private Image continue_hover;
-    private Image continue_pressed;
-    private Image exitGame_default;
-    private Image exitGame_hover;
-    private Image exitGame_pressed;
-    private Image options_default;
-    private Image options_hover;
-    private Image options_pressed;
+    private final Image gameIcon;
 
-    // 2д сцена, на которой распологаются элементы интерфейса
-    private Stage stage;
-    private Viewport viewport;
-    private Table table;
+    private final Image newGame_default;
+    private final Image newGame_hover;
+    private final Image continue_default;
 
-    // Events
-    private EventListener StartEvent;
-    private EventListener ExitEvent;
-    private EventListener OptionEvent;
-    private EventListener ContinueEvent;
-    // BG
-    private Sprite background;
-    // Button settings
-    private float buttonsWidth;
-    private float buttonsHeight;
-    private float paddingRight;
-    private float paddingBottom;
-    private float iconWidth;
-    private float iconHeight;
+    private final Image exitGame_default;
+    private final Image exitGame_hover;
+    private final Image options_default;
 
-    public void updateTable() {
-        // Установка взаимодействий
-        this.startButton.addListener(this.StartEvent);
-        this.exitButton.addListener(this.ExitEvent);
+    private final Stage stage;
 
-        // Установка таблицы
-        this.table = new Table();
+    private final EventListener StartEvent;
+    private final EventListener ExitEvent;
 
-        // БГ
-        this.table.setBackground(new SpriteDrawable(this.background));
+    private final Sprite background;
 
-        // Включить масштабирование
-        this.table.setFillParent(true);
+    private final float buttonsWidth;
+    private final float buttonsHeight;
+    private final float paddingRight;
+    private final float paddingBottom;
+    private final float iconWidth;
+    private final float iconHeight;
 
-        this.table.bottom();
-        this.table.right();
-        this.table.add(this.gameIcon).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
-                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
-                .width(((this.iconWidth * Gdx.graphics.getWidth()) / 1920))
-                .height(((this.iconHeight * Gdx.graphics.getHeight()) / 1080));
-        this.table.row();
-        this.table.add(this.startButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
-                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
-                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
-                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
-        this.table.row();
-        this.table.add(this.continueButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
-                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
-                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
-                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
-        this.table.row();
-        this.table.add(this.optionsButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
-                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
-                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
-                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
-        this.table.row();
-        this.table.add(this.exitButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
-                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
-                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
-                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+    private final Texture newGameDefTexture;
+    private final Texture newGameHovTexture;
 
-        // Отладка таблицы
-        // this.table.debug();
+    private final Texture contDefTexture;
+    private final Texture optDefTexture;
 
-        // Упаковака таблицы
-        this.table.pack();
+    private final Texture exitDefTexture;
+    private final Texture exitHovTexture;
 
-        // Добавить таблцу на "сцену"
-        this.stage.addActor(this.table);
-
-    }
+    private final Texture artTexture;
+    private final Texture logoTexture;
 
     public MainMenuScreen(DreamWalker game) {
+        this.newGameDefTexture = new Texture("./buttons/NewGameBtn_default.png");
+        this.newGameHovTexture = new Texture("./buttons/NewGameBtn_hover.png");
+        this.contDefTexture = new Texture("./buttons/ContinueBtn_default.png");
+        this.optDefTexture = new Texture("./buttons/OptionsBtn_default.png");
+        this.exitDefTexture = new Texture("./buttons/ExitBtn_default.png");
+        this.exitHovTexture = new Texture("./buttons/ExitBtn_hover.png");
+
         this.buttonsWidth = 400f;
         this.buttonsHeight = 150f;
         this.paddingRight = 150f;
@@ -137,102 +80,128 @@ public class MainMenuScreen implements Screen, Disposable {
         this.iconHeight = 400f;
         this.iconWidth = 400f;
         this.game = game;
-        this.background = new Sprite(new Texture("./Art.png"));
-        this.gameIcon = new Image(new Sprite(new Texture("./game_logo.png")));
 
-        this.viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.artTexture = new Texture("./Art.png");
+        this.logoTexture = new Texture("./game_logo.png");
 
-        this.stage = new Stage(this.viewport, game.getBatch());
+        this.background = new Sprite(this.artTexture);
+        this.gameIcon = new Image(new Sprite(this.logoTexture));
 
-        // Штука для отслеживания нажатий
+        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        this.stage = new Stage(viewport, game.getBatch());
+
         Gdx.input.setInputProcessor(stage);
 
-        // Отключить Масштабирование окна
         Gdx.graphics.setResizable(false);
 
-        // Текстуры
-        this.newGame_default = new Image(new Sprite(new Texture("./buttons/NewGameBtn_default.png")));
-        this.newGame_pressed = new Image(new Sprite(new Texture("./buttons/NewGameBtn_pressed.png")));
-        this.newGame_hover = new Image(new Sprite(new Texture("./buttons/NewGameBtn_hover.png")));
+        this.newGame_default = new Image(new Sprite(this.newGameDefTexture));
+        this.newGame_hover = new Image(new Sprite(this.newGameHovTexture));
 
-        this.continue_default = new Image(new Sprite(new Texture("./buttons/ContinueBtn_default.png")));
+        this.continue_default = new Image(new Sprite(this.contDefTexture));
         this.continue_default.setColor(new Color(1, 1, 1, 0.4f));
 
-        this.options_default = new Image(new Sprite(new Texture("./buttons/OptionsBtn_default.png")));
+        this.options_default = new Image(new Sprite(this.optDefTexture));
         this.options_default.setColor(new Color(1, 1, 1, 0.4f));
 
-        this.exitGame_default = new Image(new Sprite(new Texture("./buttons/ExitBtn_default.png")));
-        this.exitGame_pressed = new Image(new Sprite(new Texture("./buttons/ExitBtn_pressed.png")));
-        this.exitGame_hover = new Image(new Sprite(new Texture("./buttons/ExitBtn_hover.png")));
+        this.exitGame_default = new Image(new Sprite(exitDefTexture));
+        this.exitGame_hover = new Image(new Sprite(exitHovTexture));
 
         this.startButton = this.newGame_default;
         this.exitButton = this.exitGame_default;
         this.continueButton = this.continue_default;
         this.optionsButton = this.options_default;
 
-        // Действия для кнопок
+
         this.StartEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                startButton = newGame_pressed;
+                startButton = newGame_hover;
                 updateTable();
                 // ScreenSwitcher.toGame();
                 ScreenSwitcher.toNewGameMenu();
                 ScreenSwitcher.disposeMainMenu();
 
-            };
+            }
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
                 startButton = newGame_hover;
                 updateTable();
-            };
+            }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
                 startButton = newGame_default;
                 updateTable();
-            };
+            }
         };
         this.ExitEvent = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                exitButton = exitGame_pressed;
+                exitButton = exitGame_hover;
                 Gdx.app.exit();
-            };
+            }
 
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
                 exitButton = exitGame_hover;
                 updateTable();
-            };
+            }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
                 exitButton = exitGame_default;
                 updateTable();
-            };
+            }
         };
 
-        // Установка взаимодействий
         this.startButton.addListener(StartEvent);
-
         this.exitButton.addListener(ExitEvent);
-
         this.updateTable();
     }
 
-    public void toggleStartButton(Image newImage) {
-        this.startButton = newImage;
+    public void updateTable() {
+        this.startButton.addListener(this.StartEvent);
+        this.exitButton.addListener(this.ExitEvent);
+
+        Table table = new Table();
+
+        table.setBackground(new SpriteDrawable(this.background));
+
+        table.setFillParent(true);
+
+        table.bottom();
+        table.right();
+        table.add(this.gameIcon).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.iconWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.iconHeight * Gdx.graphics.getHeight()) / 1080));
+        table.row();
+        table.add(this.startButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        table.row();
+        table.add(this.continueButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        table.row();
+        table.add(this.optionsButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        table.row();
+        table.add(this.exitButton).padRight(((this.paddingRight * Gdx.graphics.getHeight()) / 1920))
+                .padBottom(((this.paddingBottom * Gdx.graphics.getHeight()) / 1080))
+                .width(((this.buttonsWidth * Gdx.graphics.getWidth()) / 1920))
+                .height(((this.buttonsHeight * Gdx.graphics.getHeight()) / 1080));
+        table.pack();
+        this.stage.addActor(table);
+
     }
 
-    public void toggleExitButton(Image newImage) {
-        this.exitButton = newImage;
-    }
-
-    public void update(float deltaTime) {
-
-    }
 
     public DreamWalker getGame() {
         return this.game;
@@ -240,20 +209,13 @@ public class MainMenuScreen implements Screen, Disposable {
 
     @Override
     public void render(float delta) {
-        update(delta);
-
-        // Цвет окна и фикс мерцания экрана при изменении
-        // Gdx.gl.glClearColor(0, 0, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        // Отрисовка UI
         this.stage.draw();
         this.stage.act();
     }
 
     @Override
     public void resize(int width, int height) {
-        // Обновление вьюпорта при изменении размеров окна
-        // this.viewport.update(width, height);
         this.stage.getViewport().update(width, height);
         this.updateTable();
 
@@ -261,34 +223,35 @@ public class MainMenuScreen implements Screen, Disposable {
 
     @Override
     public void dispose() {
-        this.StartEvent = null;
-        this.ExitEvent = null;
-        this.OptionEvent = null;
-        this.ContinueEvent = null;
+        this.newGameDefTexture.dispose();
+        this.newGameHovTexture.dispose();
+        this.contDefTexture.dispose();
+        this.optDefTexture.dispose();
+        this.exitDefTexture.dispose();
+        this.exitHovTexture.dispose();
+        this.artTexture.dispose();
+        this.logoTexture.dispose();
+        this.background.getTexture().dispose();
         this.stage.dispose();
     }
 
     @Override
     public void show() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void pause() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void resume() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void hide() {
-        // TODO Auto-generated method stub
 
     }
 

@@ -1,15 +1,13 @@
 package com.dreamwalker.game.generator;
 
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class Edge {
-    private Vertex first;
-    private Body exitFirst;
+    private final Vertex first;
+    private final Body exitFirst;
 
-    private Vertex second;
-    private Body exitSecond;
+    private final Vertex second;
+    private final Body exitSecond;
 
     public Edge(Vertex first, Body exitFirst, Vertex second, Body exitSecond){
         this.first = first;

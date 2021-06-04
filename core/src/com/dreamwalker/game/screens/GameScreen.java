@@ -188,7 +188,7 @@ public class GameScreen implements Screen {
         this.ortMapRender.render(foregroundLayer2);
 
         // Рендер элементов отладки
-        this.debugRenderer.render(this.location.getWorld(), this.camera.combined);
+        //this.debugRenderer.render(this.location.getWorld(), this.camera.combined);
 
         this.game.getBatch().setProjectionMatrix(this.hud.getStage().getCamera().combined);
         // Отрисовка интерфейса
@@ -201,7 +201,6 @@ public class GameScreen implements Screen {
         MapChanger.setCurrentVertex(MapChanger.getLevelGraph().getStart());
         this.location = MapChanger.getCurrentVertex().getLocation(); // !!!
         this.player.setSpawnPoint(this.location.getSpawnPoint());
-        System.out.println();
     }
 
     @Override

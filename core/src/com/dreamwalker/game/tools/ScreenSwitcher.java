@@ -3,22 +3,20 @@ package com.dreamwalker.game.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.dreamwalker.game.DreamWalker;
 import com.dreamwalker.game.entities.player.Inventory;
 import com.dreamwalker.game.screens.*;
 
 public class ScreenSwitcher {
     private static DreamWalker game;
-
     private static MainMenuScreen mainMenuScreen;
     private static GameScreen gameScreen;
     private static GameMenuScreen gameMenuScreen;
     private static InventoryScreen inventoryScreen;
     private static NewGameScreen newGameScreen;
 
-    public static void setGame(DreamWalker _game) {
-        game = _game;
+    public static void setGame(DreamWalker game) {
+        ScreenSwitcher.game = game;
     }
 
     public static void toMainMenu() {
@@ -37,14 +35,14 @@ public class ScreenSwitcher {
     }
 
     public static void toGameMenu() {
-        Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        Pixmap pixmap = getScreenshot(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameMenuScreen = new GameMenuScreen(game, new Texture(flipPixmap(pixmap)));
 
         game.setScreen(gameMenuScreen);
     }
 
     public static void toNewGameMenu() {
-        Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        Pixmap pixmap = getScreenshot(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         newGameScreen = new NewGameScreen(game, new Texture(flipPixmap(pixmap)));
 
         game.setScreen(newGameScreen);
@@ -58,7 +56,7 @@ public class ScreenSwitcher {
     }
 
     public static void toInventory(Inventory inv) {
-        Pixmap pixmap = getScreenshot(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        Pixmap pixmap = getScreenshot(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inventoryScreen = new InventoryScreen(game, new Texture(flipPixmap(pixmap)), inv);
 
         game.setScreen(inventoryScreen);
@@ -92,9 +90,8 @@ public class ScreenSwitcher {
         }
     }
 
-    private static Pixmap getScreenshot(int x, int y, int w, int h, boolean yDown) {
-        final Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(x, y, w, h);
-        return pixmap;
+    private static Pixmap getScreenshot(int w, int h) {
+        return Pixmap.createFromFrameBuffer(0, 0, w, h);
     }
 
     private static Pixmap flipPixmap(Pixmap src) {
